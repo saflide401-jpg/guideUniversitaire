@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% import '_icons.html' as icons %}
+
+{% block refresh %}<meta http-equiv="refresh" content="90">{% endblock %}
+
+{% block content %}
+    <h1 style="font-size:18px;">Tendances du marché</h1>
+    <p class="card-subtitle" style="margin-top:-8px;">Basé sur les offres collectées automatiquement au cours des 2 dernières années — cette page s'actualise en continu.</p>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('chart-donut') }}Répartition sectorielle des offres collectées</div>
+        {% if donut.segments %}
+        <div class="donut-row">
+            <svg width="110" height="110" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#E2E8F0" stroke-width="16"/>
+                {% for seg in donut.segments %}
+                <circle cx="50" cy="50" r="38" fill="none" stroke="{{ seg.couleur }}" stroke-width="16"
+                        stroke-dasharray="{{ seg.dash }} {{ seg.reste }}" stroke-dashoffset="{{ seg.offset }}"
+                        transform="rotate(-90 50 50)"/>
+                {% endfor %}
+                <text x="50" y="53" text-anchor="middle" font-size="11" font-weight="700" fill="#0F172A">{{ donut.secteurs_couverts }}</text>
+                <text x="50" y="63" text-anchor="middle" font-size="8" fill="#64748B">secteurs</text>
+            </svg>
+            <div class="donut-legend">
+                {% for seg in donut.segments %}
+                <div class="legend-item"><div class="legend-dot" style="background:{{ seg.couleur }};"></div>{{ seg.nom }} — {{ seg.pourcentage }}%</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <p class="card-subtitle">Aucune donnée pour le moment. La collecte automatique s'exécute en arrière-plan ; cette section s'actualisera dès que des offres seront disponibles.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('chart-bar') }}Volume mensuel d'offres collectées</div>
+        {% if monthly %}
+        <div class="volume-chart">
+            <div class="volume-bars">
+                {% for m in monthly %}
+                <div class="volume-bar {{ 'recent' if loop.last }}" style="height:{{ m.pourcentage }}%"></div>
+                {% endfor %}
+            </div>
+            <div class="volume-labels">
+                {% for m in monthly %}<span>{{ m.label }}</span>{% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <p class="card-subtitle">Pas encore assez de données pour tracer une évolution.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('map') }}Répartition géographique des offres</div>
+        {% if geo %}
+        <div class="geo-list">
+            {% for g in geo %}
+            <div class="geo-item"><strong>{{ g.lieu }}</strong> <span>{{ g.total }}</span></div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="card-subtitle">Aucune localisation disponible pour le moment.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('rocket') }}Secteurs en forte croissance (30 derniers jours vs 30 précédents)</div>
+        {% if growth %}
+        <div class="ordered-list">
+            {% for g in growth %}
+            <div class="ordered-item">
+                <div class="ordered-num rank-{{ [loop.index, 4] | min }}">{{ loop.index }}</div>
+                <div><strong style="font-size:12px;">{{ g.nom }}</strong>
+                    <span style="font-size:11px; color:{{ '#10B981' if g.croissance > 0 else '#DC2626' }}; margin-left:8px;">
+                        {{ '+' if g.croissance > 0 }}{{ g.croissance }}% ({{ g.recent }} offre(s) récentes)
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="card-subtitle">Pas encore assez d'historique pour calculer une croissance.</p>
+        {% endif %}
+    </div>
+{% endblock %}

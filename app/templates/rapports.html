@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% import '_icons.html' as icons %}
+
+{% block content %}
+    <h1 style="font-size:18px;">Rapports personnalisés</h1>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('plus') }}Générer un nouveau rapport</div>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div style="display:grid; grid-template-columns:2fr 1fr auto; gap:12px; align-items:end;">
+                <div class="form-row" style="margin-bottom:0;">
+                    {{ form.titre_rapport.label }}
+                    {{ form.titre_rapport(placeholder="ex: Tendances Data 2026") }}
+                    {% for error in form.titre_rapport.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="form-row" style="margin-bottom:0;">
+                    {{ form.secteur.label }}
+                    {{ form.secteur() }}
+                </div>
+                <div class="form-row" style="margin-bottom:0;">
+                    {{ form.submit(class="btn-primary") }}
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if rapports %}
+    <div class="content-inner" style="gap:12px; padding:0;">
+        {% for r in rapports %}
+        <div class="card report-card">
+            <div class="card-title">{{ icons.icon('report') }}{{ r.titre_rapport }}</div>
+            <div class="report-context" style="margin-bottom:10px;">
+                <span><strong>Secteur :</strong> {{ r.secteur.nom_secteur if r.secteur else "Tous les secteurs" }}</span>
+                <span><strong>Généré le :</strong> {{ r.date_creation.strftime('%d/%m/%Y %H:%M') }}</span>
+            </div>
+            <div class="detail-section-label">Compétences à privilégier</div>
+            <p class="detail-text">{{ r.competences_recherchees }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="card-subtitle">Aucun rapport généré pour le moment.</p>
+    {% endif %}
+{% endblock %}

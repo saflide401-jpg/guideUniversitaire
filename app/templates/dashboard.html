@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% import '_icons.html' as icons %}
+
+{% block refresh %}<meta http-equiv="refresh" content="60">{% endblock %}
+
+{% block content %}
+    <div class="data-meta" style="margin: -18px -20px 0; padding-left: 20px;">
+        <span><strong>Dernière mise à jour :</strong> {{ kpis.derniere_maj }}</span>
+        <span><span class="status-badge ok" style="padding:1px 8px;">{{ icons.icon('check', 10) }}&nbsp;Actualisation automatique</span></span>
+    </div>
+
+    <h1 style="font-size:18px;">Bonjour, {{ current_user.username }}</h1>
+
+    <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">Offres collectées</div><div class="kpi-value blue">{{ kpis.offres_collectees }}</div></div>
+        <div class="kpi-card"><div class="kpi-label">Entreprises</div><div class="kpi-value">{{ kpis.entreprises }}</div></div>
+        <div class="kpi-card"><div class="kpi-label">Secteurs couverts</div><div class="kpi-value">{{ kpis.secteurs_couverts }}</div></div>
+        <div class="kpi-card"><div class="kpi-label">Compétences détectées</div><div class="kpi-value">{{ kpis.competences_detectees }}</div></div>
+    </div>
+
+    <div class="chart-row">
+        <div class="card">
+            <div class="card-title">{{ icons.icon('chart-bar') }}Offres par secteur</div>
+            {% if top_secteurs %}
+            <div class="bar-h">
+                {% for s in top_secteurs %}
+                <div class="bar-h-item">
+                    <span>{{ s.nom }}</span>
+                    <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ s.pourcentage }}%"></div></div>
+                    <span class="bar-h-val">{{ s.total }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="card-subtitle">Aucune donnée pour le moment. La collecte automatique s'exécute en arrière-plan ; cette section s'actualisera dès que des offres seront disponibles.</p>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-title">{{ icons.icon('chart-line') }}Évolution mensuelle des collectes</div>
+            {% if monthly %}
+            <div class="volume-chart">
+                <div class="volume-bars">
+                    {% for m in monthly %}
+                    <div class="volume-bar {{ 'recent' if loop.last }}" style="height:{{ m.pourcentage }}%"></div>
+                    {% endfor %}
+                </div>
+                <div class="volume-labels">
+                    {% for m in monthly %}<span>{{ m.label }}</span>{% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <p class="card-subtitle">Pas encore assez de données pour tracer une évolution.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('award') }}Compétences les plus recherchées</div>
+        {% if top_competences %}
+        <div class="bar-h" style="display:grid; grid-template-columns:1fr 1fr; gap:8px 16px;">
+            {% for c in top_competences %}
+            <div class="bar-h-item">
+                <span>{{ c.nom }}</span>
+                <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ c.pourcentage }}%"></div></div>
+                <span class="bar-h-val">{{ c.total }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="card-subtitle">Aucune compétence détectée pour le moment.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('table') }}Dernières offres collectées</div>
+        {% if recent_jobs %}
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Titre</th><th>Entreprise</th><th>Secteur</th><th>Collecté le</th><th>Localisation</th></tr></thead>
+                <tbody>
+                    {% for job in recent_jobs %}
+                    <tr onclick="window.location='{{ url_for('main.offres') }}'">
+                        <td>{{ job.titre_poste }}</td>
+                        <td>{{ job.entreprise.nom_entreprise }}</td>
+                        <td>{{ job.secteur.nom_secteur }}</td>
+                        <td>{{ job.date_scraping.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ job.entreprise.localisation or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="card-subtitle">Aucune offre collectée pour le moment. La collecte automatique s'exécute en arrière-plan ; cette liste s'actualisera dès que des offres seront disponibles.</p>
+        {% endif %}
+    </div>
+{% endblock %}

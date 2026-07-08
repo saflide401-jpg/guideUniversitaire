@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+{% import '_icons.html' as icons %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Guide Universitaire</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block refresh %}{% endblock %}
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-box">{{ icons.icon('trending-up', 15) }}<span>Guide<br>Universitaire</span></div>
+            </div>
+
+            <div class="nav-meta">Principal</div>
+            <a class="nav-link {{ 'active' if active_page == 'dashboard' else '' }}" href="{{ url_for('main.dashboard') }}">{{ icons.icon('dashboard') }}Dashboard</a>
+
+            <div class="nav-meta">Analyse</div>
+            <a class="nav-link {{ 'active' if active_page == 'offres' else '' }}" href="{{ url_for('main.offres') }}">{{ icons.icon('briefcase') }}Offres d'emploi</a>
+            <a class="nav-link {{ 'active' if active_page == 'competences' else '' }}" href="{{ url_for('main.competences') }}">{{ icons.icon('code') }}Compétences</a>
+            <a class="nav-link {{ 'active' if active_page == 'tendances' else '' }}" href="{{ url_for('main.tendances') }}">{{ icons.icon('chart-line') }}Tendances</a>
+            <a class="nav-link {{ 'active' if active_page == 'rapports' else '' }}" href="{{ url_for('main.rapports') }}">{{ icons.icon('report') }}Rapports</a>
+
+            <a class="nav-link nav-link-bottom" href="{{ url_for('main.logout') }}">{{ icons.icon('logout') }}Déconnexion</a>
+        </aside>
+
+        <div class="main-area">
+            <header class="header">
+                <form class="search-form" action="{{ url_for('main.offres') }}" method="get">
+                    <div class="search-bar">
+                        {{ icons.icon('search', 12) }}
+                        <input type="text" name="keyword" placeholder="Rechercher une offre...">
+                    </div>
+                </form>
+                <div class="user-avatar">{{ current_user.username[:2]|upper }}</div>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div style="padding: 12px 20px 0;">
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="flash-{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="content">
+                <div class="content-inner">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

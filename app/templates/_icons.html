@@ -1,0 +1,68 @@
+{# Bibliothèque d'icônes SVG dessinées pour ce projet (aucune dépendance externe/CDN) #}
+{% macro icon(name, size=16) %}
+<svg width="{{ size }}" height="{{ size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon icon-{{ name }}">
+{%- if name == 'trending-up' -%}
+<polyline points="3,17 9,11 13,15 21,6"/><polyline points="15,6 21,6 21,12"/>
+{%- elif name == 'trending-down' -%}
+<polyline points="3,7 9,13 13,9 21,18"/><polyline points="15,18 21,18 21,12"/>
+{%- elif name == 'dashboard' -%}
+<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/>
+{%- elif name == 'database' -%}
+<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>
+{%- elif name == 'briefcase' -%}
+<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="13" x2="21" y2="13"/>
+{%- elif name == 'code' -%}
+<polyline points="9,7 4,12 9,17"/><polyline points="15,7 20,12 15,17"/>
+{%- elif name == 'chart-line' -%}
+<polyline points="4,19 4,5"/><polyline points="4,19 20,19"/><polyline points="6,15 10,11 13,13 19,6"/>
+{%- elif name == 'report' -%}
+<rect x="6" y="3" width="12" height="18" rx="2"/><rect x="9" y="1.5" width="6" height="3" rx="1"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="15" y2="14"/><line x1="9" y1="18" x2="13" y2="18"/>
+{%- elif name == 'settings' -%}
+<circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="19.8" y1="7.5" x2="17.6" y2="8.8"/><line x1="19.8" y1="16.5" x2="17.6" y2="15.2"/><line x1="12" y1="21" x2="12" y2="18"/><line x1="4.2" y1="16.5" x2="6.4" y2="15.2"/><line x1="4.2" y1="7.5" x2="6.4" y2="8.8"/>
+{%- elif name == 'search' -%}
+<circle cx="10" cy="10" r="6"/><line x1="20" y1="20" x2="14.5" y2="14.5"/>
+{%- elif name == 'building' -%}
+<rect x="4" y="3" width="16" height="18" rx="1"/><rect x="7" y="6" width="2" height="2"/><rect x="11" y="6" width="2" height="2"/><rect x="15" y="6" width="2" height="2"/><rect x="7" y="11" width="2" height="2"/><rect x="11" y="11" width="2" height="2"/><rect x="15" y="11" width="2" height="2"/><rect x="10" y="16" width="4" height="5"/>
+{%- elif name == 'map-pin' -%}
+<path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/>
+{%- elif name == 'calendar' -%}
+<rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/>
+{%- elif name == 'chart-bar' -%}
+<line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="14" width="3" height="6"/><rect x="11" y="10" width="3" height="10"/><rect x="16" y="6" width="3" height="14"/>
+{%- elif name == 'award' -%}
+<polygon points="12,2 14.6,8.6 21.8,9.1 16.3,13.6 18.2,20.6 12,16.8 5.8,20.6 7.7,13.6 2.2,9.1 9.4,8.6"/>
+{%- elif name == 'table' -%}
+<rect x="3" y="4" width="18" height="16" rx="1"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="9" y1="4" x2="9" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/>
+{%- elif name == 'robot' -%}
+<rect x="7" y="7" width="10" height="10" rx="1"/><rect x="10" y="10" width="4" height="4"/><line x1="9" y1="2" x2="9" y2="7"/><line x1="15" y1="2" x2="15" y2="7"/><line x1="9" y1="17" x2="9" y2="22"/><line x1="15" y1="17" x2="15" y2="22"/><line x1="2" y1="9" x2="7" y2="9"/><line x1="2" y1="15" x2="7" y2="15"/><line x1="17" y1="9" x2="22" y2="9"/><line x1="17" y1="15" x2="22" y2="15"/>
+{%- elif name == 'play' -%}
+<polygon points="6,4 20,12 6,20"/>
+{%- elif name == 'sliders' -%}
+<line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/>
+{%- elif name == 'terminal' -%}
+<rect x="3" y="4" width="18" height="16" rx="2"/><polyline points="7,9 11,12 7,15"/><line x1="13" y1="15" x2="17" y2="15"/>
+{%- elif name == 'check' -%}
+<polyline points="5,13 10,18 19,7"/>
+{%- elif name == 'x' -%}
+<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+{%- elif name == 'external-link' -%}
+<path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/>
+{%- elif name == 'chart-donut' -%}
+<circle cx="12" cy="12" r="8"/><line x1="12" y1="12" x2="12" y2="4"/><line x1="12" y1="12" x2="18.9" y2="16"/>
+{%- elif name == 'map' -%}
+<polygon points="3,6 9,4 15,6 21,4 21,18 15,20 9,18 3,20"/><line x1="9" y1="4" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="20"/>
+{%- elif name == 'rocket' -%}
+<path d="M12 2c2 2 3 5 3 8 0 2-1 4-3 6-2-2-3-4-3-6 0-3 1-6 3-8z"/><path d="M9 14l-3 3 1 4 4-1"/><path d="M15 14l3 3-1 4-4-1"/><circle cx="12" cy="9" r="1.5"/>
+{%- elif name == 'bulb' -%}
+<circle cx="12" cy="9" r="6"/><line x1="10" y1="19" x2="14" y2="19"/><line x1="10" y1="21" x2="14" y2="21"/><line x1="12" y1="15" x2="12" y2="17"/>
+{%- elif name == 'logout' -%}
+<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/>
+{%- elif name == 'user' -%}
+<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/>
+{%- elif name == 'plus' -%}
+<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+{%- elif name == 'filter' -%}
+<polygon points="4,4 20,4 14,12 14,19 10,17 10,12"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}

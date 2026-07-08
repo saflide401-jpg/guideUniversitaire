@@ -1,0 +1,23 @@
+{% extends "auth_base.html" %}
+
+{% block content %}
+    <div class="login-title">Connexion</div>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+            {{ form.email.label }}
+            {{ form.email(placeholder="Adresse email") }}
+            {% for error in form.email.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="form-row">
+            {{ form.password.label }}
+            {{ form.password(placeholder="Mot de passe") }}
+            {% for error in form.password.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="form-check">
+            {{ form.remember() }} {{ form.remember.label }}
+        </div>
+        {{ form.submit(class="login-btn") }}
+    </form>
+    <span class="login-link"><a href="{{ url_for('main.register') }}">Nouvel utilisateur ? Créer un compte</a></span>
+{% endblock %}

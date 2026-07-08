@@ -1,0 +1,35 @@
+# guideUniversitaire/docker-compose.yml
+
+version: '3.8'
+
+services:
+
+  # === SERVICE 1 : BASE DE DONNÉES POSTGRESQL ===
+  db:
+    image: postgres:15 # Utilise l'image officielle PostgreSQL version 15
+    container_name: lrt_db # Nomme le conteneur pour faciliter l'identification
+    restart: always # Redémarre automatiquement le conteneur en cas de crash
+    environment: # Variables d'environnement passées au conteneur PostgreSQL
+      POSTGRES_USER: postgres # Nom d'utilisateur pour se connecter à la base
+      POSTGRES_PASSWORD: postgres # Mot de passe de l'utilisateur PostgreSQL
+      POSTGRES_DB: linkedin_trends # Nom de la base de données à créer automatiquement au démarrage
+    ports:
+      - "5432:5432" # Mappe le port 5432 du conteneur au port 5432 de votre machine Windows
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Stocke les données de manière persistante
+
+  # === SERVICE 2 : APPLICATION WEB FLASK ===
+  web:
+    build: . # Construit l'image Docker à partir du Dockerfile dans le répertoire actuel
+    container_name: lrt_web # Nomme le conteneur de l'application web
+    restart: always # Redémarre automatiquement en cas de crash
+    ports:
+      - "5000:5000" # Mappe le port 5000 du conteneur au port 5000 de votre machine Windows
+    environment: # Variables d'environnement passées au conteneur Flask
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/linkedin_trends
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - db # Indique que le service 'web' dépend du service 'db' (db démarre en premier)
+
+volumes:
+  postgres_data: # Volume nommé pour les données PostgreSQL

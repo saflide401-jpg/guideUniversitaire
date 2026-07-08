@@ -1,0 +1,21 @@
+# Environnements virtuels
+env/
+.conda/
+
+# Variables d'environnement (secrets : mot de passe DB, clé secrète Flask)
+.env
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Bases de données locales / de test
+instance/
+*.db
+
+# Fichiers temporaires Office
+~$*.docx
+~$*.pptx
+
+# Outils / configuration locale
+.claude/
