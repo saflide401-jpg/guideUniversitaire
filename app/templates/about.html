@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% import '_icons.html' as icons %}
+
+{% block content %}
+    <h1 style="font-size:18px;">À propos de Guide Universitaire</h1>
+    <p class="card-subtitle" style="margin-top:-8px;">Plateforme d'analyse automatisée des tendances de recrutement et des compétences demandées.</p>
+
+    <div class="kpi-row">
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-icon">{{ icons.icon('database', 16) }}</div>
+            <div class="kpi-label">Offres analysées</div>
+            <div class="kpi-value">{{ kpis.offres_collectees }}</div>
+        </div>
+        <div class="kpi-card kpi-green">
+            <div class="kpi-icon">{{ icons.icon('building', 16) }}</div>
+            <div class="kpi-label">Entreprises</div>
+            <div class="kpi-value">{{ kpis.entreprises }}</div>
+        </div>
+        <div class="kpi-card kpi-amber">
+            <div class="kpi-icon">{{ icons.icon('map', 16) }}</div>
+            <div class="kpi-label">Secteurs couverts</div>
+            <div class="kpi-value">{{ kpis.secteurs_couverts }}</div>
+        </div>
+        <div class="kpi-card kpi-indigo">
+            <div class="kpi-icon">{{ icons.icon('award', 16) }}</div>
+            <div class="kpi-label">Compétences détectées</div>
+            <div class="kpi-value">{{ kpis.competences_detectees }}</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('bulb') }}Notre mission</div>
+        <p style="font-size:12.5px; line-height:1.7; color:var(--lk-text);">
+            Un étudiant qui cherche à s'orienter manque souvent de visibilité concrète sur le marché de l'emploi :
+            quels secteurs recrutent le plus ? quelles compétences reviennent réellement dans les offres ? comment
+            ces tendances évoluent-elles dans le temps et selon la région ? Construire cette vision à la main, offre
+            par offre, est long et vite obsolète.
+            <strong>Guide Universitaire automatise entièrement cette veille</strong>, pour donner en quelques minutes
+            de consultation une image claire et à jour du marché — sans que l'utilisateur n'ait jamais à lancer
+            lui-même la moindre collecte de données.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('rocket') }}Comment ça marche</div>
+        <div class="ordered-list">
+            <div class="ordered-item">
+                <div class="ordered-num rank-1">1</div>
+                <div><strong style="font-size:12px;">Collecte planifiée</strong>
+                    <div style="font-size:11.5px; color:var(--lk-muted); margin-top:2px;">Un planificateur interne déclenche automatiquement la recherche d'offres à jours et heures fixes chaque semaine — aucune action manuelle.</div>
+                </div>
+            </div>
+            <div class="ordered-item">
+                <div class="ordered-num rank-2">2</div>
+                <div><strong style="font-size:12px;">Détection des compétences</strong>
+                    <div style="font-size:11.5px; color:var(--lk-muted); margin-top:2px;">Chaque description d'offre est analysée pour repérer les compétences techniques et humaines qu'elle mentionne.</div>
+                </div>
+            </div>
+            <div class="ordered-item">
+                <div class="ordered-num rank-3">3</div>
+                <div><strong style="font-size:12px;">Stockage structuré</strong>
+                    <div style="font-size:11.5px; color:var(--lk-muted); margin-top:2px;">Les offres, entreprises, secteurs et compétences sont enregistrés dans une base relationnelle, avec déduplication automatique.</div>
+                </div>
+            </div>
+            <div class="ordered-item">
+                <div class="ordered-num rank-4">4</div>
+                <div><strong style="font-size:12px;">Restitution en continu</strong>
+                    <div style="font-size:11.5px; color:var(--lk-muted); margin-top:2px;">Les tableaux de bord s'actualisent automatiquement, sans rechargement manuel de votre part.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div class="card">
+            <div class="card-title">{{ icons.icon('sliders') }}Fonctionnalités</div>
+            <div class="donut-legend">
+                <div class="legend-item">{{ icons.icon('dashboard', 13) }}&nbsp;Dashboard avec indicateurs clés et tendances</div>
+                <div class="legend-item">{{ icons.icon('briefcase', 13) }}&nbsp;Offres d'emploi filtrables (secteur, ville, compétence)</div>
+                <div class="legend-item">{{ icons.icon('code', 13) }}&nbsp;Nuage de compétences interactif, export CSV</div>
+                <div class="legend-item">{{ icons.icon('chart-line', 13) }}&nbsp;Évolution de la collecte à granularité adaptative</div>
+                <div class="legend-item">{{ icons.icon('report', 13) }}&nbsp;Rapports personnalisés par secteur</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">{{ icons.icon('terminal') }}Sous le capot</div>
+            <div class="donut-legend">
+                <div class="legend-item">{{ icons.icon('table', 13) }}&nbsp;Flask + PostgreSQL (SQLAlchemy)</div>
+                <div class="legend-item">{{ icons.icon('robot', 13) }}&nbsp;Playwright pour la collecte automatisée</div>
+                <div class="legend-item">{{ icons.icon('calendar', 13) }}&nbsp;APScheduler pour la planification hebdomadaire</div>
+                <div class="legend-item">{{ icons.icon('check', 13) }}&nbsp;Bcrypt, CSRF et jetons signés pour la sécurité</div>
+                <div class="legend-item">{{ icons.icon('external-link', 13) }}&nbsp;Déployable via Docker</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('check') }}Confidentialité</div>
+        <p style="font-size:12.5px; line-height:1.7; color:var(--lk-text);">
+            Votre mot de passe n'est jamais stocké en clair (hachage Bcrypt à sens unique). Les offres collectées
+            sont des données publiques ; aucune donnée personnelle de tiers n'est traitée par la plateforme.
+        </p>
+    </div>
+{% endblock %}

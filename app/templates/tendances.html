@@ -33,16 +33,23 @@
     </div>
 
     <div class="card">
-        <div class="card-title">{{ icons.icon('chart-bar') }}Volume mensuel d'offres collectées</div>
-        {% if monthly %}
+        <div class="card-title">{{ icons.icon('chart-bar') }}{{ monthly.titre }}</div>
+        {% if monthly.data %}
+        <p class="card-subtitle" style="margin-top:-8px;">{{ monthly.sous_titre }}</p>
         <div class="volume-chart">
-            <div class="volume-bars">
-                {% for m in monthly %}
-                <div class="volume-bar {{ 'recent' if loop.last }}" style="height:{{ m.pourcentage }}%"></div>
+            <div class="line-chart-wrap">
+                <svg class="line-chart" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    {% if monthly.svg_area %}
+                    <polygon points="{{ monthly.svg_area }}" class="line-chart-area"/>
+                    {% endif %}
+                    <polyline points="{{ monthly.svg_points }}" class="line-chart-line"/>
+                </svg>
+                {% for m in monthly.data %}
+                <span class="line-chart-dot{{ ' recent' if loop.last }}" style="left:{{ m.x }}%; top:{{ m.y }}%;"></span>
                 {% endfor %}
             </div>
             <div class="volume-labels">
-                {% for m in monthly %}<span>{{ m.label }}</span>{% endfor %}
+                {% for m in monthly.data %}<span>{{ m.label }}</span>{% endfor %}
             </div>
         </div>
         {% else %}

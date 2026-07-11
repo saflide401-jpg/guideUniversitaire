@@ -13,6 +13,9 @@
             {{ form.password.label }}
             {{ form.password(placeholder="Mot de passe") }}
             {% for error in form.password.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+            <div style="text-align:right; margin-top:6px;">
+                <a href="{{ url_for('main.forgot_password') }}" class="login-link" style="display:inline;">Mot de passe oublié ?</a>
+            </div>
         </div>
         <div class="form-check">
             {{ form.remember() }} {{ form.remember.label }}

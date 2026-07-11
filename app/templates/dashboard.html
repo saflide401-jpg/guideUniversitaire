@@ -6,16 +6,37 @@
 {% block content %}
     <div class="data-meta" style="margin: -18px -20px 0; padding-left: 20px;">
         <span><strong>Dernière mise à jour :</strong> {{ kpis.derniere_maj }}</span>
-        <span><span class="status-badge ok" style="padding:1px 8px;">{{ icons.icon('check', 10) }}&nbsp;Actualisation automatique</span></span>
+        <span><span class="status-badge ok" style="padding:1px 8px;"><span class="pulse-dot"></span>Actualisation automatique</span></span>
     </div>
 
-    <h1 style="font-size:18px;">Bonjour, {{ current_user.username }}</h1>
+    <h1 style="font-size:18px; margin-bottom:2px;">{% if current_user.is_authenticated %}Bonjour, {{ current_user.username }}{% else %}Bonjour{% endif %}</h1>
+    <p class="card-subtitle" style="margin:0 0 14px;">Voici un aperçu de l'activité du marché de l'emploi aujourd'hui.</p>
 
     <div class="kpi-row">
-        <div class="kpi-card"><div class="kpi-label">Offres collectées</div><div class="kpi-value blue">{{ kpis.offres_collectees }}</div></div>
-        <div class="kpi-card"><div class="kpi-label">Entreprises</div><div class="kpi-value">{{ kpis.entreprises }}</div></div>
-        <div class="kpi-card"><div class="kpi-label">Secteurs couverts</div><div class="kpi-value">{{ kpis.secteurs_couverts }}</div></div>
-        <div class="kpi-card"><div class="kpi-label">Compétences détectées</div><div class="kpi-value">{{ kpis.competences_detectees }}</div></div>
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-icon">{{ icons.icon('database', 16) }}</div>
+            <div class="kpi-label">Offres collectées</div>
+            <div class="kpi-value">{{ kpis.offres_collectees }}</div>
+            <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.offres_semaine }} cette semaine</div>
+        </div>
+        <div class="kpi-card kpi-green">
+            <div class="kpi-icon">{{ icons.icon('building', 16) }}</div>
+            <div class="kpi-label">Entreprises</div>
+            <div class="kpi-value">{{ kpis.entreprises }}</div>
+            <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.entreprises_semaine }} cette semaine</div>
+        </div>
+        <div class="kpi-card kpi-amber">
+            <div class="kpi-icon">{{ icons.icon('map', 16) }}</div>
+            <div class="kpi-label">Secteurs couverts</div>
+            <div class="kpi-value">{{ kpis.secteurs_couverts }}</div>
+            <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.secteurs_semaine }} cette semaine</div>
+        </div>
+        <div class="kpi-card kpi-indigo">
+            <div class="kpi-icon">{{ icons.icon('award', 16) }}</div>
+            <div class="kpi-label">Compétences détectées</div>
+            <div class="kpi-value">{{ kpis.competences_detectees }}</div>
+            <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.competences_semaine }} cette semaine</div>
+        </div>
     </div>
 
     <div class="chart-row">
@@ -26,7 +47,7 @@
                 {% for s in top_secteurs %}
                 <div class="bar-h-item">
                     <span>{{ s.nom }}</span>
-                    <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ s.pourcentage }}%"></div></div>
+                    <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ s.pourcentage }}%" title="{{ s.pourcentage }}%"></div></div>
                     <span class="bar-h-val">{{ s.total }}</span>
                 </div>
                 {% endfor %}
@@ -37,16 +58,23 @@
         </div>
 
         <div class="card">
-            <div class="card-title">{{ icons.icon('chart-line') }}Évolution mensuelle des collectes</div>
-            {% if monthly %}
+            <div class="card-title">{{ icons.icon('chart-line') }}{{ monthly.titre }}</div>
+            {% if monthly.data %}
+            <p class="card-subtitle" style="margin-top:-8px;">{{ monthly.sous_titre }}</p>
             <div class="volume-chart">
-                <div class="volume-bars">
-                    {% for m in monthly %}
-                    <div class="volume-bar {{ 'recent' if loop.last }}" style="height:{{ m.pourcentage }}%"></div>
+                <div class="line-chart-wrap">
+                    <svg class="line-chart" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        {% if monthly.svg_area %}
+                        <polygon points="{{ monthly.svg_area }}" class="line-chart-area"/>
+                        {% endif %}
+                        <polyline points="{{ monthly.svg_points }}" class="line-chart-line"/>
+                    </svg>
+                    {% for m in monthly.data %}
+                    <span class="line-chart-dot{{ ' recent' if loop.last }}" style="left:{{ m.x }}%; top:{{ m.y }}%;"></span>
                     {% endfor %}
                 </div>
                 <div class="volume-labels">
-                    {% for m in monthly %}<span>{{ m.label }}</span>{% endfor %}
+                    {% for m in monthly.data %}<span>{{ m.label }}</span>{% endfor %}
                 </div>
             </div>
             {% else %}
@@ -58,11 +86,11 @@
     <div class="card">
         <div class="card-title">{{ icons.icon('award') }}Compétences les plus recherchées</div>
         {% if top_competences %}
-        <div class="bar-h" style="display:grid; grid-template-columns:1fr 1fr; gap:8px 16px;">
+        <div class="bar-h bar-h-grid-2col">
             {% for c in top_competences %}
             <div class="bar-h-item">
                 <span>{{ c.nom }}</span>
-                <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ c.pourcentage }}%"></div></div>
+                <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ c.pourcentage }}%" title="{{ c.pourcentage }}%"></div></div>
                 <span class="bar-h-val">{{ c.total }}</span>
             </div>
             {% endfor %}

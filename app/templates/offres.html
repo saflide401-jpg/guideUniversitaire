@@ -16,21 +16,29 @@
         </select>
         <input type="text" name="location" placeholder="Localisation" value="{{ location }}">
         <button type="submit" class="btn-outline">{{ icons.icon('filter', 13) }}Filtrer</button>
-        {% if keyword or secteur_id or location %}
+        {% if keyword or secteur_id or location or competence %}
         <a href="{{ url_for('main.offres') }}" class="btn-text">{{ icons.icon('x', 12) }}Réinitialiser</a>
         {% endif %}
     </form>
 
+    {% if competence %}
+    <div class="status-badge idle" style="margin-bottom:10px; display:inline-flex;">
+        Filtré par compétence : <strong>{{ competence }}</strong>
+        <a href="{{ url_for('main.offres', keyword=keyword, secteur=secteur_id, location=location) }}" style="color:inherit; margin-left:4px; display:flex;">{{ icons.icon('x', 11) }}</a>
+    </div>
+    {% endif %}
+
     <div class="detail-panel-wrap">
         <div class="table-section">
             {% if jobs %}
-            <div class="card" style="padding:0;">
+            <div class="card" style="padding:0;" id="jobsCard">
                 <div class="table-wrap">
                 <table class="data-table">
                     <thead><tr><th>Titre de l'offre</th><th>Entreprise</th><th>Secteur</th><th>Compétences</th><th>Lieu</th><th>Collecté</th></tr></thead>
                     <tbody>
                         {% for job in jobs %}
-                        <tr onclick="openDetail(this)"
+                        <tr onclick="openDetail(this)" class="job-row" data-row-index="{{ loop.index }}"
+                            {% if loop.index > 10 %}style="display:none"{% endif %}
                             data-title="{{ job.titre_poste }}"
                             data-company="{{ job.entreprise.nom_entreprise }}"
                             data-sector="{{ job.secteur.nom_secteur }}"
@@ -49,6 +57,16 @@
                     </tbody>
                 </table>
                 </div>
+                {% if jobs|length > 10 %}
+                <div class="load-more-wrap" id="tableEnd">
+                    <button type="button" id="showLessBtn" class="btn-text" onclick="showLessJobs()" style="display:none;">
+                        {{ icons.icon('x', 12) }}Afficher moins
+                    </button>
+                    <button type="button" id="loadMoreBtn" class="btn-outline" onclick="loadMoreJobs()">
+                        {{ icons.icon('plus', 13) }}<span id="loadMoreLabel">Afficher plus... ({{ jobs|length - 10 }} restantes)</span>
+                    </button>
+                </div>
+                {% endif %}
             </div>
             {% else %}
             <p class="card-subtitle">Aucune offre ne correspond à ces critères pour le moment. De nouvelles offres sont collectées automatiquement en continu.</p>
@@ -95,6 +113,45 @@
 
     function closeDetail() {
         document.getElementById('detailPanel').classList.remove('open');
+    }
+
+    var jobsVisible = 10;
+
+    function applyVisibleCount() {
+        var rows = document.querySelectorAll('.job-row');
+        var remaining = 0;
+        rows.forEach(function (row) {
+            var index = parseInt(row.dataset.rowIndex, 10);
+            if (index <= jobsVisible) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+                remaining++;
+            }
+        });
+
+        var loadMoreBtn = document.getElementById('loadMoreBtn');
+        var showLessBtn = document.getElementById('showLessBtn');
+
+        if (remaining === 0) {
+            loadMoreBtn.style.display = 'none';
+        } else {
+            loadMoreBtn.style.display = '';
+            document.getElementById('loadMoreLabel').textContent = 'Afficher 10 offres de plus (' + remaining + ' restantes)';
+        }
+        // Le bouton "Réduire" n'apparaît que si on a dépassé l'affichage initial de 10 offres
+        showLessBtn.style.display = jobsVisible > 10 ? '' : 'none';
+    }
+
+    function loadMoreJobs() {
+        jobsVisible += 10;
+        applyVisibleCount();
+    }
+
+    function showLessJobs() {
+        jobsVisible = 10;
+        applyVisibleCount();
+        document.getElementById('jobsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     </script>
 {% endblock %}

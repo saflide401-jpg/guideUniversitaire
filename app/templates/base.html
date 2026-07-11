@@ -22,9 +22,10 @@
             <a class="nav-link {{ 'active' if active_page == 'offres' else '' }}" href="{{ url_for('main.offres') }}">{{ icons.icon('briefcase') }}Offres d'emploi</a>
             <a class="nav-link {{ 'active' if active_page == 'competences' else '' }}" href="{{ url_for('main.competences') }}">{{ icons.icon('code') }}Compétences</a>
             <a class="nav-link {{ 'active' if active_page == 'tendances' else '' }}" href="{{ url_for('main.tendances') }}">{{ icons.icon('chart-line') }}Tendances</a>
-            <a class="nav-link {{ 'active' if active_page == 'rapports' else '' }}" href="{{ url_for('main.rapports') }}">{{ icons.icon('report') }}Rapports</a>
+            <a class="nav-link {{ 'active' if active_page == 'rapports' else '' }}" href="{{ url_for('main.rapports') }}">{{ icons.icon('report') }}Rapports{{ ' 🔒' if not current_user.is_authenticated }}</a>
 
-            <a class="nav-link nav-link-bottom" href="{{ url_for('main.logout') }}">{{ icons.icon('logout') }}Déconnexion</a>
+            <div class="nav-meta">Aide</div>
+            <a class="nav-link {{ 'active' if active_page == 'a_propos' else '' }}" href="{{ url_for('main.a_propos') }}">{{ icons.icon('bulb') }}À propos</a>
         </aside>
 
         <div class="main-area">
@@ -35,8 +36,31 @@
                         <input type="text" name="keyword" placeholder="Rechercher une offre...">
                     </div>
                 </form>
-                <div class="user-avatar">{{ current_user.username[:2]|upper }}</div>
+                {% if current_user.is_authenticated %}
+                <div class="profile-menu">
+                    <div class="user-avatar">{{ current_user.username[:2]|upper }}</div>
+                    <a href="{{ url_for('main.logout') }}" class="btn-logout" title="Déconnexion">{{ icons.icon('logout', 13) }}Déconnexion</a>
+                </div>
+                {% else %}
+                <div class="profile-menu">
+                    <a href="{{ url_for('main.login') }}" class="btn-outline">Se connecter</a>
+                    <a href="{{ url_for('main.register') }}" class="btn-primary">Créer un compte</a>
+                </div>
+                {% endif %}
             </header>
+
+            {% if not current_user.is_authenticated %}
+            <div class="visitor-banner">
+                <div class="visitor-banner-text">
+                    <strong>Vous naviguez en tant que visiteur.</strong>
+                    Connectez-vous pour recevoir les dernières statistiques, suivre l'évolution en temps réel et débloquer les rapports personnalisés.
+                </div>
+                <div class="visitor-banner-actions">
+                    <a href="{{ url_for('main.register') }}" class="btn-primary">Créer un compte gratuit</a>
+                    <a href="{{ url_for('main.login') }}" class="btn-outline">Se connecter</a>
+                </div>
+            </div>
+            {% endif %}
 
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

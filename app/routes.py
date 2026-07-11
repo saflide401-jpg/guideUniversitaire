@@ -1,11 +1,14 @@
 # Ce fichier définit toutes les URL accessibles de votre application et la logique d'orchestration
 
 # app/routes.py
-from flask import Blueprint, render_template, redirect, url_for, flash, request # Importe les utilitaires Flask
+import csv
+import io
+from flask import Blueprint, render_template, redirect, url_for, flash, request, Response # Importe les utilitaires Flask
 from flask_login import login_user, current_user, logout_user, login_required # Importe la gestion de session
 from app.services import UserService, ScrapingService, AnalyticsService # Importe la couche service (logique métier isolée)
-from app.forms import RegistrationForm, LoginForm, RapportForm # Importe les classes de formulaires WTForms
-from app.models import Secteur # Importe les modèles nécessaires aux routes
+from app.forms import RegistrationForm, LoginForm, RapportForm, ForgotPasswordForm, ResetPasswordForm, ProfilForm # Importe les classes de formulaires WTForms
+from app.models import Secteur, User, ProfilCandidat # Importe les modèles nécessaires aux routes
+from app import db
 
 # --- Définition du Blueprint principal ---
 # Un Blueprint est un conteneur de routes qui peut être enregistré dans l'application
@@ -21,9 +24,10 @@ analytics_service = AnalyticsService()
 
 
 # === ROUTE : TABLEAU DE BORD (PAGE D'ACCUEIL) ===
+# Accessible sans connexion : un visiteur peut consulter les tendances avant de décider de
+# s'inscrire. On invite à se connecter (bandeau + notifications) sans jamais l'imposer.
 @main.route("/") # Accessible via http://localhost:5000/
 @main.route("/dashboard") # Accessible aussi via http://localhost:5000/dashboard
-@login_required # Décorateur de protection : redirige vers /login si l'utilisateur n'est pas connecté
 def dashboard():
     """Affiche le tableau de bord principal avec les indicateurs clés et un aperçu des tendances."""
     kpis = scraping_service.get_dashboard_kpis()
@@ -39,42 +43,63 @@ def dashboard():
 
 
 # === ROUTE : LISTE DES OFFRES COLLECTÉES ===
-@main.route("/offres")
-@login_required
+@main.route("/offres") # Accessible sans connexion, comme le dashboard
 def offres():
     """Affiche la liste des offres d'emploi collectées, avec filtres optionnels."""
     keyword = request.args.get("keyword", "").strip()
     secteur_id = request.args.get("secteur", type=int)
     location = request.args.get("location", "").strip()
+    competence = request.args.get("competence", "").strip()
 
     jobs = scraping_service.get_offres_filtered(
-        keyword=keyword or None, secteur_id=secteur_id or None, location=location or None
+        keyword=keyword or None, secteur_id=secteur_id or None, location=location or None,
+        competence=competence or None
     )
     secteurs = Secteur.query.order_by(Secteur.nom_secteur).all()
 
     return render_template(
         "offres.html", title="Offres", active_page="offres",
-        jobs=jobs, secteurs=secteurs, keyword=keyword, secteur_id=secteur_id, location=location
+        jobs=jobs, secteurs=secteurs, keyword=keyword, secteur_id=secteur_id, location=location,
+        competence=competence
     )
 
 
 # === ROUTE : ANALYSE DES COMPÉTENCES ===
-@main.route("/competences")
-@login_required
+@main.route("/competences") # Accessible sans connexion, comme le dashboard
 def competences():
     """Affiche les compétences les plus demandées dans les offres collectées."""
     top_competences = analytics_service.get_top_competences(limit=10)
     word_cloud = analytics_service.get_competences_word_cloud(limit=16)
     type_breakdown = analytics_service.get_competence_type_breakdown()
+    type_donut = analytics_service.get_competence_type_donut()
     return render_template(
         "competences.html", title="Compétences", active_page="competences",
-        top_competences=top_competences, word_cloud=word_cloud, type_breakdown=type_breakdown
+        top_competences=top_competences, word_cloud=word_cloud, type_breakdown=type_breakdown,
+        type_donut=type_donut
+    )
+
+
+# === ROUTE : EXPORT CSV DES COMPÉTENCES ===
+@main.route("/competences/export.csv") # Accessible sans connexion, cohérent avec la page compétences
+def competences_export():
+    """Exporte le classement des compétences les plus demandées au format CSV."""
+    top_competences = analytics_service.get_top_competences(limit=50)
+
+    buffer = io.StringIO()
+    writer = csv.writer(buffer)
+    writer.writerow(["Compétence", "Occurrences", "Pourcentage du maximum"])
+    for c in top_competences:
+        writer.writerow([c["nom"], c["total"], f"{c['pourcentage']}%"])
+
+    return Response(
+        buffer.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=competences_guide_universitaire.csv"}
     )
 
 
 # === ROUTE : TENDANCES DU MARCHÉ ===
-@main.route("/tendances")
-@login_required
+@main.route("/tendances") # Accessible sans connexion, comme le dashboard
 def tendances():
     """Affiche les tendances du marché : répartition sectorielle, volume mensuel, géographie, croissance."""
     donut = analytics_service.get_secteur_repartition_donut(top_n=3)
@@ -109,6 +134,14 @@ def rapports():
 
     mes_rapports = analytics_service.get_rapports_for_user(current_user.id)
     return render_template("rapports.html", title="Rapports", active_page="rapports", form=form, rapports=mes_rapports)
+
+
+# === ROUTE : À PROPOS ===
+@main.route("/a-propos") # Accessible sans connexion : contenu de présentation
+def a_propos():
+    """Présente le projet : mission, fonctionnement, technologies utilisées."""
+    kpis = scraping_service.get_dashboard_kpis()
+    return render_template("about.html", title="À propos", active_page="a_propos", kpis=kpis)
 
 
 # === ROUTE : INSCRIPTION ===
@@ -173,6 +206,11 @@ def login():
             # Affiche un message de bienvenue vert
             flash("Connexion réussie ! Bienvenue sur Guide Universitaire.", "success")
 
+            # Première connexion (profil jamais proposé) : invite à compléter son profil avant
+            # de continuer, sans jamais l'imposer (l'utilisateur peut passer cette étape).
+            if not user.onboarding_vu:
+                return redirect(url_for("main.bienvenue", **({"next": next_page} if next_page else {})))
+
             # Redirige vers la page demandée à l'origine, ou vers le dashboard par défaut
             return redirect(next_page) if next_page else redirect(url_for("main.dashboard"))
         else:
@@ -181,6 +219,88 @@ def login():
 
     # Rend le template de connexion en lui transmettant le formulaire
     return render_template("login.html", title="Connexion", form=form)
+
+
+# === ROUTE : INVITATION À COMPLÉTER SON PROFIL (après connexion, une seule fois) ===
+@main.route("/bienvenue", methods=["GET", "POST"])
+@login_required
+def bienvenue():
+    """
+    Invite l'utilisateur, juste après sa première connexion, à préciser son niveau de
+    compétence et l'emploi qu'il recherche. Purement facultatif : il peut passer cette
+    étape via /bienvenue/passer sans que cela ne le bloque nulle part ailleurs.
+    """
+    next_page = request.args.get("next")
+    form = ProfilForm()
+
+    if form.validate_on_submit():
+        profil = ProfilCandidat(
+            id_user=current_user.id,
+            niveau_competence=form.niveau_competence.data,
+            emploi_souhaite=form.emploi_souhaite.data,
+            competences_actuelles=form.competences_actuelles.data
+        )
+        db.session.add(profil)
+        current_user.onboarding_vu = True
+        db.session.commit()
+        flash("Merci ! Votre profil a été enregistré.", "success")
+        return redirect(next_page) if next_page else redirect(url_for("main.dashboard"))
+
+    return render_template("bienvenue.html", title="Bienvenue", form=form, next_page=next_page)
+
+
+# === ROUTE : PASSER L'INVITATION AU PROFIL ===
+@main.route("/bienvenue/passer")
+@login_required
+def bienvenue_passer():
+    """Marque l'invitation comme vue sans enregistrer de profil : l'utilisateur ne sera plus sollicité."""
+    current_user.onboarding_vu = True
+    db.session.commit()
+    next_page = request.args.get("next")
+    return redirect(next_page) if next_page else redirect(url_for("main.dashboard"))
+
+
+# === ROUTE : MOT DE PASSE OUBLIÉ ===
+@main.route("/mot-de-passe-oublie", methods=["GET", "POST"])
+def forgot_password():
+    """Demande de réinitialisation : envoie un e-mail contenant un lien à durée limitée."""
+    if current_user.is_authenticated:
+        return redirect(url_for("main.dashboard"))
+
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            token = user_service.generate_reset_token(user)
+            user_service.send_reset_email(user, token)
+
+        # Message volontairement identique que l'email existe ou non : cela évite de révéler
+        # à un attaquant quelles adresses sont associées à un compte existant.
+        flash("Si un compte existe avec cette adresse, un e-mail de réinitialisation vient d'être envoyé.", "success")
+        return redirect(url_for("main.login"))
+
+    return render_template("forgot_password.html", title="Mot de passe oublié", form=form)
+
+
+# === ROUTE : RÉINITIALISATION DU MOT DE PASSE ===
+@main.route("/reinitialiser-mot-de-passe/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    """Vérifie le jeton reçu par e-mail et permet de définir un nouveau mot de passe."""
+    if current_user.is_authenticated:
+        return redirect(url_for("main.dashboard"))
+
+    user = user_service.verify_reset_token(token)
+    if not user:
+        flash("Ce lien de réinitialisation est invalide ou a expiré. Veuillez refaire une demande.", "danger")
+        return redirect(url_for("main.forgot_password"))
+
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user_service.update_password(user, form.password.data)
+        flash("Votre mot de passe a été réinitialisé avec succès. Vous pouvez vous connecter.", "success")
+        return redirect(url_for("main.login"))
+
+    return render_template("reset_password.html", title="Nouveau mot de passe", form=form)
 
 
 # === ROUTE : DÉCONNEXION ===

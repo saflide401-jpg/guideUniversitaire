@@ -1,0 +1,28 @@
+{% extends "auth_base.html" %}
+
+{% block content %}
+    <div class="login-title">Bienvenue !</div>
+    <p style="font-size:12.5px; color:var(--lk-muted); text-align:center; line-height:1.6; margin:-4px 0 4px;">
+        Dites-nous où vous en êtes : ça reste juste entre vous et votre profil, pour le moment.
+    </p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+            {{ form.niveau_competence.label }}
+            {{ form.niveau_competence() }}
+            {% for error in form.niveau_competence.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="form-row">
+            {{ form.emploi_souhaite.label }}
+            {{ form.emploi_souhaite(placeholder="Ex : Data Analyst") }}
+            {% for error in form.emploi_souhaite.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="form-row">
+            {{ form.competences_actuelles.label }}
+            {{ form.competences_actuelles(rows=3, placeholder="Ex : Python, Excel, communication...", style="width:100%; padding:9px 11px; font-size:12px; border:1px solid var(--lk-border); border-radius:6px; resize:vertical; font-family:inherit;") }}
+            {% for error in form.competences_actuelles.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+        </div>
+        {{ form.submit(class="login-btn") }}
+    </form>
+    <span class="login-link"><a href="{{ url_for('main.bienvenue_passer', next=next_page) if next_page else url_for('main.bienvenue_passer') }}">Plus tard, passer cette étape</a></span>
+{% endblock %}

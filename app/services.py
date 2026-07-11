@@ -2,10 +2,13 @@
 
 from app.models import Secteur, Entreprise, OffreEmploi, Competence, OffreCompetence, User, RapportPersonnalise # Importe les modèles de données
 from app.scraping.scraper import LinkedInScraper # Importe le scraper Selenium
-from app import db, bcrypt # Importe l'instance SQLAlchemy et l'outil de chiffrement Bcrypt
+from app import db, bcrypt, mail # Importe l'instance SQLAlchemy, Bcrypt et l'envoi d'e-mails
 from datetime import datetime, timedelta # Pour gérer les dates
 from sqlalchemy import func, extract # Pour les agrégations SQL (comptages, regroupements par mois)
 from math import pi # Pour calculer la circonférence des graphiques en anneau (donut)
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired # Jetons signés (réinitialisation mdp)
+from flask import current_app, url_for
+from flask_mail import Message
 
 class UserService:
     """
@@ -83,7 +86,63 @@ class UserService:
             return user # Authentification réussie : retourne l'objet utilisateur complet
             
         return None # Authentification échouée : email inexistant ou mot de passe incorrect
-    
+
+    RESET_SALT = "password-reset"  # "sel" de signature dédié : un jeton généré pour un autre usage ne peut pas être rejoué ici
+
+    def _get_reset_serializer(self):
+        return URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+
+    def generate_reset_token(self, user):
+        """Génère un jeton signé et horodaté encodant l'identifiant de l'utilisateur."""
+        return self._get_reset_serializer().dumps({"user_id": user.id}, salt=self.RESET_SALT)
+
+    def verify_reset_token(self, token):
+        """
+        Vérifie la signature et l'expiration d'un jeton de réinitialisation.
+
+        Returns:
+            User: l'utilisateur correspondant si le jeton est valide et non expiré, sinon None.
+        """
+        max_age = current_app.config.get("RESET_TOKEN_MAX_AGE", 1800)
+        try:
+            data = self._get_reset_serializer().loads(token, salt=self.RESET_SALT, max_age=max_age)
+        except (BadSignature, SignatureExpired):
+            return None
+        return User.query.get(data.get("user_id"))
+
+    def update_password(self, user, new_password):
+        """Hache et enregistre un nouveau mot de passe pour l'utilisateur donné."""
+        user.password = bcrypt.generate_password_hash(new_password).decode("utf-8")
+        db.session.commit()
+
+    def send_reset_email(self, user, token):
+        """
+        Envoie l'e-mail de réinitialisation. Si aucun compte SMTP n'est configuré (MAIL_USERNAME
+        absent), l'envoi réel est court-circuité et le lien est simplement journalisé côté serveur,
+        pour que la fonctionnalité reste testable en local sans compte e-mail réel.
+        """
+        reset_url = url_for("main.reset_password", token=token, _external=True)
+
+        if not current_app.config.get("MAIL_USERNAME"):
+            print(f"[MAIL] Envoi désactivé (MAIL_USERNAME non configuré). Lien de réinitialisation pour {user.email} : {reset_url}")
+            return
+
+        message = Message(
+            subject="Réinitialisation de votre mot de passe — Guide Universitaire",
+            recipients=[user.email],
+            body=(
+                f"Bonjour {user.username},\n\n"
+                f"Une demande de réinitialisation de mot de passe a été effectuée pour votre compte.\n"
+                f"Cliquez sur le lien suivant pour choisir un nouveau mot de passe (valable "
+                f"{current_app.config.get('RESET_TOKEN_MAX_AGE', 1800) // 60} minutes) :\n\n"
+                f"{reset_url}\n\n"
+                f"Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet e-mail."
+            )
+        )
+        try:
+            mail.send(message)
+        except Exception as e:
+            print(f"[MAIL] Échec de l'envoi à {user.email} : {e}. Lien de secours : {reset_url}")
 
     #  (Suite - ScrapingService)
 
@@ -229,7 +288,7 @@ class ScrapingService:
         """Retourne les dernières offres d'emploi collectées."""
         return OffreEmploi.query.order_by(OffreEmploi.date_scraping.desc()).limit(limit).all()
 
-    def get_offres_filtered(self, keyword=None, secteur_id=None, location=None):
+    def get_offres_filtered(self, keyword=None, secteur_id=None, location=None, competence=None):
         """Retourne les offres d'emploi correspondant aux filtres de recherche fournis."""
         query = OffreEmploi.query
         if keyword:
@@ -238,16 +297,44 @@ class ScrapingService:
             query = query.filter(OffreEmploi.id_secteur == secteur_id)
         if location:
             query = query.join(Entreprise).filter(Entreprise.localisation.ilike(f"%{location}%"))
+        if competence:
+            # Permet au nuage de mots-clés (page Compétences) de filtrer réellement les offres
+            # qui exigent cette compétence, plutôt qu'un simple lien décoratif.
+            query = query.join(OffreCompetence, OffreCompetence.id_offre == OffreEmploi.id_offre) \
+                .join(Competence, Competence.id_competence == OffreCompetence.id_competence) \
+                .filter(Competence.nom_competence == competence)
         return query.order_by(OffreEmploi.date_scraping.desc()).all()
 
     def get_dashboard_kpis(self):
-        """Calcule les indicateurs clés affichés sur le tableau de bord."""
+        """
+        Calcule les indicateurs clés affichés sur le tableau de bord, ainsi qu'un indicateur
+        d'activité sur les 7 derniers jours pour chacun : un chiffre seul ne raconte rien,
+        une évolution donne du contexte à la lecture.
+        """
         derniere_offre = OffreEmploi.query.order_by(OffreEmploi.date_scraping.desc()).first()
+        since = datetime.now() - timedelta(days=7)
+
+        offres_semaine = OffreEmploi.query.filter(OffreEmploi.date_scraping >= since).count()
+        entreprises_semaine = db.session.query(func.count(func.distinct(Entreprise.id_entreprise))) \
+            .join(OffreEmploi, OffreEmploi.id_entreprise == Entreprise.id_entreprise) \
+            .filter(OffreEmploi.date_scraping >= since).scalar() or 0
+        secteurs_semaine = db.session.query(func.count(func.distinct(Secteur.id_secteur))) \
+            .join(OffreEmploi, OffreEmploi.id_secteur == Secteur.id_secteur) \
+            .filter(OffreEmploi.date_scraping >= since).scalar() or 0
+        competences_semaine = db.session.query(func.count(func.distinct(Competence.id_competence))) \
+            .join(OffreCompetence, OffreCompetence.id_competence == Competence.id_competence) \
+            .join(OffreEmploi, OffreEmploi.id_offre == OffreCompetence.id_offre) \
+            .filter(OffreEmploi.date_scraping >= since).scalar() or 0
+
         return {
             "offres_collectees": OffreEmploi.query.count(),
             "entreprises": Entreprise.query.count(),
             "secteurs_couverts": Secteur.query.count(),
             "competences_detectees": Competence.query.count(),
+            "offres_semaine": offres_semaine,
+            "entreprises_semaine": entreprises_semaine,
+            "secteurs_semaine": secteurs_semaine,
+            "competences_semaine": competences_semaine,
             "derniere_maj": derniere_offre.date_scraping.strftime("%d/%m/%Y %H:%M") if derniere_offre else "N/A"
         }
 
@@ -260,9 +347,15 @@ class AnalyticsService:
     """
 
     MOIS_FR = ["", "Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"]
-    # Couleur selon le rang : 1er = vert, 2e = orange, 3e = bleu (le reste retombe sur l'indigo de "Autres")
-    DONUT_COLORS = ["#10B981", "#F59E0B", "#0A66C2"]
+    # Couleur selon le rang : 1er = vert, 2e = orange, 3e = sarcelle (marque, le reste retombe sur l'indigo de "Autres")
+    DONUT_COLORS = ["#10B981", "#F59E0B", "#0F766E"]
     DONUT_AUTRES_COLOR = "#6366F1"
+    # Titre et sous-titre affichés selon la granularité choisie automatiquement pour la courbe d'évolution
+    VOLUME_LABELS = {
+        "quotidienne": ("Évolution quotidienne des collectes", "Moins de 2 semaines d'historique — vue jour par jour"),
+        "hebdomadaire": ("Évolution hebdomadaire des collectes", "Moins de 2 mois d'historique — vue semaine par semaine"),
+        "mensuelle": ("Évolution mensuelle des collectes", "Vue mois par mois"),
+    }
     DONUT_RADIUS = 38
 
     def get_top_secteurs(self, limit=5):
@@ -322,28 +415,124 @@ class AnalyticsService:
             for r in sorted(rows, key=lambda r: r.total, reverse=True)
         ]
 
+    # Couleurs dédiées au donut technique/humaine, par position (pas par nom de type) pour
+    # rester cohérent avec le code couleur par rang utilisé sur le reste de l'application.
+    TYPE_DONUT_COLORS = ["#0F766E", "#F59E0B"]
+
+    def get_competence_type_donut(self):
+        """Calcule les segments SVG (tracé en anneau) de la répartition technique / humaine."""
+        breakdown = self.get_competence_type_breakdown()
+        total = sum(t["total"] for t in breakdown) or 1
+        circonference = round(2 * pi * self.DONUT_RADIUS, 2)
+        cumul = 0
+        segments = []
+        for i, t in enumerate(breakdown):
+            dash = round(t["total"] / total * circonference, 2)
+            segments.append({
+                "type": t["type"], "pourcentage": t["pourcentage"], "total": t["total"],
+                "dash": dash, "reste": round(circonference - dash, 2), "offset": round(-cumul, 2),
+                "couleur": self.TYPE_DONUT_COLORS[i % len(self.TYPE_DONUT_COLORS)]
+            })
+            cumul += dash
+        return segments
+
     def get_monthly_volume(self, months=6):
-        """Retourne le nombre d'offres collectées par mois sur la période demandée."""
-        since = datetime.now() - timedelta(days=30 * months)
-        rows = db.session.query(
-            extract("year", OffreEmploi.date_scraping).label("annee"),
-            extract("month", OffreEmploi.date_scraping).label("mois"),
-            func.count(OffreEmploi.id_offre).label("total")
-        ).filter(OffreEmploi.date_scraping >= since) \
-         .group_by("annee", "mois") \
-         .order_by("annee", "mois").all()
-        max_total = max((r.total for r in rows), default=0)
-        # Au-delà de 12 mois, on précise l'année dans le libellé pour éviter toute ambiguïté
-        # entre deux occurrences du même mois sur des années différentes.
-        include_year = months > 12
-        return [
-            {
-                "label": f"{self.MOIS_FR[int(r.mois)]} {int(r.annee) % 100:02d}" if include_year else self.MOIS_FR[int(r.mois)],
-                "total": r.total,
-                "pourcentage": round(r.total / max_total * 100) if max_total else 0
-            }
-            for r in rows
-        ]
+        """
+        Retourne l'évolution du nombre d'offres collectées, avec des coordonnées SVG
+        (échelle 0-100) prêtes à tracer une courbe : la forme de la tendance se lit mieux
+        sur une courbe que sur des barres isolées.
+
+        La granularité s'adapte automatiquement à l'ancienneté réelle des données plutôt
+        que d'imposer une vue mensuelle qui resterait vide en tout début de collecte :
+        - moins de 14 jours d'historique  → un point par jour
+        - moins de 60 jours d'historique  → un point par semaine
+        - au-delà                        → un point par mois (granularité la plus grossière,
+                                            jamais dépassée même sur un historique de plusieurs années)
+        """
+        premiere_offre = db.session.query(func.min(OffreEmploi.date_scraping)).scalar()
+        now = datetime.now()
+
+        if not premiere_offre:
+            titre, sous_titre = self.VOLUME_LABELS["mensuelle"]
+            return {"data": [], "svg_points": "", "svg_area": "", "granularite": "mensuelle", "titre": titre, "sous_titre": sous_titre}
+
+        span_days = (now - premiere_offre).days
+
+        if span_days < 14:
+            granularite = "quotidienne"
+            since = now - timedelta(days=14)
+            rows = db.session.query(
+                func.date(OffreEmploi.date_scraping).label("jour"),
+                func.count(OffreEmploi.id_offre).label("total")
+            ).filter(OffreEmploi.date_scraping >= since) \
+             .group_by("jour").order_by("jour").all()
+            max_total = max((r.total for r in rows), default=0)
+            data = [
+                {
+                    "label": r.jour.strftime("%d/%m"),
+                    "total": r.total,
+                    "pourcentage": round(r.total / max_total * 100) if max_total else 0
+                }
+                for r in rows
+            ]
+
+        elif span_days < 60:
+            granularite = "hebdomadaire"
+            since = now - timedelta(days=60)
+            rows = db.session.query(
+                extract("year", OffreEmploi.date_scraping).label("annee"),
+                extract("week", OffreEmploi.date_scraping).label("semaine"),
+                func.min(OffreEmploi.date_scraping).label("debut_semaine"),
+                func.count(OffreEmploi.id_offre).label("total")
+            ).filter(OffreEmploi.date_scraping >= since) \
+             .group_by("annee", "semaine").order_by("annee", "semaine").all()
+            max_total = max((r.total for r in rows), default=0)
+            data = [
+                {
+                    "label": f"Sem. {r.debut_semaine.strftime('%d/%m')}",
+                    "total": r.total,
+                    "pourcentage": round(r.total / max_total * 100) if max_total else 0
+                }
+                for r in rows
+            ]
+
+        else:
+            granularite = "mensuelle"
+            since = now - timedelta(days=30 * months)
+            rows = db.session.query(
+                extract("year", OffreEmploi.date_scraping).label("annee"),
+                extract("month", OffreEmploi.date_scraping).label("mois"),
+                func.count(OffreEmploi.id_offre).label("total")
+            ).filter(OffreEmploi.date_scraping >= since) \
+             .group_by("annee", "mois") \
+             .order_by("annee", "mois").all()
+            max_total = max((r.total for r in rows), default=0)
+            # Au-delà de 12 mois, on précise l'année dans le libellé pour éviter toute ambiguïté
+            # entre deux occurrences du même mois sur des années différentes.
+            include_year = months > 12
+            data = [
+                {
+                    "label": f"{self.MOIS_FR[int(r.mois)]} {int(r.annee) % 100:02d}" if include_year else self.MOIS_FR[int(r.mois)],
+                    "total": r.total,
+                    "pourcentage": round(r.total / max_total * 100) if max_total else 0
+                }
+                for r in rows
+            ]
+
+        n = len(data)
+        for i, d in enumerate(data):
+            d["x"] = round(i / (n - 1) * 100, 2) if n > 1 else 50.0
+            d["y"] = round(100 - d["pourcentage"], 2)
+
+        svg_points = " ".join(f"{d['x']},{d['y']}" for d in data)
+        # Aire remplie sous la courbe : on referme le tracé sur la ligne de base (y=100)
+        svg_area = f"0,100 {svg_points} 100,100" if n > 1 else ""
+
+        titre, sous_titre = self.VOLUME_LABELS[granularite]
+        return {
+            "data": data, "svg_points": svg_points, "svg_area": svg_area,
+            "granularite": granularite, "titre": titre, "sous_titre": sous_titre
+        }
 
     def get_geo_distribution(self, limit=5):
         """Retourne la répartition géographique des offres, basée sur la localisation des entreprises."""

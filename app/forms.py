@@ -2,7 +2,7 @@
 
 # app/forms.py
 from flask_wtf import FlaskForm # Importe la classe de base des formulaires Flask (inclut la protection CSRF)
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField # Importe les types de champs
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField # Importe les types de champs
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError # Importe les validateurs
 from app.models import User # Importe le modèle User pour les validations d'unicité
 
@@ -98,6 +98,67 @@ class LoginForm(FlaskForm):
     
     # Bouton de soumission
     submit = SubmitField("Se connecter")
+
+class ForgotPasswordForm(FlaskForm):
+    """Formulaire de demande de réinitialisation de mot de passe (saisie de l'email)."""
+    email = StringField(
+        "Adresse Email",
+        validators=[
+            DataRequired(message="Ce champ est obligatoire."),
+            Email(message="Veuillez saisir une adresse email valide.")
+        ]
+    )
+    submit = SubmitField("Envoyer le lien de réinitialisation")
+
+
+class ResetPasswordForm(FlaskForm):
+    """Formulaire de saisie du nouveau mot de passe, utilisé via un lien de réinitialisation."""
+    password = PasswordField(
+        "Nouveau mot de passe",
+        validators=[
+            DataRequired(message="Ce champ est obligatoire."),
+            Length(min=6, message="Le mot de passe doit contenir au moins 6 caractères.")
+        ]
+    )
+    confirm_password = PasswordField(
+        "Confirmer le mot de passe",
+        validators=[
+            DataRequired(message="Ce champ est obligatoire."),
+            EqualTo("password", message="Les mots de passe ne correspondent pas.")
+        ]
+    )
+    submit = SubmitField("Réinitialiser le mot de passe")
+
+
+class ProfilForm(FlaskForm):
+    """
+    Formulaire d'invitation (facultatif) proposé une seule fois après la connexion :
+    statut en compétences et emploi souhaité. Sert uniquement à enrichir le profil de
+    l'utilisateur en base ; aucune donnée n'est traitée automatiquement pour le moment.
+    """
+    niveau_competence = SelectField(
+        "Votre niveau actuel",
+        choices=[
+            ("Débutant", "Débutant"),
+            ("Intermédiaire", "Intermédiaire"),
+            ("Avancé", "Avancé"),
+            ("Expert", "Expert"),
+        ],
+        validators=[DataRequired(message="Veuillez sélectionner votre niveau.")]
+    )
+    emploi_souhaite = StringField(
+        "Emploi souhaité",
+        validators=[
+            DataRequired(message="Veuillez indiquer l'emploi que vous recherchez."),
+            Length(max=255)
+        ]
+    )
+    competences_actuelles = TextAreaField(
+        "Vos compétences actuelles (facultatif)",
+        validators=[Length(max=2000)]
+    )
+    submit = SubmitField("Enregistrer mon profil")
+
 
 class RapportForm(FlaskForm):
     """

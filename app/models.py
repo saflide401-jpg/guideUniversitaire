@@ -108,14 +108,36 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True) # Email unique et obligatoire
     password = db.Column(db.String(255), nullable=False) # Mot de passe haché stocké de manière sécurisée
     date_inscription = db.Column(db.DateTime, nullable=False, default=datetime.now) # Date d'inscription automatique
-    
+    # Indique si l'invitation à compléter le profil (compétences/emploi souhaité) a déjà été
+    # présentée à l'utilisateur, qu'il l'ait remplie ou volontairement ignorée — pour ne la
+    # proposer qu'une seule fois après l'inscription, jamais imposer.
+    onboarding_vu = db.Column(db.Boolean, nullable=False, default=False)
+
     # Relation virtuelle : un utilisateur peut générer plusieurs rapports personnalisés
     rapports_personnalises = db.relationship('RapportPersonnalise', backref='user', lazy=True)
+    # Relation virtuelle : profil candidat optionnel (un seul par utilisateur)
+    profil_candidat = db.relationship('ProfilCandidat', backref='user', uselist=False, lazy=True)
 
     def get_id(self):
         """Surcharge de la méthode de UserMixin pour retourner l'ID sous forme de chaîne."""
         # Flask-Login exige que get_id() retourne une chaîne de caractères (str), pas un entier
         return str(self.id)
+
+
+class ProfilCandidat(db.Model):
+    """
+    Profil optionnel rempli après connexion : statut en termes de compétences et emploi
+    souhaité. Purement déclaratif pour le moment — conservé en base sans traitement
+    automatique ni recommandation, en vue d'une personnalisation future.
+    """
+    __tablename__ = 'profil_candidat'
+
+    id_profil = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    niveau_competence = db.Column(db.String(50), nullable=False) # Débutant / Intermédiaire / Avancé / Expert
+    emploi_souhaite = db.Column(db.String(255), nullable=False) # Ex: "Data Analyst"
+    competences_actuelles = db.Column(db.Text) # Compétences déclarées par l'utilisateur, texte libre
+    date_creation = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
 
 class RapportPersonnalise(db.Model):

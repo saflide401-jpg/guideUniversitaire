@@ -4,8 +4,13 @@
 {% block refresh %}<meta http-equiv="refresh" content="90">{% endblock %}
 
 {% block content %}
-    <h1 style="font-size:18px;">Compétences</h1>
-    <p class="card-subtitle" style="margin-top:-8px;">Compétences les plus demandées sur les 2 dernières années — mise à jour automatique.</p>
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+        <div>
+            <h1 style="font-size:18px;">Compétences</h1>
+            <p class="card-subtitle" style="margin-top:-8px;">Compétences les plus demandées sur les 2 dernières années — mise à jour automatique.</p>
+        </div>
+        <a href="{{ url_for('main.competences_export') }}" class="btn-outline" style="flex-shrink:0;">{{ icons.icon('report', 13) }}Exporter en CSV</a>
+    </div>
 
     <div class="two-col">
         <div class="card">
@@ -15,7 +20,7 @@
                 {% for c in top_competences %}
                 <div class="bar-h-item">
                     <span>{{ c.nom }}</span>
-                    <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ c.pourcentage }}%"></div></div>
+                    <div class="bar-h-track"><div class="bar-h-fill rank-{{ [loop.index, 4] | min }}" style="width:{{ c.pourcentage }}%" title="{{ c.pourcentage }}%"></div></div>
                     <span class="bar-h-val">{{ c.total }}</span>
                 </div>
                 {% endfor %}
@@ -27,14 +32,23 @@
 
         <div class="card">
             <div class="card-title">{{ icons.icon('sliders') }}Répartition par type de compétence</div>
-            {% if type_breakdown %}
-            <div class="donut-legend">
-                {% for t in type_breakdown %}
-                <div class="legend-item">
-                    <div class="legend-dot" style="background:{{ '#0A66C2' if loop.first else '#10B981' }};"></div>
-                    {{ t.type }} — {{ t.pourcentage }}% ({{ t.total }} mentions)
+            {% if type_donut %}
+            <div class="donut-row">
+                <svg width="110" height="110" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#E2E8F0" stroke-width="16"/>
+                    {% for seg in type_donut %}
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="{{ seg.couleur }}" stroke-width="16"
+                            stroke-dasharray="{{ seg.dash }} {{ seg.reste }}" stroke-dashoffset="{{ seg.offset }}"
+                            transform="rotate(-90 50 50)"/>
+                    {% endfor %}
+                    <text x="50" y="53" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A">{{ type_donut[0].pourcentage }}%</text>
+                    <text x="50" y="63" text-anchor="middle" font-size="8" fill="#64748B">{{ type_donut[0].type }}</text>
+                </svg>
+                <div class="donut-legend">
+                    {% for seg in type_donut %}
+                    <div class="legend-item"><div class="legend-dot" style="background:{{ seg.couleur }};"></div>{{ seg.type }} — {{ seg.pourcentage }}% ({{ seg.total }} mentions)</div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
             {% else %}
             <p class="card-subtitle">Aucune donnée disponible.</p>
@@ -47,7 +61,8 @@
         {% if word_cloud %}
         <div class="word-cloud">
             {% for w in word_cloud %}
-            <span class="wc-word" style="font-size:{{ w.taille }}px; opacity:{{ w.opacite }};">{{ w.nom }}</span>
+            <a href="{{ url_for('main.offres', competence=w.nom) }}" class="wc-word rank-{{ [loop.index, 4] | min }}"
+               style="font-size:{{ w.taille }}px; opacity:{{ w.opacite }};" title="Voir les offres demandant {{ w.nom }}">{{ w.nom }}</a>
             {% endfor %}
         </div>
         {% else %}

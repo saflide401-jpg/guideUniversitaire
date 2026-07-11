@@ -10,7 +10,10 @@
 <body>
     <div class="page-login">
         <div class="login-card">
-            <div class="login-logo">{{ icons.icon('trending-up', 17) }}<span>Guide Universitaire</span></div>
+            <div class="login-logo">
+                <div class="login-logo-mark">{{ icons.icon('trending-up', 26) }}</div>
+                <span class="login-logo-name">Guide Universitaire</span>
+            </div>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

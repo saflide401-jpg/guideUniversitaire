@@ -5,6 +5,7 @@ from flask import Flask # Importe la classe principale du framework Flask
 from flask_sqlalchemy import SQLAlchemy # Importe l'ORM pour la communication avec PostgreSQL
 from flask_bcrypt import Bcrypt # Importe l'outil de hachage sécurisé des mots de passe
 from flask_login import LoginManager # Importe le gestionnaire de sessions utilisateur
+from flask_mail import Mail # Importe l'envoi d'e-mails (réinitialisation de mot de passe)
 from config import Config # Importe la classe de configuration centralisée (config.py)
 
 # --- Instanciation des extensions de manière globale mais NON liée à l'application ---
@@ -13,6 +14,7 @@ from config import Config # Importe la classe de configuration centralisée (con
 db = SQLAlchemy() # Objet de base de données (sera lié à PostgreSQL plus tard)
 bcrypt = Bcrypt() # Objet de chiffrement (sera utilisé pour hacher les mots de passe)
 login_manager = LoginManager() # Objet de gestion des sessions
+mail = Mail() # Objet d'envoi d'e-mails
 
 # --- Configuration globale du gestionnaire de sessions Flask-Login ---
 # login_view : nom de la route vers laquelle Flask-Login redirige si un utilisateur non connecté
@@ -40,6 +42,7 @@ def create_app(config_class=Config):
     db.init_app(app) # Connecte SQLAlchemy à l'application
     bcrypt.init_app(app) # Connecte Bcrypt à l'application
     login_manager.init_app(app) # Connecte le gestionnaire de sessions à l'application
+    mail.init_app(app) # Connecte l'envoi d'e-mails à l'application
 
     # --- Importation locale des modèles ---
     # L'import est fait ICI (à l'intérieur de la fonction) pour éviter les importations circulaires
