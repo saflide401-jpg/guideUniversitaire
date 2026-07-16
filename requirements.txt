@@ -12,3 +12,13 @@ gunicorn==22.0.0
 
 playwright==1.61.0
 APScheduler==3.10.4
+
+# Pipeline NLP (analyse des offres : NER + classification via CamemBERT)
+# Versions choisies pour disposer de wheels précompilées sous Python 3.13
+# (les versions plus anciennes de spacy/blis n'en fournissent pas et échouent
+# à la compilation depuis les sources sur Windows).
+spacy>=3.8.4
+transformers>=4.46.0
+torch>=2.5.0
+sentencepiece>=0.2.0
+protobuf>=5.28.0

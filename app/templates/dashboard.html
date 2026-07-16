@@ -16,25 +16,25 @@
         <div class="kpi-card kpi-blue">
             <div class="kpi-icon">{{ icons.icon('database', 16) }}</div>
             <div class="kpi-label">Offres collectées</div>
-            <div class="kpi-value">{{ kpis.offres_collectees }}</div>
+            <div class="kpi-value" data-target="{{ kpis.offres_collectees }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.offres_semaine }} cette semaine</div>
         </div>
         <div class="kpi-card kpi-green">
             <div class="kpi-icon">{{ icons.icon('building', 16) }}</div>
             <div class="kpi-label">Entreprises</div>
-            <div class="kpi-value">{{ kpis.entreprises }}</div>
+            <div class="kpi-value" data-target="{{ kpis.entreprises }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.entreprises_semaine }} cette semaine</div>
         </div>
         <div class="kpi-card kpi-amber">
             <div class="kpi-icon">{{ icons.icon('map', 16) }}</div>
             <div class="kpi-label">Secteurs couverts</div>
-            <div class="kpi-value">{{ kpis.secteurs_couverts }}</div>
+            <div class="kpi-value" data-target="{{ kpis.secteurs_couverts }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.secteurs_semaine }} cette semaine</div>
         </div>
         <div class="kpi-card kpi-indigo">
             <div class="kpi-icon">{{ icons.icon('award', 16) }}</div>
             <div class="kpi-label">Compétences détectées</div>
-            <div class="kpi-value">{{ kpis.competences_detectees }}</div>
+            <div class="kpi-value" data-target="{{ kpis.competences_detectees }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.competences_semaine }} cette semaine</div>
         </div>
     </div>
@@ -43,7 +43,7 @@
         <div class="card">
             <div class="card-title">{{ icons.icon('chart-bar') }}Offres par secteur</div>
             {% if top_secteurs %}
-            <div class="bar-h">
+            <div class="bar-h" id="secteurBars">
                 {% for s in top_secteurs %}
                 <div class="bar-h-item">
                     <span>{{ s.nom }}</span>
@@ -65,9 +65,9 @@
                 <div class="line-chart-wrap">
                     <svg class="line-chart" viewBox="0 0 100 100" preserveAspectRatio="none">
                         {% if monthly.svg_area %}
-                        <polygon points="{{ monthly.svg_area }}" class="line-chart-area"/>
+                        <polygon points="{{ monthly.svg_area }}" class="line-chart-area" id="volumeArea"/>
                         {% endif %}
-                        <polyline points="{{ monthly.svg_points }}" class="line-chart-line"/>
+                        <polyline points="{{ monthly.svg_points }}" class="line-chart-line" id="volumeLine"/>
                     </svg>
                     {% for m in monthly.data %}
                     <span class="line-chart-dot{{ ' recent' if loop.last }}" style="left:{{ m.x }}%; top:{{ m.y }}%;"></span>
@@ -123,4 +123,72 @@
         <p class="card-subtitle">Aucune offre collectée pour le moment. La collecte automatique s'exécute en arrière-plan ; cette liste s'actualisera dès que des offres seront disponibles.</p>
         {% endif %}
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Séquence d'entrée du dashboard, pensée pour attirer l'œil sans lasser :
+        // 1) les chiffres clés s'incrémentent  2) les barres "Offres par secteur" se remplissent
+        // 3) la courbe d'évolution se trace progressivement. ~2s au total.
+        var KPI_DURATION = 700;
+
+        function startBars() {
+            var bars = document.querySelectorAll('#secteurBars .bar-h-fill');
+            bars.forEach(function (el) { el.classList.add('animate-in'); });
+            setTimeout(startLine, bars.length ? 750 : 0);
+        }
+
+        function startLine() {
+            var line = document.getElementById('volumeLine');
+            if (!line || typeof line.getTotalLength !== 'function') return;
+            var length = line.getTotalLength();
+            if (!length) return;
+
+            line.style.strokeDasharray = length;
+            line.style.strokeDashoffset = length;
+            line.getBoundingClientRect(); // force le recalcul de style avant la transition
+            line.style.transition = 'stroke-dashoffset 0.8s ease-out';
+            requestAnimationFrame(function () { line.style.strokeDashoffset = '0'; });
+
+            var area = document.getElementById('volumeArea');
+            if (area) {
+                area.style.opacity = '0';
+                area.style.transition = 'opacity 0.6s ease-out 0.3s';
+                requestAnimationFrame(function () { area.style.opacity = '1'; });
+            }
+
+            document.querySelectorAll('.line-chart-dot').forEach(function (dot, i) {
+                dot.style.transform = 'translate(-50%, -50%) scale(0)';
+                dot.style.opacity = '0';
+                dot.style.transition = 'opacity 0.25s ease-out, transform 0.25s ease-out';
+                setTimeout(function () {
+                    dot.style.opacity = '1';
+                    dot.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 350 + i * 90);
+            });
+        }
+
+        var kpiEls = document.querySelectorAll('.kpi-value[data-target]');
+        if (!kpiEls.length) {
+            startBars();
+            return;
+        }
+        var startTime = null;
+        function stepKpis(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / KPI_DURATION, 1);
+            var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+            kpiEls.forEach(function (el) {
+                var target = parseInt(el.dataset.target, 10) || 0;
+                el.textContent = Math.round(target * eased);
+            });
+            if (progress < 1) {
+                requestAnimationFrame(stepKpis);
+            } else {
+                kpiEls.forEach(function (el) { el.textContent = el.dataset.target; });
+                setTimeout(startBars, 150);
+            }
+        }
+        requestAnimationFrame(stepKpis);
+    });
+    </script>
 {% endblock %}

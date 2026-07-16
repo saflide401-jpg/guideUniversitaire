@@ -170,6 +170,10 @@ a { color: inherit; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
     .bar-h-fill { animation: none; }
 }
+/* Dashboard uniquement : le remplissage des barres "Offres par secteur" attend la fin de
+   l'incrémentation des chiffres clés (séquence pilotée en JS) plutôt que de jouer immédiatement. */
+#secteurBars .bar-h-fill { animation-play-state: paused; }
+#secteurBars .bar-h-fill.animate-in { animation-play-state: running; }
 /* Couleur selon le rang dans le classement : 1er = vert, 2e = orange, 3e = bleu, 4e et suivants = indigo */
 .bar-h-fill.rank-1 { background: var(--lk-green); }
 .bar-h-fill.rank-2 { background: var(--lk-amber); }
