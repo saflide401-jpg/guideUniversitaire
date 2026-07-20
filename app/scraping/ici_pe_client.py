@@ -2,8 +2,7 @@
 #
 # Client de collecte pour le site public ICI Partenaires Entreprises
 # (ici-pe.com/jobs), cabinet de recrutement burkinabè, source complémentaire à
-# LinkedIn, France Travail et Emploi LeFaso.net (voir RAPPORT_PROJET.md,
-# section 5.8).
+# LinkedIn et Emploi LeFaso.net (voir RAPPORT_PROJET.md, section 5.8).
 #
 # Le site utilise le plugin WordPress "WP Job Manager" : la liste des offres
 # est chargée par le navigateur via un point d'entrée AJAX dédié

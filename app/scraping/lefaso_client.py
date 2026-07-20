@@ -1,9 +1,9 @@
 # app/scraping/lefaso_client.py
 #
 # Client de collecte pour le site public "Emploi LeFaso.net"
-# (https://emploi.lefaso.net), source complémentaire au scraping LinkedIn et à
-# l'API France Travail, pour diversifier la couverture des offres publiées au
-# Burkina Faso (voir RAPPORT_PROJET.md, section 5.7).
+# (https://emploi.lefaso.net), source complémentaire au scraping LinkedIn,
+# pour diversifier la couverture des offres publiées au Burkina Faso
+# (voir RAPPORT_PROJET.md, section 5.7).
 #
 # Contrairement à LinkedIn (page dynamique nécessitant Playwright), ce site est
 # une page SPIP classique rendue côté serveur : son contenu est présent tel

@@ -58,8 +58,8 @@ Toutes les bibliothèques ci-dessous sont déclarées avec leur version exacte d
 | Bibliothèque | Version | Usage |
 |---|---|---|
 | Playwright | 1.61.0 | Automatisation de navigateur headless pour la collecte des offres d'emploi publiques (LinkedIn, page dynamique) |
-| requests | 2.34.2 | Requêtes HTTP simples, utilisées par les sources ne nécessitant pas de navigateur (API France Travail, site Emploi LeFaso.net) |
-| beautifulsoup4 | 4.12.3 | Extraction du contenu HTML du site Emploi LeFaso.net (page rendue côté serveur, sans JavaScript) |
+| requests | 2.34.2 | Requêtes HTTP simples, utilisées par les sources ne nécessitant pas de navigateur (Emploi LeFaso.net, ICI Partenaires Entreprises) |
+| beautifulsoup4 | 4.12.3 | Extraction du contenu HTML des sites Emploi LeFaso.net et ICI Partenaires Entreprises (pages rendues côté serveur/JSON, sans navigateur) |
 | APScheduler | 3.10.4 | Planification de la collecte automatique en tâche de fond (cron hebdomadaire) |
 
 **Pipeline NLP** (chantier en cours d'intégration, détaillé en 5.6)
@@ -416,7 +416,6 @@ Le système n'ayant pas de modèle entraîné, les « paramètres » ajustables 
 | `models.py` | Structure des données (ORM) |
 | `forms.py` | Formulaires WTForms (inscription, connexion, profil facultatif, réinitialisation, rapports) et leurs règles de validation |
 | `scraping/scraper.py` | Moteur de collecte LinkedIn (Playwright) |
-| `scraping/france_travail_client.py` | Client de l'API officielle France Travail |
 | `scraping/lefaso_client.py` | Client du site public Emploi LeFaso.net (requests + BeautifulSoup) |
 | `scraping/ici_pe_client.py` | Client du site public ICI Partenaires Entreprises (requests + BeautifulSoup, point d'entrée JSON du plugin WordPress WP Job Manager) |
 | `scheduler.py` | Orchestration de la collecte automatique planifiée |
@@ -511,7 +510,9 @@ Ce script a été exécuté en conditions réelles pendant le développement, av
 
 ### 5.8 Diversification des sources de collecte
 
-**Contexte et motivation.** Pour augmenter le volume d'offres réellement collectées sur le Burkina Faso, sans dépendre d'une seule source (donc d'un seul risque de blocage anti-robot, section 7.2), une troisième source a été ajoutée en complément de LinkedIn (scraping) et de l'API France Travail : le site public **Emploi LeFaso.net**.
+**Contexte et motivation.** Pour augmenter le volume d'offres réellement collectées sur le Burkina Faso, sans dépendre d'une seule source (donc d'un seul risque de blocage anti-robot, section 7.2), une deuxième source a été ajoutée en complément de LinkedIn (scraping) : le site public **Emploi LeFaso.net**.
+
+*Note : l'API officielle France Travail a été un temps intégrée comme source complémentaire (couvrant la France, en point de comparaison hors Burkina Faso), avant d'être retirée du pipeline de collecte.*
 
 **Sources explicitement écartées.** Deux pistes de diversification ont été envisagées puis rejetées avant l'implémentation, pour des raisons qui dépassent la simple faisabilité technique :
 - **Facebook** : ses conditions d'utilisation interdisent explicitement le scraping automatisé de son contenu, y compris public ; Meta a déjà engagé des poursuites contre des acteurs pratiquant cette collecte (ex. *hiQ Labs v. LinkedIn*, *Meta v. Bright Data*). Un scraper ciblant des groupes d'emploi Facebook nécessiterait de plus un compte connecté, ce qui aggraverait le risque (bannissement du compte, action légale).
@@ -519,11 +520,11 @@ Ce script a été exécuté en conditions réelles pendant le développement, av
 
 **Choix retenu : Emploi LeFaso.net.** Contrairement à LinkedIn (application dynamique nécessitant Playwright), ce site est une page classique du CMS SPIP, rendue entièrement côté serveur : son contenu est présent tel quel dans le HTML brut, sans exécution JavaScript nécessaire. La collecte s'appuie donc simplement sur `requests` (requêtes HTTP) et `BeautifulSoup` (extraction du contenu), une approche plus légère et moins fragile qu'un navigateur piloté. Le `robots.txt` du site (consulté le 19/07/2026) autorise explicitement l'exploration des pages de recherche et de détail d'offre, avec un délai minimal de 1 seconde entre requêtes (`Crawl-delay: 1`), respecté dans `LefasoEmploiClient` entre chaque page de détail récupérée.
 
-**Implémentation.** `app/scraping/lefaso_client.py` définit `LefasoEmploiClient.search_offres(mots_cles, limit)` : une requête sur le moteur de recherche du site (`/spip.php?page=recherche_offre&recherche=...`) récupère la liste des offres correspondantes, puis chaque page de détail est visitée pour en extraire la description complète (non tronquée). Comme cette source ne fournit pas de classification structurée (contrairement à l'API France Travail), `ScrapingService.run_lefaso_and_persist` traite ses résultats comme ceux de LinkedIn : secteur dérivé du mot-clé de recherche, compétences détectées par le dictionnaire de mots-clés (section 5.2). Le planificateur (`scheduler.py`) intègre quatre nouvelles recherches à sa rotation (source `"lefaso"`).
+**Implémentation.** `app/scraping/lefaso_client.py` définit `LefasoEmploiClient.search_offres(mots_cles, limit)` : une requête sur le moteur de recherche du site (`/spip.php?page=recherche_offre&recherche=...`) récupère la liste des offres correspondantes, puis chaque page de détail est visitée pour en extraire la description complète (non tronquée). Cette source ne fournissant pas de classification structurée, `ScrapingService.run_lefaso_and_persist` traite ses résultats comme ceux de LinkedIn : secteur dérivé du mot-clé de recherche, compétences détectées par le dictionnaire de mots-clés (section 5.2). Le planificateur (`scheduler.py`) intègre quatre nouvelles recherches à sa rotation (source `"lefaso"`).
 
 **Test réel effectué.** Une recherche test (`"informatique"`, limite 2) a été exécutée contre le site réel pendant le développement : les deux offres retournées (« Ingénieur Système & réseaux informatiques », « Cadre Informatique ») ont été correctement extraites avec titre, entreprise, localisation et description complète, accents et caractères spéciaux préservés. Une des deux offres n'affiche que la mention littérale « Entreprise » comme nom de recruteur — un recruteur anonymisé par le site source lui-même, pas une erreur d'extraction.
 
-**Limite assumée.** Cette diversification augmente la couverture Burkina Faso mais reste, comme LinkedIn, dépendante d'un secteur deviné à partir du mot-clé de recherche plutôt que du contenu réel de l'offre (anomalie n°4, section 7.2) : elle n'échappe pas à ce biais, contrairement à l'API France Travail.
+**Limite assumée.** Cette diversification augmente la couverture Burkina Faso mais reste, comme LinkedIn, dépendante d'un secteur deviné à partir du mot-clé de recherche plutôt que du contenu réel de l'offre (anomalie n°4, section 7.2).
 
 **Recherche d'autres sites candidats.** Sept autres sites publiant des offres au Burkina Faso ont été identifiés et vérifiés avant d'écarter ou de retenir chacun, plutôt que d'en ajouter le nom sans vérification :
 
@@ -541,7 +542,7 @@ Ce script a été exécuté en conditions réelles pendant le développement, av
 
 **Test réel effectué.** Une recherche test (`"informatique"`, limite 2) contre le point d'entrée JSON réel du site a retourné deux offres réelles (« Trois (3) Techniciens de Maintenance Usine », « Un (1) Chauffeur »), correctement extraites avec titre, entreprise, localisation et description complète.
 
-Le projet collecte donc désormais sur **quatre sources indépendantes** : LinkedIn (scraping Playwright), l'API officielle France Travail, Emploi LeFaso.net et ICI Partenaires Entreprises (ces deux derniers via `requests`/`BeautifulSoup`), ce qui réduit la dépendance à une seule source et donc à un seul risque de blocage.
+Le projet collecte donc désormais sur **trois sources indépendantes** : LinkedIn (scraping Playwright), Emploi LeFaso.net et ICI Partenaires Entreprises (ces deux derniers via `requests`/`BeautifulSoup`), ce qui réduit la dépendance à une seule source et donc à un seul risque de blocage.
 
 ---
 
@@ -656,7 +657,7 @@ Le projet a permis de mettre en place une chaîne complète, automatisée et fon
 
 ### 10.3 Développement futur
 
-- Migration à terme vers une **API officielle d'offres d'emploi** (ex. France Travail, Adzuna), moins fragile qu'une extraction de page web et mieux adaptée à un passage à l'échelle.
+- Migration à terme vers une **API officielle d'offres d'emploi** (ex. Adzuna), moins fragile qu'une extraction de page web et mieux adaptée à un passage à l'échelle.
 - Extension de la priorisation géographique à d'autres zones, et ajout de comparatifs multi-pays sur les mêmes tableaux de bord.
 
 ---

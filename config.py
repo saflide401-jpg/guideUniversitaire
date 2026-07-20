@@ -42,14 +42,6 @@ class Config:
     # Durée de validité du lien de réinitialisation, en secondes (30 minutes par défaut)
     RESET_TOKEN_MAX_AGE = int(os.environ.get("RESET_TOKEN_MAX_AGE", 1800))
 
-    # --- API officielle France Travail (source complémentaire au scraping LinkedIn) ---
-    # Facultatifs : si absents, ScrapingService.france_travail_client reste à None et
-    # run_france_travail_and_persist se contente de le signaler dans ses logs.
-    # Obtention : créer un compte développeur gratuit sur https://francetravail.io,
-    # créer une application, puis s'abonner à l'API "Offres d'emploi v2".
-    FRANCE_TRAVAIL_CLIENT_ID = os.environ.get("FRANCE_TRAVAIL_CLIENT_ID")
-    FRANCE_TRAVAIL_CLIENT_SECRET = os.environ.get("FRANCE_TRAVAIL_CLIENT_SECRET")
-
 if not Config.SECRET_KEY:
         raise RuntimeError(
             "SECRET_KEY manquante. Définissez-la dans votre fichier .env "

@@ -16,13 +16,7 @@ from apscheduler.triggers.cron import CronTrigger
 # ses secteurs clés : informatique, BTP, mines, agriculture, ONG, microfinance) pour que les
 # prochaines collectes reflètent en priorité son marché de l'emploi.
 #
-# L'API officielle France Travail est ajoutée comme source complémentaire (source="france_travail") :
-# elle ne couvre que la France, donc elle vient diversifier/fiabiliser le point de comparaison
-# hors Burkina Faso déjà présent (Paris, Toulouse) plutôt que remplacer la couverture Burkina Faso.
-# Ses résultats évitent structurellement le problème de secteur/compétences devinés (section 7.2,
-# anomalie n°4 du rapport), puisqu'ils sont fournis par la source elle-même.
-#
-# Le site public "Emploi LeFaso.net" est ajouté comme deuxième source de diversification
+# Le site public "Emploi LeFaso.net" est ajouté comme source de diversification
 # (source="lefaso"), cette fois centrée sur le Burkina Faso comme LinkedIn : l'objectif est
 # d'augmenter le volume d'offres réellement collectées sur cette zone sans dépendre d'un seul
 # site (donc d'un seul risque de blocage anti-robot). Facebook et WhatsApp, envisagés un temps
@@ -30,7 +24,7 @@ from apscheduler.triggers.cron import CronTrigger
 # le premier interdit le scraping automatisé dans ses conditions d'utilisation, le second
 # exposerait les numéros de téléphone et messages de tiers non consentants dans ses groupes.
 #
-# Une quatrième source, le site "ICI Partenaires Entreprises" (source="ici_pe"), a été ajoutée
+# Une troisième source, le site "ICI Partenaires Entreprises" (source="ici_pe"), a été ajoutée
 # après vérification que six autres sites candidats (emploiburkina.com, bfemploi.com,
 # afriqueemplois.com, tonjob.net, jooble.org, criburkina.com) étaient soit bloqués (protection
 # anti-robot, blocage réseau), soit trop fragiles/incertains pour une collecte fiable — voir
@@ -46,10 +40,6 @@ AUTO_SEARCHES = [
     {"source": "linkedin", "keywords": "Développeur Python", "location": "Paris"},
     {"source": "linkedin", "keywords": "Data Analyst", "location": "Abidjan"},
     {"source": "linkedin", "keywords": "Chef de projet Marketing", "location": "Dakar"},
-    {"source": "france_travail", "mots_cles": "développeur informatique", "commune": "75056"},  # Paris
-    {"source": "france_travail", "mots_cles": "comptable", "commune": "31555"},  # Toulouse
-    {"source": "france_travail", "mots_cles": "ingénieur génie civil", "commune": "75056"},
-    {"source": "france_travail", "mots_cles": "data analyst", "commune": None},  # recherche nationale
     {"source": "lefaso", "keywords": "informatique"},
     {"source": "lefaso", "keywords": "comptable"},
     {"source": "lefaso", "keywords": "ingénieur"},
@@ -67,13 +57,7 @@ def _run_next_auto_collect(app, scraping_service, limit):
     """Exécute une collecte automatique pour la prochaine recherche du cycle."""
     search = next(_search_cycle)
     with app.app_context():
-        if search["source"] == "france_travail":
-            scraping_service.run_france_travail_and_persist(
-                mots_cles=search["mots_cles"],
-                commune=search.get("commune"),
-                limit=limit,
-            )
-        elif search["source"] == "lefaso":
+        if search["source"] == "lefaso":
             scraping_service.run_lefaso_and_persist(
                 keywords=search["keywords"],
                 limit=limit,

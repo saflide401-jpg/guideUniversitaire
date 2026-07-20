@@ -1,9 +1,7 @@
 # Ce fichier contient toute la logique métier : comptes utilisateurs, scraping et persistance des offres
 
-import os # Lecture des identifiants France Travail depuis les variables d'environnement
 from app.models import Secteur, Entreprise, OffreEmploi, Competence, OffreCompetence, User, RapportPersonnalise, ProfilCandidat # Importe les modèles de données
 from app.scraping.scraper import LinkedInScraper # Importe le scraper Selenium
-from app.scraping.france_travail_client import FranceTravailClient # Client de l'API officielle France Travail
 from app.scraping.lefaso_client import LefasoEmploiClient # Client du site public Emploi LeFaso.net
 from app.scraping.ici_pe_client import IciPeClient # Client du site public ICI Partenaires Entreprises
 from app.nlp.traducteur import traduire_si_anglais # Traduction automatique anglais -> français des offres
@@ -160,18 +158,8 @@ class ScrapingService:
     """
     
     def __init__(self):
-        """Initialise le scraper, le client France Travail (si configuré) et le dictionnaire des compétences connues."""
+        """Initialise le scraper, les clients de collecte complémentaires et le dictionnaire des compétences connues."""
         self.scraper = LinkedInScraper()
-
-        # --- Client de l'API officielle France Travail (source complémentaire) ---
-        # Optionnel : si les identifiants ne sont pas renseignés dans .env, le client
-        # reste à None et run_france_travail_and_persist se contente de le signaler
-        # dans ses logs plutôt que de faire planter l'application.
-        client_id = os.environ.get("FRANCE_TRAVAIL_CLIENT_ID")
-        client_secret = os.environ.get("FRANCE_TRAVAIL_CLIENT_SECRET")
-        self.france_travail_client = (
-            FranceTravailClient(client_id, client_secret) if client_id and client_secret else None
-        )
 
         # --- Clients des sites publics complémentaires (aucun identifiant requis) ---
         self.lefaso_client = LefasoEmploiClient()
@@ -306,113 +294,15 @@ class ScrapingService:
 
         return {"new_jobs": new_jobs_count, "total_found": len(raw_jobs), "logs": logs}
 
-    def run_france_travail_and_persist(self, mots_cles, commune=None, limit=50):
-        """
-        Collecte des offres via l'API officielle France Travail, en complément du
-        scraping LinkedIn (run_scraping_and_persist).
-
-        Contrairement au scraping, le secteur et les compétences ne sont pas devinés
-        (mot-clé de recherche capitalisé / correspondance de sous-chaînes) : ils
-        proviennent directement de la source (classification ROME officielle et
-        référentiel de compétences), ce qui évite structurellement, pour cette
-        source, le problème de cohérence secteur/contenu identifié sur les données
-        issues du scraping (voir RAPPORT_PROJET.md, section 7.2, anomalie n°4).
-
-        Args:
-            mots_cles (str) : Mots-clés de recherche (ex: "Développeur informatique")
-            commune (str|None) : Code INSEE de la commune ciblée (optionnel)
-            limit (int) : Nombre maximum d'offres à traiter
-
-        Returns:
-            dict : {"new_jobs": int, "total_found": int, "logs": list[str]}
-        """
-        if not self.france_travail_client:
-            return {
-                "new_jobs": 0, "total_found": 0,
-                "logs": ["Client France Travail non configuré (FRANCE_TRAVAIL_CLIENT_ID / "
-                         "FRANCE_TRAVAIL_CLIENT_SECRET absents de .env)."]
-            }
-
-        range_str = f"0-{max(limit - 1, 0)}"
-        offres = self.france_travail_client.search_offres(mots_cles, commune=commune, range_str=range_str)
-        new_jobs_count = 0
-        lieu_log = f" à {commune}" if commune else ""
-        logs = [f"[France Travail] Recherche \"{mots_cles}\"{lieu_log} : {len(offres)} offre(s) trouvée(s)."]
-
-        for offre in offres:
-            try:
-                existing_job = OffreEmploi.query.filter_by(linkedin_job_id=offre["id_externe"]).first()
-                if existing_job:
-                    logs.append(f"Offre déjà connue ignorée : {offre['titre_poste']}")
-                    continue
-
-                secteur = Secteur.query.filter_by(nom_secteur=offre["secteur"]).first()
-                if not secteur:
-                    secteur = Secteur(nom_secteur=offre["secteur"])
-                    db.session.add(secteur)
-                    db.session.flush()
-
-                entreprise = Entreprise.query.filter_by(nom_entreprise=offre["nom_entreprise"]).first()
-                if not entreprise:
-                    entreprise = Entreprise(
-                        nom_entreprise=offre["nom_entreprise"],
-                        localisation=offre["localisation"],
-                        id_secteur=secteur.id_secteur
-                    )
-                    db.session.add(entreprise)
-                    db.session.flush()
-
-                titre_poste, description, langue_originale = traduire_si_anglais(
-                    offre["titre_poste"], offre["description"]
-                )
-                new_job = OffreEmploi(
-                    linkedin_job_id=offre["id_externe"],  # réutilise la colonne d'identifiant externe unique, quel que soit la source
-                    titre_poste=titre_poste,
-                    description=description,
-                    langue_originale=langue_originale,
-                    id_entreprise=entreprise.id_entreprise,
-                    id_secteur=secteur.id_secteur,
-                    date_scraping=datetime.now()
-                )
-
-                # Compétences directement issues du référentiel officiel France Travail,
-                # pas d'une recherche de mots-clés dans la description.
-                for nom_competence in offre["competences"]:
-                    competence = Competence.query.filter_by(nom_competence=nom_competence).first()
-                    if not competence:
-                        competence = Competence(nom_competence=nom_competence, type_competence="Technique")
-                        db.session.add(competence)
-                        db.session.flush()
-                    new_job.competences.append(competence)
-
-                db.session.add(new_job)
-                new_jobs_count += 1
-                logs.append(f"Offre enregistrée (France Travail) : {new_job.titre_poste} chez {offre['nom_entreprise']}")
-
-            except Exception as job_error:
-                logs.append(f"Erreur lors du traitement de l'offre {offre.get('titre_poste')} : {str(job_error)}")
-                db.session.rollback()
-                continue
-
-        try:
-            db.session.commit()
-            logs.append(f"Collecte France Travail terminée : {new_jobs_count} nouvelle(s) offre(s) enregistrée(s).")
-        except Exception as commit_error:
-            logs.append(f"Erreur lors de l'enregistrement final : {str(commit_error)}")
-            db.session.rollback()
-            new_jobs_count = 0
-
-        return {"new_jobs": new_jobs_count, "total_found": len(offres), "logs": logs}
-
     def run_lefaso_and_persist(self, keywords, limit=10):
         """
         Collecte des offres via le site public emploi.lefaso.net, en complément du
-        scraping LinkedIn et de l'API France Travail, pour diversifier les sources
-        couvrant le marché de l'emploi burkinabè (section 5.7 du rapport).
+        scraping LinkedIn, pour diversifier les sources couvrant le marché de
+        l'emploi burkinabè (section 5.7 du rapport).
 
-        Cette source ne fournit pas de classification structurée (contrairement à
-        France Travail) : comme pour LinkedIn, le secteur est dérivé du mot-clé de
-        recherche et les compétences sont détectées par le dictionnaire de mots-clés.
+        Comme pour LinkedIn, le secteur est dérivé du mot-clé de recherche et les
+        compétences sont détectées par le dictionnaire de mots-clés (cette source
+        ne fournit pas de classification structurée).
         """
         raw_jobs = self.lefaso_client.search_offres(keywords, limit=limit)
         new_jobs_count = 0
@@ -491,9 +381,9 @@ class ScrapingService:
     def run_ici_pe_and_persist(self, keywords, limit=10):
         """
         Collecte des offres via le site public ici-pe.com/jobs (cabinet de recrutement
-        burkinabè), quatrième source après LinkedIn, France Travail et Emploi LeFaso.net
-        (section 5.8 du rapport). Même logique que run_lefaso_and_persist : secteur dérivé
-        du mot-clé de recherche, compétences détectées par le dictionnaire de mots-clés.
+        burkinabè), troisième source après LinkedIn et Emploi LeFaso.net (section 5.8
+        du rapport). Même logique que run_lefaso_and_persist : secteur dérivé du
+        mot-clé de recherche, compétences détectées par le dictionnaire de mots-clés.
         """
         raw_jobs = self.ici_pe_client.search_offres(keywords, limit=limit)
         new_jobs_count = 0
