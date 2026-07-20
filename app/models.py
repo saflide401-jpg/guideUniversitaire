@@ -60,6 +60,10 @@ class OffreEmploi(db.Model):
     description = db.Column(db.Text) # Description complète de l'offre (champ texte de longueur illimitée)
     date_publication = db.Column(db.Date) # Date de publication originale sur LinkedIn
     date_scraping = db.Column(db.DateTime, nullable=False, default=datetime.now) # Date/heure d'extraction automatique
+    # Langue d'origine avant traduction automatique ("en" si l'offre a été traduite depuis l'anglais,
+    # "fr" sinon) : titre_poste et description stockent toujours le texte final en français, ce champ
+    # sert uniquement de traçabilité pour ne jamais masquer qu'une traduction automatique a eu lieu.
+    langue_originale = db.Column(db.String(5), nullable=False, default='fr')
     
     # Clés étrangères associant l'offre à une entreprise et un secteur
     id_entreprise = db.Column(db.Integer, db.ForeignKey('entreprise.id_entreprise'), nullable=False)

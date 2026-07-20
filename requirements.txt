@@ -12,6 +12,9 @@ gunicorn==22.0.0
 
 playwright==1.61.0
 APScheduler==3.10.4
+requests==2.34.2
+beautifulsoup4==4.12.3
+langdetect==1.0.9
 
 # Pipeline NLP (analyse des offres : NER + classification via CamemBERT)
 # Versions choisies pour disposer de wheels précompilées sous Python 3.13
@@ -22,3 +25,4 @@ transformers>=4.46.0
 torch>=2.5.0
 sentencepiece>=0.2.0
 protobuf>=5.28.0
+sacremoses>=0.1.1 # Tokenisation recommandée pour le modèle de traduction Helsinki-NLP/opus-mt-en-fr

@@ -89,4 +89,49 @@
         <p class="card-subtitle">Pas encore assez d'historique pour calculer une croissance.</p>
         {% endif %}
     </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('chart-line') }}Prévision à 30 jours (extrapolation linéaire)</div>
+        <p class="card-subtitle" style="margin-top:-8px;">Prolonge la variation observée sur les 60 derniers jours — un indicateur d'orientation, pas un engagement chiffré.</p>
+        {% if forecast %}
+        <div class="ordered-list">
+            {% for f in forecast %}
+            <div class="ordered-item">
+                <div class="ordered-num rank-{{ [loop.index, 4] | min }}">{{ loop.index }}</div>
+                <div>
+                    <strong style="font-size:12px;">{{ f.nom }}</strong>
+                    <span style="font-size:11px; color:{{ '#10B981' if f.tendance == 'hausse' else ('#DC2626' if f.tendance == 'baisse' else '#64748B') }}; margin-left:8px;">
+                        {{ icons.icon('trending-down' if f.tendance == 'baisse' else 'trending-up', size=11) }}
+                        {{ f.actuel }} → {{ f.prevision }} offre(s) prévue(s)
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="card-subtitle">Pas encore assez d'historique pour établir une prévision.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('scale') }}Écart offre / demande étudiante déclarée</div>
+        <p class="card-subtitle" style="margin-top:-8px;">Compare le nombre d'offres collectées par secteur au nombre d'utilisateurs ayant déclaré viser ce même secteur dans leur profil candidat (section « emploi souhaité »).</p>
+        {% if ecart %}
+        <div class="ordered-list">
+            {% for e in ecart %}
+            <div class="ordered-item">
+                <div class="ordered-num rank-{{ [loop.index, 4] | min }}">{{ loop.index }}</div>
+                <div>
+                    <strong style="font-size:12px;">{{ e.nom }}</strong>
+                    <span style="font-size:11px; color:var(--lk-muted); margin-left:8px;">{{ e.offres }} offre(s) / {{ e.demande }} candidat(s) déclaré(s)</span>
+                    <div style="font-size:11px; color:{{ '#DC2626' if e.demande == 0 else '#0F766E' }};">{{ e.statut }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <p class="card-subtitle" style="margin-top:10px;">Indicateur encore peu significatif tant que peu d'utilisateurs ont renseigné leur profil candidat ; il gagne en fiabilité à mesure que la base d'inscrits grandit.</p>
+        {% else %}
+        <p class="card-subtitle">Aucune offre collectée pour le moment pour calculer cet écart.</p>
+        {% endif %}
+    </div>
 {% endblock %}

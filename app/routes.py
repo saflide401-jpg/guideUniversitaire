@@ -106,9 +106,12 @@ def tendances():
     monthly = analytics_service.get_monthly_volume(months=24)
     geo = analytics_service.get_geo_distribution(limit=5)
     growth = analytics_service.get_growth_secteurs(limit=4)
+    forecast = analytics_service.get_forecast_secteurs(limit=5)
+    ecart = analytics_service.get_ecart_offre_demande(limit=6)
     return render_template(
         "tendances.html", title="Tendances", active_page="tendances",
-        donut=donut, monthly=monthly, geo=geo, growth=growth
+        donut=donut, monthly=monthly, geo=geo, growth=growth,
+        forecast=forecast, ecart=ecart
     )
 
 

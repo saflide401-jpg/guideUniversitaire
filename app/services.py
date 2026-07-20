@@ -1,7 +1,12 @@
 # Ce fichier contient toute la logique métier : comptes utilisateurs, scraping et persistance des offres
 
-from app.models import Secteur, Entreprise, OffreEmploi, Competence, OffreCompetence, User, RapportPersonnalise # Importe les modèles de données
+import os # Lecture des identifiants France Travail depuis les variables d'environnement
+from app.models import Secteur, Entreprise, OffreEmploi, Competence, OffreCompetence, User, RapportPersonnalise, ProfilCandidat # Importe les modèles de données
 from app.scraping.scraper import LinkedInScraper # Importe le scraper Selenium
+from app.scraping.france_travail_client import FranceTravailClient # Client de l'API officielle France Travail
+from app.scraping.lefaso_client import LefasoEmploiClient # Client du site public Emploi LeFaso.net
+from app.scraping.ici_pe_client import IciPeClient # Client du site public ICI Partenaires Entreprises
+from app.nlp.traducteur import traduire_si_anglais # Traduction automatique anglais -> français des offres
 from app import db, bcrypt, mail # Importe l'instance SQLAlchemy, Bcrypt et l'envoi d'e-mails
 from datetime import datetime, timedelta # Pour gérer les dates
 from sqlalchemy import func, extract # Pour les agrégations SQL (comptages, regroupements par mois)
@@ -155,9 +160,23 @@ class ScrapingService:
     """
     
     def __init__(self):
-        """Initialise le scraper et le dictionnaire des compétences connues."""
+        """Initialise le scraper, le client France Travail (si configuré) et le dictionnaire des compétences connues."""
         self.scraper = LinkedInScraper()
-        
+
+        # --- Client de l'API officielle France Travail (source complémentaire) ---
+        # Optionnel : si les identifiants ne sont pas renseignés dans .env, le client
+        # reste à None et run_france_travail_and_persist se contente de le signaler
+        # dans ses logs plutôt que de faire planter l'application.
+        client_id = os.environ.get("FRANCE_TRAVAIL_CLIENT_ID")
+        client_secret = os.environ.get("FRANCE_TRAVAIL_CLIENT_SECRET")
+        self.france_travail_client = (
+            FranceTravailClient(client_id, client_secret) if client_id and client_secret else None
+        )
+
+        # --- Clients des sites publics complémentaires (aucun identifiant requis) ---
+        self.lefaso_client = LefasoEmploiClient()
+        self.ici_pe_client = IciPeClient()
+
         # --- Dictionnaire de compétences de référence ---
         # Utilisé pour analyser la description textuelle des offres d'emploi.
         # Clé : Nom de la compétence (sera inséré en base)
@@ -227,10 +246,17 @@ class ScrapingService:
                     db.session.flush() # Génère l'ID de l'entreprise
                 
                 # --- RÈGLE MÉTIER 4 : Création de l'Offre d'Emploi ---
+                # Traduction automatique si l'offre est en anglais : le public cible du
+                # projet est francophone (section 2.2 du rapport), une offre non traduite
+                # resterait illisible pour lui.
+                titre_poste, description, langue_originale = traduire_si_anglais(
+                    raw_job["titre_poste"], raw_job["description"]
+                )
                 new_job = OffreEmploi(
                     linkedin_job_id=raw_job["linkedin_job_id"],
-                    titre_poste=raw_job["titre_poste"],
-                    description=raw_job["description"],
+                    titre_poste=titre_poste,
+                    description=description,
+                    langue_originale=langue_originale,
                     id_entreprise=entreprise.id_entreprise,
                     id_secteur=secteur.id_secteur,
                     date_scraping=datetime.now()
@@ -238,7 +264,7 @@ class ScrapingService:
                 
                 # --- RÈGLE MÉTIER 5 : Détection et association des compétences ---
                 # On analyse la description brute de l'offre d'emploi
-                description_lower = raw_job["description"].lower()
+                description_lower = description.lower()  # texte final (traduit si nécessaire), pas le texte brut
                 
                 for skill_name, keywords_list in self.skills_dictionary.items():
                     # On vérifie si l'un des mots-clés de la compétence est présent dans le texte
@@ -273,6 +299,269 @@ class ScrapingService:
         try:
             db.session.commit()
             logs.append(f"Scraping terminé : {new_jobs_count} nouvelle(s) offre(s) enregistrée(s).")
+        except Exception as commit_error:
+            logs.append(f"Erreur lors de l'enregistrement final : {str(commit_error)}")
+            db.session.rollback()
+            new_jobs_count = 0
+
+        return {"new_jobs": new_jobs_count, "total_found": len(raw_jobs), "logs": logs}
+
+    def run_france_travail_and_persist(self, mots_cles, commune=None, limit=50):
+        """
+        Collecte des offres via l'API officielle France Travail, en complément du
+        scraping LinkedIn (run_scraping_and_persist).
+
+        Contrairement au scraping, le secteur et les compétences ne sont pas devinés
+        (mot-clé de recherche capitalisé / correspondance de sous-chaînes) : ils
+        proviennent directement de la source (classification ROME officielle et
+        référentiel de compétences), ce qui évite structurellement, pour cette
+        source, le problème de cohérence secteur/contenu identifié sur les données
+        issues du scraping (voir RAPPORT_PROJET.md, section 7.2, anomalie n°4).
+
+        Args:
+            mots_cles (str) : Mots-clés de recherche (ex: "Développeur informatique")
+            commune (str|None) : Code INSEE de la commune ciblée (optionnel)
+            limit (int) : Nombre maximum d'offres à traiter
+
+        Returns:
+            dict : {"new_jobs": int, "total_found": int, "logs": list[str]}
+        """
+        if not self.france_travail_client:
+            return {
+                "new_jobs": 0, "total_found": 0,
+                "logs": ["Client France Travail non configuré (FRANCE_TRAVAIL_CLIENT_ID / "
+                         "FRANCE_TRAVAIL_CLIENT_SECRET absents de .env)."]
+            }
+
+        range_str = f"0-{max(limit - 1, 0)}"
+        offres = self.france_travail_client.search_offres(mots_cles, commune=commune, range_str=range_str)
+        new_jobs_count = 0
+        lieu_log = f" à {commune}" if commune else ""
+        logs = [f"[France Travail] Recherche \"{mots_cles}\"{lieu_log} : {len(offres)} offre(s) trouvée(s)."]
+
+        for offre in offres:
+            try:
+                existing_job = OffreEmploi.query.filter_by(linkedin_job_id=offre["id_externe"]).first()
+                if existing_job:
+                    logs.append(f"Offre déjà connue ignorée : {offre['titre_poste']}")
+                    continue
+
+                secteur = Secteur.query.filter_by(nom_secteur=offre["secteur"]).first()
+                if not secteur:
+                    secteur = Secteur(nom_secteur=offre["secteur"])
+                    db.session.add(secteur)
+                    db.session.flush()
+
+                entreprise = Entreprise.query.filter_by(nom_entreprise=offre["nom_entreprise"]).first()
+                if not entreprise:
+                    entreprise = Entreprise(
+                        nom_entreprise=offre["nom_entreprise"],
+                        localisation=offre["localisation"],
+                        id_secteur=secteur.id_secteur
+                    )
+                    db.session.add(entreprise)
+                    db.session.flush()
+
+                titre_poste, description, langue_originale = traduire_si_anglais(
+                    offre["titre_poste"], offre["description"]
+                )
+                new_job = OffreEmploi(
+                    linkedin_job_id=offre["id_externe"],  # réutilise la colonne d'identifiant externe unique, quel que soit la source
+                    titre_poste=titre_poste,
+                    description=description,
+                    langue_originale=langue_originale,
+                    id_entreprise=entreprise.id_entreprise,
+                    id_secteur=secteur.id_secteur,
+                    date_scraping=datetime.now()
+                )
+
+                # Compétences directement issues du référentiel officiel France Travail,
+                # pas d'une recherche de mots-clés dans la description.
+                for nom_competence in offre["competences"]:
+                    competence = Competence.query.filter_by(nom_competence=nom_competence).first()
+                    if not competence:
+                        competence = Competence(nom_competence=nom_competence, type_competence="Technique")
+                        db.session.add(competence)
+                        db.session.flush()
+                    new_job.competences.append(competence)
+
+                db.session.add(new_job)
+                new_jobs_count += 1
+                logs.append(f"Offre enregistrée (France Travail) : {new_job.titre_poste} chez {offre['nom_entreprise']}")
+
+            except Exception as job_error:
+                logs.append(f"Erreur lors du traitement de l'offre {offre.get('titre_poste')} : {str(job_error)}")
+                db.session.rollback()
+                continue
+
+        try:
+            db.session.commit()
+            logs.append(f"Collecte France Travail terminée : {new_jobs_count} nouvelle(s) offre(s) enregistrée(s).")
+        except Exception as commit_error:
+            logs.append(f"Erreur lors de l'enregistrement final : {str(commit_error)}")
+            db.session.rollback()
+            new_jobs_count = 0
+
+        return {"new_jobs": new_jobs_count, "total_found": len(offres), "logs": logs}
+
+    def run_lefaso_and_persist(self, keywords, limit=10):
+        """
+        Collecte des offres via le site public emploi.lefaso.net, en complément du
+        scraping LinkedIn et de l'API France Travail, pour diversifier les sources
+        couvrant le marché de l'emploi burkinabè (section 5.7 du rapport).
+
+        Cette source ne fournit pas de classification structurée (contrairement à
+        France Travail) : comme pour LinkedIn, le secteur est dérivé du mot-clé de
+        recherche et les compétences sont détectées par le dictionnaire de mots-clés.
+        """
+        raw_jobs = self.lefaso_client.search_offres(keywords, limit=limit)
+        new_jobs_count = 0
+        logs = [f"[LeFaso Emploi] Recherche \"{keywords}\" : {len(raw_jobs)} offre(s) trouvée(s)."]
+
+        for raw_job in raw_jobs:
+            try:
+                existing_job = OffreEmploi.query.filter_by(linkedin_job_id=raw_job["id_externe"]).first()
+                if existing_job:
+                    logs.append(f"Offre déjà connue ignorée : {raw_job['titre_poste']}")
+                    continue
+
+                secteur_nom = keywords.capitalize()
+                secteur = Secteur.query.filter_by(nom_secteur=secteur_nom).first()
+                if not secteur:
+                    secteur = Secteur(nom_secteur=secteur_nom)
+                    db.session.add(secteur)
+                    db.session.flush()
+
+                entreprise_nom = raw_job["nom_entreprise"]
+                entreprise = Entreprise.query.filter_by(nom_entreprise=entreprise_nom).first()
+                if not entreprise:
+                    entreprise = Entreprise(
+                        nom_entreprise=entreprise_nom,
+                        localisation=raw_job["localisation"],
+                        id_secteur=secteur.id_secteur
+                    )
+                    db.session.add(entreprise)
+                    db.session.flush()
+
+                titre_poste, description, langue_originale = traduire_si_anglais(
+                    raw_job["titre_poste"], raw_job["description"]
+                )
+                new_job = OffreEmploi(
+                    linkedin_job_id=raw_job["id_externe"],  # colonne d'identifiant externe unique, quel que soit la source
+                    titre_poste=titre_poste,
+                    description=description,
+                    langue_originale=langue_originale,
+                    id_entreprise=entreprise.id_entreprise,
+                    id_secteur=secteur.id_secteur,
+                    date_scraping=datetime.now()
+                )
+
+                description_lower = description.lower()  # texte final (traduit si nécessaire), pas le texte brut
+                for skill_name, keywords_list in self.skills_dictionary.items():
+                    if any(kw in description_lower for kw in keywords_list):
+                        competence = Competence.query.filter_by(nom_competence=skill_name).first()
+                        if not competence:
+                            competence = Competence(
+                                nom_competence=skill_name,
+                                type_competence="Technique" if skill_name not in ("Anglais", "Communication") else "Humaine"
+                            )
+                            db.session.add(competence)
+                            db.session.flush()
+                        new_job.competences.append(competence)
+
+                db.session.add(new_job)
+                new_jobs_count += 1
+                logs.append(f"Offre enregistrée (LeFaso Emploi) : {new_job.titre_poste} chez {entreprise_nom}")
+
+            except Exception as job_error:
+                logs.append(f"Erreur lors du traitement de l'offre {raw_job.get('titre_poste')} : {str(job_error)}")
+                db.session.rollback()
+                continue
+
+        try:
+            db.session.commit()
+            logs.append(f"Collecte LeFaso Emploi terminée : {new_jobs_count} nouvelle(s) offre(s) enregistrée(s).")
+        except Exception as commit_error:
+            logs.append(f"Erreur lors de l'enregistrement final : {str(commit_error)}")
+            db.session.rollback()
+            new_jobs_count = 0
+
+        return {"new_jobs": new_jobs_count, "total_found": len(raw_jobs), "logs": logs}
+
+    def run_ici_pe_and_persist(self, keywords, limit=10):
+        """
+        Collecte des offres via le site public ici-pe.com/jobs (cabinet de recrutement
+        burkinabè), quatrième source après LinkedIn, France Travail et Emploi LeFaso.net
+        (section 5.8 du rapport). Même logique que run_lefaso_and_persist : secteur dérivé
+        du mot-clé de recherche, compétences détectées par le dictionnaire de mots-clés.
+        """
+        raw_jobs = self.ici_pe_client.search_offres(keywords, limit=limit)
+        new_jobs_count = 0
+        logs = [f"[ICI Partenaires Entreprises] Recherche \"{keywords}\" : {len(raw_jobs)} offre(s) trouvée(s)."]
+
+        for raw_job in raw_jobs:
+            try:
+                existing_job = OffreEmploi.query.filter_by(linkedin_job_id=raw_job["id_externe"]).first()
+                if existing_job:
+                    logs.append(f"Offre déjà connue ignorée : {raw_job['titre_poste']}")
+                    continue
+
+                secteur_nom = keywords.capitalize()
+                secteur = Secteur.query.filter_by(nom_secteur=secteur_nom).first()
+                if not secteur:
+                    secteur = Secteur(nom_secteur=secteur_nom)
+                    db.session.add(secteur)
+                    db.session.flush()
+
+                entreprise_nom = raw_job["nom_entreprise"]
+                entreprise = Entreprise.query.filter_by(nom_entreprise=entreprise_nom).first()
+                if not entreprise:
+                    entreprise = Entreprise(
+                        nom_entreprise=entreprise_nom,
+                        localisation=raw_job["localisation"],
+                        id_secteur=secteur.id_secteur
+                    )
+                    db.session.add(entreprise)
+                    db.session.flush()
+
+                titre_poste, description, langue_originale = traduire_si_anglais(
+                    raw_job["titre_poste"], raw_job["description"]
+                )
+                new_job = OffreEmploi(
+                    linkedin_job_id=raw_job["id_externe"],  # colonne d'identifiant externe unique, quel que soit la source
+                    titre_poste=titre_poste,
+                    description=description,
+                    langue_originale=langue_originale,
+                    id_entreprise=entreprise.id_entreprise,
+                    id_secteur=secteur.id_secteur,
+                    date_scraping=datetime.now()
+                )
+
+                description_lower = description.lower()  # texte final (traduit si nécessaire), pas le texte brut
+                for skill_name, keywords_list in self.skills_dictionary.items():
+                    if any(kw in description_lower for kw in keywords_list):
+                        competence = Competence.query.filter_by(nom_competence=skill_name).first()
+                        if not competence:
+                            competence = Competence(
+                                nom_competence=skill_name,
+                                type_competence="Technique" if skill_name not in ("Anglais", "Communication") else "Humaine"
+                            )
+                            db.session.add(competence)
+                            db.session.flush()
+                        new_job.competences.append(competence)
+
+                db.session.add(new_job)
+                new_jobs_count += 1
+                logs.append(f"Offre enregistrée (ICI Partenaires Entreprises) : {new_job.titre_poste} chez {entreprise_nom}")
+
+            except Exception as job_error:
+                logs.append(f"Erreur lors du traitement de l'offre {raw_job.get('titre_poste')} : {str(job_error)}")
+                db.session.rollback()
+                continue
+
+        try:
+            db.session.commit()
+            logs.append(f"Collecte ICI Partenaires Entreprises terminée : {new_jobs_count} nouvelle(s) offre(s) enregistrée(s).")
         except Exception as commit_error:
             logs.append(f"Erreur lors de l'enregistrement final : {str(commit_error)}")
             db.session.rollback()
@@ -604,6 +893,99 @@ class AnalyticsService:
             resultats.append({"nom": secteur.nom_secteur, "croissance": croissance, "recent": recent})
 
         resultats.sort(key=lambda r: r["croissance"], reverse=True)
+        return resultats[:limit]
+
+    def get_forecast_secteurs(self, limit=5):
+        """
+        Projette, pour chaque secteur, le nombre d'offres attendu sur les 30 prochains jours.
+
+        Méthode retenue : extrapolation linéaire simple (méthode de la dérive / « naive drift »),
+        appliquée aux trois dernières fenêtres de 30 jours. On prolonge la variation moyenne déjà
+        observée plutôt que d'ajuster un modèle de séries temporelles complexe — choix cohérent
+        avec le parti pris explicable de la section 4.1, et transparent sur ses limites : une
+        prévision fiable seulement si la tendance récente se maintient, à lire comme un indicateur
+        d'orientation plutôt qu'un engagement chiffré.
+        """
+        now = datetime.now()
+        bornes = [now - timedelta(days=90), now - timedelta(days=60), now - timedelta(days=30), now]
+
+        resultats = []
+        for secteur in Secteur.query.all():
+            anterieur = OffreEmploi.query.filter(
+                OffreEmploi.id_secteur == secteur.id_secteur,
+                OffreEmploi.date_scraping >= bornes[0],
+                OffreEmploi.date_scraping < bornes[1]
+            ).count()
+            recent = OffreEmploi.query.filter(
+                OffreEmploi.id_secteur == secteur.id_secteur,
+                OffreEmploi.date_scraping >= bornes[1],
+                OffreEmploi.date_scraping < bornes[2]
+            ).count()
+            actuel = OffreEmploi.query.filter(
+                OffreEmploi.id_secteur == secteur.id_secteur,
+                OffreEmploi.date_scraping >= bornes[2]
+            ).count()
+
+            if anterieur == 0 and recent == 0 and actuel == 0:
+                continue
+
+            derive = ((recent - anterieur) + (actuel - recent)) / 2
+            prevision = max(0, round(actuel + derive))
+            tendance = "hausse" if derive > 0.4 else ("baisse" if derive < -0.4 else "stable")
+
+            resultats.append({
+                "nom": secteur.nom_secteur, "actuel": actuel, "prevision": prevision,
+                "derive": round(derive, 1), "tendance": tendance
+            })
+
+        resultats.sort(key=lambda r: abs(r["derive"]), reverse=True)
+        return resultats[:limit]
+
+    def get_ecart_offre_demande(self, limit=8):
+        """
+        Estime, pour chaque secteur, l'écart entre l'offre du marché (nombre d'offres collectées)
+        et la demande étudiante déclarée (emploi recherché renseigné dans le profil candidat
+        optionnel, section 5.5). Le rapprochement se fait par correspondance textuelle simple
+        entre l'emploi souhaité et le nom du secteur — une approche par mots-clés cohérente avec
+        le reste du projet (section 5.2), et rendue pertinente ici par le fait que chaque secteur
+        de cette base est lui-même dérivé d'un intitulé de poste plutôt que d'une branche
+        d'activité au sens large (section 7.2, anomalie n°4).
+
+        Limite assumée : cet indicateur reste peu significatif tant que peu d'utilisateurs ont
+        renseigné leur profil candidat ; il gagne en fiabilité à mesure que la base d'inscrits
+        grandit, contrairement aux indicateurs de volume d'offres qui ne dépendent que du scraping.
+        """
+        profils = ProfilCandidat.query.all()
+
+        resultats = []
+        for secteur in Secteur.query.all():
+            offres = OffreEmploi.query.filter_by(id_secteur=secteur.id_secteur).count()
+            if offres == 0:
+                continue
+
+            nom_lower = secteur.nom_secteur.lower()
+            demande = sum(
+                1 for p in profils
+                if p.emploi_souhaite and (
+                    p.emploi_souhaite.lower() in nom_lower or nom_lower in p.emploi_souhaite.lower()
+                )
+            )
+
+            if demande == 0:
+                statut = "Offre non couverte par la demande étudiante déclarée"
+            elif offres > demande:
+                statut = "Tension favorable aux candidats (plus d'offres que de demande déclarée)"
+            elif offres < demande:
+                statut = "Tension favorable aux employeurs (demande déclarée supérieure à l'offre)"
+            else:
+                statut = "Offre et demande déclarée à l'équilibre"
+
+            resultats.append({
+                "nom": secteur.nom_secteur, "offres": offres, "demande": demande,
+                "ecart": offres - demande, "statut": statut
+            })
+
+        resultats.sort(key=lambda r: abs(r["ecart"]), reverse=True)
         return resultats[:limit]
 
     def create_rapport(self, user_id, titre_rapport, secteur_id=None):
