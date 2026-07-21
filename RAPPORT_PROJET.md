@@ -105,6 +105,9 @@ guideUniversitaire/
 │   │   ├── job_analyzer.py               # JobAnalyzerPipeline : architecture cible (spaCy + 2 CamemBERT fine-tunés)
 │   │   ├── demo_pipeline_generique.py    # Démonstration exécutable du pipeline avec des modèles publics
 │   │   ├── collecte_corpus.py            # Script local : collecte le corpus d'entraînement (sans GPU, sans Colab)
+│   │   ├── mapping_secteurs.py           # Correspondance secteurs réels → 13 catégories cibles (suggestion, pas vérité terrain)
+│   │   ├── pre_annoter_corpus.py         # Script local (CPU) : pré-annotation NER + zero-shot d'un échantillon équilibré du corpus
+│   │   ├── pre_annotation_colab.ipynb    # Variante Colab (GPU) du script ci-dessus
 │   │   └── entrainement_colab.ipynb      # Notebook Google Colab pour entraîner les deux modèles CamemBERT
 │   ├── static/
 │   │   └── css/style.css                 # Feuille de style unique de l'application
@@ -276,7 +279,124 @@ classDiagram
 | `user` | Compte utilisateur de l'application |
 | `rapport_personnalise` | Rapport de compétences généré par un utilisateur pour un secteur donné |
 
-### 4.4 Diagramme de cas d'utilisation
+### 4.4 Modèle Conceptuel de Données (MCD)
+
+Le diagramme de classes de la section 4.3 exprime la structure retenue dans un formalisme orienté programmation (UML). Le **Modèle Conceptuel de Données**, issu de la méthode Merise, exprime la même réalité indépendamment de toute implémentation technique : uniquement des entités (le « quoi »), leurs propriétés, et des associations porteuses de cardinalités — sans notion de clé étrangère, qui n'apparaît qu'au niveau logique (section 4.5).
+
+```mermaid
+erDiagram
+    SECTEUR {
+        int id_secteur
+        string nom_secteur
+    }
+    ENTREPRISE {
+        int id_entreprise
+        string nom_entreprise
+        string localisation
+    }
+    OFFRE_EMPLOI {
+        int id_offre
+        string linkedin_job_id
+        string titre_poste
+        text description
+        date date_publication
+        datetime date_scraping
+        string langue_originale
+    }
+    COMPETENCE {
+        int id_competence
+        string nom_competence
+        string type_competence
+    }
+    USER {
+        int id
+        string username
+        string email
+        string password
+        datetime date_inscription
+        boolean onboarding_vu
+    }
+    PROFIL_CANDIDAT {
+        int id_profil
+        string niveau_competence
+        string emploi_souhaite
+        text competences_actuelles
+        datetime date_creation
+    }
+    RAPPORT_PERSONNALISE {
+        int id_rapport
+        string titre_rapport
+        text competences_recherchees
+        datetime date_creation
+    }
+
+    SECTEUR ||--o{ ENTREPRISE : couvre
+    SECTEUR ||--o{ OFFRE_EMPLOI : classe
+    SECTEUR ||--o{ RAPPORT_PERSONNALISE : cible
+    ENTREPRISE ||--o{ OFFRE_EMPLOI : publie
+    OFFRE_EMPLOI }o--o{ COMPETENCE : requiert
+    USER ||--o{ RAPPORT_PERSONNALISE : genere
+    USER ||--o| PROFIL_CANDIDAT : possede
+```
+
+**Cardinalités (notation Merise, min-max)** :
+
+| Entité | Association | Entité | Cardinalité côté gauche | Cardinalité côté droit |
+|---|---|---|---|---|
+| SECTEUR | couvre | ENTREPRISE | 0,n | 1,1 |
+| SECTEUR | classe | OFFRE_EMPLOI | 0,n | 1,1 |
+| SECTEUR | cible | RAPPORT_PERSONNALISE | 0,n | 0,1 |
+| ENTREPRISE | publie | OFFRE_EMPLOI | 0,n | 1,1 |
+| OFFRE_EMPLOI | requiert | COMPETENCE | 0,n | 0,n |
+| USER | génère | RAPPORT_PERSONNALISE | 0,n | 1,1 |
+| USER | possède | PROFIL_CANDIDAT | 0,1 | 1,1 |
+
+Deux cardinalités méritent une explication, car elles ne sont pas arbitraires mais dérivées directement des contraintes `nullable` posées dans `app/models.py` :
+- **SECTEUR–RAPPORT_PERSONNALISE (0,1)** : `RapportPersonnalise.id_secteur` est `nullable=True` — un rapport personnalisé peut cibler zéro secteur (rapport transversal) ou un seul, jamais plusieurs.
+- **USER–PROFIL_CANDIDAT (0,1 côté USER)** : le profil candidat est une invitation facultative présentée une seule fois après inscription (section 5.5) ; un utilisateur peut donc n'avoir aucun profil, mais jamais plus d'un (`id_user` porte une contrainte `unique`).
+
+L'association **requiert** entre OFFRE_EMPLOI et COMPETENCE, porteuse d'une cardinalité (0,n) des deux côtés, est une association plusieurs-à-plusieurs : au niveau conceptuel, elle reste une association simple (sans attribut propre) ; c'est uniquement au passage au niveau logique qu'elle donne naissance à une table de jonction.
+
+### 4.5 Modèle Logique de Données (MLD)
+
+Le MLD applique les règles de passage standard de Merise au MCD de la section 4.4 : chaque entité devient une relation (table), chaque association porteuse d'une cardinalité (0,n)/(1,1) ou (0,n)/(0,1) se traduit par une clé étrangère migrant du côté « n », et l'association plusieurs-à-plusieurs (0,n)/(0,n) devient une relation à part entière dont la clé primaire est la concaténation des clés étrangères des deux entités reliées.
+
+```
+SECTEUR (#id_secteur, nom_secteur)
+
+ENTREPRISE (#id_entreprise, nom_entreprise, localisation, id_secteur)
+    id_secteur en référence à SECTEUR.id_secteur
+
+OFFRE_EMPLOI (#id_offre, linkedin_job_id, titre_poste, description,
+              date_publication, date_scraping, langue_originale,
+              id_entreprise, id_secteur)
+    id_entreprise en référence à ENTREPRISE.id_entreprise
+    id_secteur en référence à SECTEUR.id_secteur
+
+COMPETENCE (#id_competence, nom_competence, type_competence)
+
+OFFRE_COMPETENCE (#id_offre, #id_competence)
+    id_offre en référence à OFFRE_EMPLOI.id_offre
+    id_competence en référence à COMPETENCE.id_competence
+
+USER (#id, username, email, password, date_inscription, onboarding_vu)
+
+PROFIL_CANDIDAT (#id_profil, id_user, niveau_competence, emploi_souhaite,
+                  competences_actuelles, date_creation)
+    id_user en référence à USER.id, avec contrainte d'unicité
+    (traduit la cardinalité (0,1) de USER dans l'association possède)
+
+RAPPORT_PERSONNALISE (#id_rapport, titre_rapport, competences_recherchees,
+                       date_creation, id_user, id_secteur)
+    id_user en référence à USER.id (obligatoire)
+    id_secteur en référence à SECTEUR.id_secteur (facultatif, colonne nullable)
+```
+
+*Convention : `#` préfixe une clé primaire ; les colonnes en italique dans le code applicatif (`db.ForeignKey`) correspondent directement aux clés étrangères listées ci-dessus.*
+
+Ce MLD correspond exactement aux huit tables PostgreSQL effectivement créées par SQLAlchemy à partir de `app/models.py` (section 5.4) : aucune table ni colonne additionnelle n'est introduite par ce passage MCD → MLD, ce qui confirme que le schéma physique du projet respecte la modélisation conceptuelle plutôt que de s'en écarter au fil des évolutions (section 5.5).
+
+### 4.6 Diagramme de cas d'utilisation
 
 ```mermaid
 flowchart LR
@@ -301,7 +421,7 @@ flowchart LR
 
 Le second acteur, **Planificateur automatique**, matérialise le fait que la collecte n'est jamais déclenchée par l'utilisateur humain : c'est un acteur système à part entière, conformément à l'objectif du projet (section 1.3).
 
-### 4.5 Diagramme de séquence
+### 4.7 Diagramme de séquence
 
 **Collecte automatique planifiée** (scénario central du projet) :
 
@@ -355,7 +475,7 @@ sequenceDiagram
     Note over U,F: La page se réactualise automatiquement toutes les 60 secondes
 ```
 
-### 4.6 Diagramme des technologies utilisées
+### 4.8 Diagramme des technologies utilisées
 
 ```mermaid
 graph TD
@@ -422,6 +542,9 @@ Le système n'ayant pas de modèle entraîné, les « paramètres » ajustables 
 | `nlp/job_analyzer.py` | Pipeline NLP hybride cible (spaCy + 2 modèles CamemBERT fine-tunés), non encore branché sur `services.py` (voir 5.6) |
 | `nlp/demo_pipeline_generique.py` | Démonstration exécutable du pipeline NLP avec des modèles publics génériques |
 | `nlp/collecte_corpus.py` | Script local (sans GPU) qui collecte le corpus d'entraînement en réutilisant directement les clients de `scraping/`, exécuté avant l'entraînement sur Colab |
+| `nlp/mapping_secteurs.py` | Table de correspondance secteurs réels → 13 catégories cibles, utilisée pour pré-suggérer une catégorie à l'annotation (jamais une vérité terrain) |
+| `nlp/pre_annoter_corpus.py` | Script local : échantillonnage équilibré du corpus puis pré-annotation NER + zero-shot (suggestion à corriger, jamais une vérité terrain) |
+| `nlp/pre_annotation_colab.ipynb` | Variante Colab (GPU) de `pre_annoter_corpus.py`, pour les mêmes raisons de temps de calcul que l'entraînement |
 | `nlp/entrainement_colab.ipynb` | Notebook Google Colab pour entraîner (fine-tuner) les deux modèles CamemBERT ciblés |
 
 ### 5.5 Historique détaillé des évolutions apportées après la version initiale
@@ -479,14 +602,16 @@ Le tableau suivant documente, fonctionnalité par fonctionnalité, chaque modifi
 
 Ce test confirme que la mécanique du pipeline (chargement des modèles, composants personnalisés, agrégation des résultats) fonctionne de bout en bout, mais illustre aussi sa limite actuelle : un modèle générique ne distingue pas les compétences des autres mots (toutes taguées `MISC`), d'où la nécessité du fine-tuning dédié.
 
-**Entraînement (notebook Google Colab).** `app/nlp/entrainement_colab.ipynb` fournit un pipeline d'entraînement complet et directement exécutable sur Colab (avec accélération GPU) : jeu de données annoté au format BIO pour le NER (25 phrases), jeux de données étiquetés pour les deux classifieurs — secteur (30 exemples sur 10 secteurs) et catégorie d'emploi/type de contrat (30 exemples sur 6 catégories) —, tokenisation avec alignement des sous-mots, entraînement via `Trainer` de `transformers` avec évaluation `seqeval`, puis export des modèles aux chemins attendus par `job_analyzer.py`. Ces jeux de données sont volontairement restreints : ils valident la mécanique d'entraînement de bout en bout, mais un modèle réellement généralisable nécessitera des centaines d'exemples annotés.
+**Entraînement (notebook Google Colab).** `app/nlp/entrainement_colab.ipynb` fournit un pipeline d'entraînement complet et directement exécutable sur Colab (avec accélération GPU) : jeu de données annoté au format BIO pour le NER (25 phrases), jeux de données étiquetés pour les deux classifieurs — secteur (39 exemples sur 13 secteurs) et catégorie d'emploi/type de contrat (30 exemples sur 6 catégories) —, tokenisation avec alignement des sous-mots, entraînement via `Trainer` de `transformers` avec évaluation `seqeval`, puis export des modèles aux chemins attendus par `job_analyzer.py`. Ces jeux de données sont volontairement restreints : ils valident la mécanique d'entraînement de bout en bout, mais un modèle réellement généralisable nécessitera des centaines d'exemples annotés.
+
+*Les 13 secteurs cibles (contre 10 initialement) ont été fixés à partir de la distribution réelle des 30 secteurs en base (`app/nlp/mapping_secteurs.py`) : Education et Santé ont été ajoutés après avoir constaté qu'« Enseignant » est le 5e secteur en volume de la base (21 offres) et que « Médecin »/« Infirmier » représentaient à eux deux 14 offres, ne rentrant dans aucune des 10 catégories initiales ; Logistique a été ajouté pour la même raison. Plutôt que de forcer ces offres réelles dans une catégorie qui ne leur correspond pas ou de les exclure silencieusement, la taxonomie a été étendue pour refléter la réalité des données collectées.*
 
 Pour constituer ce volume, la collecte se fait **en local, pas dans Colab** : le fine-tuning a besoin d'un GPU (Colab), mais la collecte n'en a besoin d'aucun, et gagne à réutiliser directement le vrai code de production plutôt qu'une copie. `app/nlp/collecte_corpus.py` combine deux sources, dédupliquées par identifiant externe (même colonne que `OffreEmploi.linkedin_job_id`, ce qui évite structurellement de compter deux fois une offre déjà en base) :
 
 1. les offres **déjà collectées dans la base Postgres de production** (`recuperer_offres_db`) — gratuites, aucune requête réseau, données déjà réelles ;
 2. une **collecte fraîche** via `LefasoEmploiClient` et `IciPeClient` (section 5.8), importés directement — sans dupliquer leur code, contrairement à une collecte qui tournerait dans le notebook —, pour dépasser le volume déjà en base.
 
-Le résultat est exporté dans un fichier CSV horodaté (`corpus_offres_burkina_*.csv`) :
+Le résultat est exporté dans un fichier CSV horodaté (`corpus_offres_burkina_*.csv`), enrichi d'une **suggestion de catégorie** (`secteur_suggere`, `confiance_suggestion`) via `app/nlp/mapping_secteurs.py` :
 
 ```
 python -m app.nlp.collecte_corpus
@@ -494,7 +619,15 @@ python -m app.nlp.collecte_corpus
 
 *Note technique :* la récupération depuis la base construit sa propre instance Flask minimale (configuration + SQLAlchemy) plutôt que d'appeler `create_app()`, qui enregistrerait les routes et **démarrerait le planificateur de collecte automatique** — un effet de bord indésirable pour un simple export en lecture seule.
 
-Ce script a été exécuté en conditions réelles pendant le développement, avec succès : 360 offres récupérées depuis la base de production, combinées à une collecte fraîche de test, sans doublon. Le scraping LinkedIn (Playwright) n'est volontairement pas repris pour la collecte fraîche : le corpus vise avant tout le Burkina Faso, déjà bien couvert par les deux sources `requests`, plus légères. Le fichier CSV produit est ensuite annoté manuellement (Label Studio ou doccano) puis **uploadé directement dans le notebook Colab** (section « 0 bis ») au moment de l'entraînement, qui lui doit rester sur Colab pour bénéficier du GPU gratuit.
+**Suggestion de catégorie, pas vérité terrain.** `app/nlp/mapping_secteurs.py` fait correspondre chaque secteur réel de la base (dérivé d'un mot-clé de recherche, section 7.2 anomalie n°4) à l'une des 13 catégories cibles, avec un niveau de confiance (« haute » pour une correspondance sans ambiguïté, « a_verifier » pour un intitulé trop générique comme « Technicien » ou « Ingénieur » seul). Cette suggestion sert uniquement à **accélérer l'annotation par correction** plutôt qu'à blanc (section 7) : le secteur déjà stocké en base souffre du même biais qu'on cherche à corriger, une offre doit donc être relue et confirmée, jamais recopiée telle quelle.
+
+**Exécuté en conditions réelles** : 490 offres uniques obtenues (364 déjà en base + 126 issues d'une collecte fraîche), avec la répartition suivante des suggestions — Informatique (177), Marketing_Commercial (85), Comptabilite_Finance (55), Ressources_Humaines (43), Education (21), BTP_Genie_Civil (21), non catégorisé (17), Juridique (16), Logistique (16), Sante (14), Mines_Industrie (11), ONG_Social (6), Agriculture (5), Microfinance_Banque (3). Cette distribution très déséquilibrée (Informatique concentre 36 % du corpus) a conduit à ajouter trois mots-clés de collecte ciblés (« microfinance », « agriculture », « ong ») pour renforcer spécifiquement les catégories les plus sous-représentées, plutôt que de relancer une collecte générale qui aurait surtout grossi les catégories déjà abondantes.
+
+Le scraping LinkedIn (Playwright) n'est volontairement pas repris pour la collecte fraîche : le corpus vise avant tout le Burkina Faso, déjà bien couvert par les deux sources `requests`, plus légères. Le fichier CSV produit est ensuite annoté manuellement (Label Studio ou doccano) puis **uploadé directement dans le notebook Colab** (section « 0 bis ») au moment de l'entraînement, qui lui doit rester sur Colab pour bénéficier du GPU gratuit.
+
+**Pré-annotation semi-automatique (`app/nlp/pre_annoter_corpus.py`).** Avant l'annotation manuelle proprement dite, ce script prélève un échantillon équilibré du corpus (au plus `MAX_PAR_CATEGORIE_DEFAUT` offres par secteur suggéré, en priorisant les suggestions de confiance « haute ») puis exécute sur cet échantillon le même pipeline générique que `demo_pipeline_generique.py` (NER + classification zero-shot) pour pré-remplir deux colonnes supplémentaires — `secteur_zero_shot` et `categorie_contrat_zero_shot`, avec leurs scores — ainsi qu'une colonne `accord_secteur` qui signale les cas où la suggestion déterministe du mapping et la classification zero-shot divergent, utile pour prioriser la relecture humaine sur les offres les plus ambiguës plutôt que de toutes les traiter avec la même attention.
+
+*Limite rencontrée et arbitrage retenu.* Exécuté en local sur CPU sur un échantillon de 264 offres, ce script effectue trois passes de modèle par offre (deux classifications zero-shot et un NER) : au bout de plus de 7h30 de calcul, le processus s'est arrêté sans produire de sortie, le script n'écrivant le CSV qu'à la toute fin de son exécution plutôt que progressivement. Plutôt que d'investir du temps à fiabiliser l'exécution CPU (sauvegarde incrémentale, réduction de l'échantillon), le choix a été fait de reconduire l'arbitrage déjà retenu pour l'entraînement : `app/nlp/pre_annotation_colab.ipynb` reprend exactement la même logique sur un GPU Colab gratuit, ramenant l'exécution à quelques minutes.
 
 **État d'avancement.** Ce pipeline n'est *pas encore* intégré à `ScrapingService` : c'est un chantier autonome, fonctionnellement prouvé mais qui attend un fine-tuning sur données réelles annotées avant de remplacer la détection par mots-clés en production.
 

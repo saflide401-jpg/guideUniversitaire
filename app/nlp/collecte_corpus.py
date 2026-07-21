@@ -35,20 +35,26 @@ from flask import Flask
 
 from config import Config
 from app import db
-from app.models import OffreEmploi, Entreprise
+from app.models import OffreEmploi, Entreprise, Secteur
 from app.scraping.lefaso_client import LefasoEmploiClient
 from app.scraping.ici_pe_client import IciPeClient
+from app.nlp.mapping_secteurs import suggerer_categorie
 
 MOTS_CLES_COLLECTE = [
     "informatique", "comptable", "ingénieur", "communication",
     "commercial", "logistique", "ressources humaines", "marketing",
     "juriste", "agronome",
+    # Ajoutés après avoir constaté que ces catégories restaient sous-représentées
+    # dans le corpus (Microfinance_Banque, Agriculture, ONG_Social : moins de 6
+    # offres chacune sur 490, voir RAPPORT_PROJET.md section 5.6).
+    "microfinance", "agriculture", "ong",
 ]
 LIMITE_PAR_RECHERCHE = 10  # même volume que la collecte planifiée de l'application (scheduler.py)
 
 COLONNES_CSV = [
     "id_externe", "titre_poste", "nom_entreprise", "localisation",
     "description", "source", "mots_cles_recherche",
+    "secteur_suggere", "confiance_suggestion",
 ]
 
 
@@ -69,11 +75,17 @@ def recuperer_offres_db():
     with app.app_context():
         rows = db.session.query(
             OffreEmploi.linkedin_job_id, OffreEmploi.titre_poste, OffreEmploi.description,
-            Entreprise.nom_entreprise, Entreprise.localisation,
-        ).join(Entreprise, OffreEmploi.id_entreprise == Entreprise.id_entreprise).all()
+            Entreprise.nom_entreprise, Entreprise.localisation, Secteur.nom_secteur,
+        ).join(Entreprise, OffreEmploi.id_entreprise == Entreprise.id_entreprise) \
+         .join(Secteur, OffreEmploi.id_secteur == Secteur.id_secteur).all()
 
-    return [
-        {
+    offres = []
+    for row in rows:
+        # Suggestion issue du mapping (app/nlp/mapping_secteurs.py) : une aide à
+        # l'annotation, jamais une vérité terrain — le secteur déjà en base souffre
+        # du même biais que celui qu'on corrige (anomalie n°4, section 7.2).
+        categorie_suggeree, confiance = suggerer_categorie(row.nom_secteur)
+        offres.append({
             "id_externe": row.linkedin_job_id,
             "titre_poste": row.titre_poste,
             "nom_entreprise": row.nom_entreprise,
@@ -81,9 +93,10 @@ def recuperer_offres_db():
             "description": row.description or "Description non disponible.",
             "source": "base_production",
             "mots_cles_recherche": "",
-        }
-        for row in rows
-    ]
+            "secteur_suggere": categorie_suggeree or "",
+            "confiance_suggestion": confiance,
+        })
+    return offres
 
 
 def collecter():
@@ -95,6 +108,10 @@ def collecter():
     ids_vus = set()
 
     for mots_cles in MOTS_CLES_COLLECTE:
+        # Même dérivation que ScrapingService (secteur = mot-clé capitalisé),
+        # utilisée ici seulement pour retrouver une suggestion dans le mapping.
+        categorie_suggeree, confiance = suggerer_categorie(mots_cles.capitalize())
+
         for source_nom, client in [("lefaso", lefaso_client), ("ici_pe", ici_pe_client)]:
             print(f"[{source_nom}] Recherche : {mots_cles}")
             for offre in client.search_offres(mots_cles, limit=LIMITE_PAR_RECHERCHE):
@@ -103,6 +120,8 @@ def collecter():
                 ids_vus.add(offre["id_externe"])
                 offre["source"] = source_nom
                 offre["mots_cles_recherche"] = mots_cles
+                offre["secteur_suggere"] = categorie_suggeree or ""
+                offre["confiance_suggestion"] = confiance
                 toutes_les_offres.append(offre)
 
     return toutes_les_offres
