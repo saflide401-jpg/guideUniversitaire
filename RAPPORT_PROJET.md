@@ -99,16 +99,21 @@ guideUniversitaire/
 │   ├── forms.py                          # Formulaires WTForms et leurs règles de validation
 │   ├── scheduler.py                      # Planification de la collecte automatique (APScheduler)
 │   ├── scraping/
-│   │   └── scraper.py                    # Moteur de collecte (Playwright)
-│   ├── nlp/                              # Pipeline NLP hybride — chantier en cours, voir 5.6
+│   │   ├── scraper.py                    # Moteur de collecte LinkedIn (Playwright)
+│   │   ├── lefaso_client.py              # Client du site public Emploi LeFaso.net (requests + BeautifulSoup)
+│   │   └── ici_pe_client.py              # Client du site public ICI Partenaires Entreprises (requests + BeautifulSoup)
+│   ├── nlp/                              # Pipeline NLP hybride et guide d'orientation
 │   │   ├── __init__.py
-│   │   ├── job_analyzer.py               # JobAnalyzerPipeline : architecture cible (spaCy + 2 CamemBERT fine-tunés)
+│   │   ├── job_analyzer.py               # JobAnalyzerPipeline : architecture cible (spaCy + 2 CamemBERT fine-tunés), voir 5.6
 │   │   ├── demo_pipeline_generique.py    # Démonstration exécutable du pipeline avec des modèles publics
 │   │   ├── collecte_corpus.py            # Script local : collecte le corpus d'entraînement (sans GPU, sans Colab)
 │   │   ├── mapping_secteurs.py           # Correspondance secteurs réels → 13 catégories cibles (suggestion, pas vérité terrain)
 │   │   ├── pre_annoter_corpus.py         # Script local (CPU) : pré-annotation NER + zero-shot d'un échantillon équilibré du corpus
 │   │   ├── pre_annotation_colab.ipynb    # Variante Colab (GPU) du script ci-dessus
-│   │   └── entrainement_colab.ipynb      # Notebook Google Colab pour entraîner les deux modèles CamemBERT
+│   │   ├── entrainement_colab.ipynb      # Notebook Google Colab pour entraîner les deux modèles CamemBERT
+│   │   ├── convertir_export_label_studio.py # Convertit un export Label Studio au format d'entraînement attendu
+│   │   ├── guide_orientation.json        # Référentiel structuré : 100 métiers / 21 domaines / 31 centres transversaux, voir 5.9
+│   │   └── guide_matcher.py              # Rapproche le titre d'une offre à un métier du guide d'orientation, voir 5.9
 │   ├── static/
 │   │   └── css/style.css                 # Feuille de style unique de l'application
 │   └── templates/                        # Gabarits Jinja2
@@ -117,6 +122,7 @@ guideUniversitaire/
 │       ├── _icons.html                   # Macro Jinja2 centralisant les icônes SVG
 │       ├── dashboard.html                # Tableau de bord (indicateurs, graphiques, animation d'entrée)
 │       ├── offres.html                   # Liste des offres, filtres, pagination
+│       ├── offre_detail.html             # Fiche complète d'une offre + rapprochement guide d'orientation, voir 5.9
 │       ├── competences.html              # Classement des compétences, donut, nuage de mots-clés
 │       ├── tendances.html                # Répartition sectorielle, évolution, géographie, croissance
 │       ├── rapports.html                 # Génération de rapports personnalisés
@@ -161,6 +167,7 @@ Cette organisation matérialise la séparation en couches appliquée dans tout l
 ### 2.3 Étude de marché et concurrence
 
 Des solutions comparables existent mais ne répondent pas au besoin identifié :
+
 - **LinkedIn Talent Insights** et **Indeed Hiring Lab** : outils d'analyse de marché de l'emploi, mais orientés entreprises/recruteurs, payants, et non focalisés sur un public étudiant francophone ou une zone géographique spécifique.
 - **Burning Glass Technologies** (fondée en 1999, aujourd'hui intégrée à Lightcast) : pionnier de l'analyse temps réel des offres d'emploi et du matching CV/poste par IA à grande échelle ; solution mature et éprouvée, mais destinée aux entreprises, recruteurs et institutions (analyse de marché du travail à des fins de planification RH ou de politique publique), payante, et sans déclinaison pensée pour l'auto-orientation d'un étudiant. Deux de ses fonctionnalités phares — prévision de tendances et mesure d'un écart offre/demande — ont été reprises dans une version simplifiée et explicable (section 5.7) ; le matching CV/poste et le benchmarking salarial restent hors périmètre, faute de collecte de CV ou de données salariales.
 - **Statistiques publiques** (France Travail, INSEE) : fiables mais peu granulaires en temps réel et non centrées sur les compétences demandées.
@@ -180,6 +187,7 @@ Des solutions comparables existent mais ne répondent pas au besoin identifié :
 ### 3.2 Exploration des données
 
 L'exploration est réalisée en continu via les tableaux de bord de l'application plutôt que via un notebook d'analyse ponctuel :
+
 - Distribution des offres par secteur et par entreprise.
 - Distribution géographique (répartition par ville/pays).
 - Distribution temporelle (volume mensuel sur une fenêtre de 2 ans).
@@ -198,11 +206,13 @@ L'exploration est réalisée en continu via les tableaux de bord de l'applicatio
 ### 4.1 Choix des techniques d'analyse
 
 Ce projet n'utilise **pas d'algorithme de machine learning supervisé**. Ce choix est justifié par le contexte :
+
 - Aucun jeu de données labellisé n'est disponible pour entraîner un classifieur de compétences ou de secteurs.
 - Le besoin exprimé est descriptif (« que se passe-t-il sur le marché ? ») et non prédictif (« que va-t-il se passer ? »).
 - Une approche explicable était préférée à un modèle « boîte noire », pour un public non technique.
 
 **Techniques retenues** :
+
 - **Détection par règles** (correspondance de mots-clés dans un dictionnaire de compétences) pour transformer du texte libre en variables structurées.
 - **Agrégations statistiques SQL** (comptages, group by, pourcentages, comparaison de fenêtres temporelles) pour produire les indicateurs de tendance.
 - **Extrapolation linéaire simple** (méthode de la dérive, section 5.7) pour projeter un volume d'offres à 30 jours à partir des variations déjà observées — un premier niveau de « prévision » assumé comme statistique et explicable, pas comme un modèle de séries temporelles entraîné.
@@ -352,6 +362,7 @@ erDiagram
 | USER | possède | PROFIL_CANDIDAT | 0,1 | 1,1 |
 
 Deux cardinalités méritent une explication, car elles ne sont pas arbitraires mais dérivées directement des contraintes `nullable` posées dans `app/models.py` :
+
 - **SECTEUR–RAPPORT_PERSONNALISE (0,1)** : `RapportPersonnalise.id_secteur` est `nullable=True` — un rapport personnalisé peut cibler zéro secteur (rapport transversal) ou un seul, jamais plusieurs.
 - **USER–PROFIL_CANDIDAT (0,1 côté USER)** : le profil candidat est une invitation facultative présentée une seule fois après inscription (section 5.5) ; un utilisateur peut donc n'avoir aucun profil, mais jamais plus d'un (`id_user` porte une contrainte `unique`).
 
@@ -501,6 +512,7 @@ Ce schéma complète le tableau des outils présenté en 1.4 en montrant comment
 ### 5.1 Étapes de développement
 
 Le développement s'est déroulé de façon incrémentale :
+
 1. Modélisation des données et couche de persistance (SQLAlchemy).
 2. Couche de services métier (comptes utilisateurs, collecte, analyses statistiques), strictement séparée des routes HTTP.
 3. Premier moteur de collecte (Selenium), puis **migration vers Playwright** après identification de limites de fiabilité (détaillé en section 7).
@@ -546,6 +558,8 @@ Le système n'ayant pas de modèle entraîné, les « paramètres » ajustables 
 | `nlp/pre_annoter_corpus.py` | Script local : échantillonnage équilibré du corpus puis pré-annotation NER + zero-shot (suggestion à corriger, jamais une vérité terrain) |
 | `nlp/pre_annotation_colab.ipynb` | Variante Colab (GPU) de `pre_annoter_corpus.py`, pour les mêmes raisons de temps de calcul que l'entraînement |
 | `nlp/entrainement_colab.ipynb` | Notebook Google Colab pour entraîner (fine-tuner) les deux modèles CamemBERT ciblés |
+| `nlp/guide_orientation.json` | Référentiel structuré (100 métiers, 21 domaines, 31 centres de formation transversaux) associant chaque métier à une filière universitaire et des centres de formation, voir 5.9 |
+| `nlp/guide_matcher.py` | Rapproche par similarité floue le titre d'une offre à un métier du guide d'orientation, voir 5.9 |
 
 ### 5.5 Historique détaillé des évolutions apportées après la version initiale
 
@@ -572,12 +586,14 @@ Le tableau suivant documente, fonctionnalité par fonctionnalité, chaque modifi
 | Pipeline NLP hybride (chantier en cours) | `app/nlp/*`, `requirements.txt` | Détaillé en 5.6 |
 | Prévision de tendances et écart offre/demande | `services.py` (`get_forecast_secteurs`, `get_ecart_offre_demande`), `routes.py` (`tendances`), `tendances.html`, `_icons.html` | Détaillé en 5.7 |
 | Diversification des sources de collecte (Emploi LeFaso.net) | `scraping/lefaso_client.py`, `services.py` (`run_lefaso_and_persist`), `scheduler.py`, `requirements.txt` | Détaillé en 5.8 |
+| Guide d'orientation : rapprochement offre → filière universitaire | `nlp/guide_orientation.json`, `nlp/guide_matcher.py`, `services.py` (`get_offre_by_id`), `routes.py` (`offre_detail`), `offre_detail.html`, `offres.html` | Détaillé en 5.9 |
 
 ### 5.6 Pipeline NLP hybride spaCy + CamemBERT (chantier en cours)
 
 **Contexte et motivation.** Une revue directe des données collectées a révélé une incohérence : des offres au contenu manifestement sans rapport avec leur secteur assigné (ex. une offre « Document Analyst » classée dans le secteur « Juriste »), ainsi que des entrées non professionnelles (une entreprise « Chessiverse AB » publiant des « offres » dont l'intitulé est en réalité un nom d'ouverture d'échecs). L'analyse de code a confirmé la cause : `ScrapingService.run_scraping_and_persist` (section 5.2) attribue le secteur d'une offre à partir du **mot-clé de recherche utilisé**, jamais du contenu réel de l'offre — une hypothèse qui échoue dès que la source renvoie un résultat peu pertinent pour une recherche pointue (voir anomalie n°4, section 7.2).
 
 **Architecture retenue.** Plutôt que d'étendre indéfiniment le dictionnaire de mots-clés existant (section 5.2), une architecture hybride a été engagée :
+
 - **spaCy** sert de squelette du pipeline : prétraitement du texte, tokenisation, et orchestration de composants exécutés dans un ordre défini.
 - **Deux modèles CamemBERT fine-tunés** sont encapsulés dans des composants spaCy personnalisés (`@Language.component`), chacun spécialisé sur une tâche :
   1. **Reconnaissance d'entités nommées (NER)** — extrait `METIER` (intitulé du poste), `COMPETENCE` (outils, langages, savoir-être) et `DIPLOME` (niveau d'étude requis) directement du texte, plutôt que de deviner un secteur global à partir d'un seul mot-clé de recherche.
@@ -648,6 +664,7 @@ Le scraping LinkedIn (Playwright) n'est volontairement pas repris pour la collec
 *Note : l'API officielle France Travail a été un temps intégrée comme source complémentaire (couvrant la France, en point de comparaison hors Burkina Faso), avant d'être retirée du pipeline de collecte.*
 
 **Sources explicitement écartées.** Deux pistes de diversification ont été envisagées puis rejetées avant l'implémentation, pour des raisons qui dépassent la simple faisabilité technique :
+
 - **Facebook** : ses conditions d'utilisation interdisent explicitement le scraping automatisé de son contenu, y compris public ; Meta a déjà engagé des poursuites contre des acteurs pratiquant cette collecte (ex. *hiQ Labs v. LinkedIn*, *Meta v. Bright Data*). Un scraper ciblant des groupes d'emploi Facebook nécessiterait de plus un compte connecté, ce qui aggraverait le risque (bannissement du compte, action légale).
 - **WhatsApp** : n'est pas un site web mais une messagerie chiffrée de bout en bout. En extraire des offres publiées dans des groupes impliquerait de rejoindre ces groupes et d'en capturer le contenu, ce qui exposerait au passage les numéros de téléphone et messages d'autres personnes — une donnée personnelle de tiers non consentants. Cela contredirait directement l'engagement pris en section 9.2 : *« aucune donnée personnelle de tiers n'est collectée »*.
 
@@ -677,6 +694,25 @@ Le scraping LinkedIn (Playwright) n'est volontairement pas repris pour la collec
 
 Le projet collecte donc désormais sur **trois sources indépendantes** : LinkedIn (scraping Playwright), Emploi LeFaso.net et ICI Partenaires Entreprises (ces deux derniers via `requests`/`BeautifulSoup`), ce qui réduit la dépendance à une seule source et donc à un seul risque de blocage.
 
+### 5.9 Guide d'orientation : rapprochement offre → filière universitaire
+
+**Contexte et motivation.** Le projet dispose d'un guide de référence externe associant, pour une centaine de métiers, la filière universitaire à suivre et des centres de formation (universitaires, en ligne, présentiels) permettant d'y accéder. L'objectif : qu'un étudiant consultant une offre d'emploi puisse voir directement quelle filière et quels centres de formation lui permettraient d'accéder à ce type de poste, sans quitter l'application.
+
+**Structuration de la donnée source.** Le guide a été fourni sous forme d'un fichier Markdown dont l'encodage était corrompu (accents doublement mal décodés, ex. `FiliÃ¨re` au lieu de `Filière`, certains caractères irrécupérables comme des flèches de titre ou le second octet UTF-8 de « É » perdus en amont). Après correction (ré-encodage cp1252 → décodage UTF-8, puis correction contextuelle ciblée des rares octets perdus), le contenu a été transformé en `app/nlp/guide_orientation.json` : **21 domaines**, **100 métiers** (chacun avec sa filière universitaire, ses compétences acquises et ses centres de formation), et **31 centres de formation transversaux** couvrant plusieurs domaines à la fois (Coursera, Udemy, universités multi-filières...). Une validation automatique (comptages, cohérence de la numérotation, champs obligatoires, doublons, résidus d'encodage) a confirmé l'intégrité du fichier avant son intégration.
+
+**Algorithme de rapprochement (`app/nlp/guide_matcher.py`).** Le NER CamemBERT (section 5.6) n'étant pas encore branché sur le flux de collecte réel, aucun champ « métier » nettoyé n'existe en base pour les offres déjà collectées : le rapprochement se fait donc directement sur `OffreEmploi.titre_poste`, seul champ texte disponible pour la totalité des offres, via une **similarité floue** plutôt qu'une égalité stricte :
+
+- normalisation (minuscules, suppression des accents, suppression de la ponctuation) ;
+- suppression d'une liste de mots vides incluant à la fois les mots grammaticaux usuels et des **intitulés de fonction trop génériques pour discriminer entre les 100 métiers** (« ingénieur », « responsable », « chef », « analyste »...) et un mot repéré comme polysémique dans le guide (« sécurité », qui y désigne aussi bien la sécurité informatique que la sécurité alimentaire ou le gardiennage) ;
+- score combinant un indice de Jaccard sur les mots restants (70 %) et un ratio de similarité de séquence (30 %, `difflib.SequenceMatcher`) ;
+- un **seuil de confiance** (0.30) en dessous duquel aucune correspondance n'est renvoyée : le système préfère explicitement ne rien afficher plutôt que de présenter un rapprochement non pertinent comme fiable.
+
+**Validation sur données réelles et ajustement.** Le rapprochement a été testé sur l'intégralité des 441 offres réelles en base. Un premier passage a révélé des faux positifs systématiques dus à des mots trop génériques ou polysémiques (ex. « Analyste des données scientifiques » rapproché à tort de « Analyste Crédit » via le seul mot « analyste » ; « Ingénieur réseau et sécurité » rapproché à tort de « Agent de Paix et Sécurité » via le seul mot « sécurité »). Après ajout de ces mots à la liste des mots vides et re-test complet, les correspondances confirmées comme erronées ont disparu (132 offres matchées sur 441, contre 145 avant correction) sans perte de correspondance légitime — vérifié en confirmant qu'aucun titre réel ne dépendait de ces mots seuls pour matcher correctement.
+
+**Intégration.** `ScrapingService.get_offre_by_id` (nouvelle méthode) et la route `GET /offres/<id_offre>` (`routes.py`) exposent une fiche complète par offre (`offre_detail.html`), affichant en plus des informations existantes une section « Guide d'orientation » : métier rapproché avec son taux de confiance, filière universitaire recommandée, compétences acquises, et tableau des centres de formation avec liens externes. Quand aucune correspondance fiable n'est trouvée, la section l'indique explicitement plutôt que de rester vide sans explication. La liste des offres (`offres.html`) et son panneau de détail existant pointent désormais vers cette fiche.
+
+**Limite assumée.** Le rapprochement reste **lexical, pas sémantique** : un mot rare mais réellement ambigu peut encore, dans de rares cas, produire une correspondance à confiance moyenne (~45-50 %) vers le mauvais domaine. Le taux de confiance affiché à l'utilisateur et l'avertissement invitant à vérifier la pertinence du rapprochement rendent cette limite transparente plutôt que dissimulée.
+
 ---
 
 ## 6. Résultats de l'analyse
@@ -684,6 +720,7 @@ Le projet collecte donc désormais sur **trois sources indépendantes** : Linked
 ### 6.1 Résultats et interprétation
 
 Sur l'état actuel de la base (360 offres) :
+
 - Le secteur **Développeur informatique** domine en volume (32 offres), suivi de Comptable (30), Ressources humaines (22), Ingénieur réseaux (22), Enseignant (21), Chef de projet marketing (20), Chargé de communication (19) et Développeur Python (19).
 - Les compétences les plus fréquemment détectées sont **Communication** (282 mentions), **Anglais** (157), **Git** (108) et **Python** (104), avec une répartition entre compétences techniques (47 %) et humaines (53 %) qui reste proche de l'équilibre malgré la croissance du volume de données.
 - La répartition géographique confirme la priorisation attendue : les localisations au Burkina Faso dominent nettement (Bobo-Dioulasso 57, Ouagadougou 42, une troisième localisation régionale 26, « Burkina Faso » générique 20 — soit 145 offres cumulées), devant les localisations hors zone conservées comme point de comparaison (Paris 30, Toulouse 21).
@@ -728,6 +765,7 @@ Le projet permet une comparaison concrète entre deux versions du moteur de coll
 ### 7.1 Description des méthodes de validation
 
 Le projet ne comportant pas de modèle prédictif, aucune validation croisée ni découpage train/test n'est applicable. La validation retenue est de nature **fonctionnelle et de bout en bout** :
+
 - Exécution réelle de la collecte contre la source publique, à chaque évolution du moteur de scraping.
 - Vérification directe en base de données (comptages, contrôle des associations offre/compétence) après chaque collecte de test.
 - Tests de rendu des pages (statuts HTTP, présence des données attendues) après chaque modification de template.

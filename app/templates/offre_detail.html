@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% import '_icons.html' as icons %}
+
+{% block content %}
+    <a href="{{ url_for('main.offres') }}" class="btn-text" style="margin-bottom: 10px; padding-left: 0;">{{ icons.icon('x', 12) }}Retour aux offres</a>
+
+    <div class="card" style="margin-bottom: 16px;">
+        <h1 style="font-size:18px; margin-bottom:4px;">{{ job.titre_poste }}</h1>
+        <div style="font-size:12px; color:var(--lk-muted);">
+            {{ job.entreprise.nom_entreprise }} · {{ job.secteur.nom_secteur }} · {{ job.entreprise.localisation or '—' }} · Collecté le {{ job.date_scraping.strftime('%d/%m/%Y') }}
+        </div>
+
+        <div class="detail-section-label">Compétences détectées</div>
+        <div class="skills-row">
+            {% for c in job.competences %}<span class="tag">{{ c.nom_competence }}</span>{% endfor %}
+            {% if not job.competences %}<span class="card-subtitle" style="margin:0;">Aucune compétence détectée.</span>{% endif %}
+        </div>
+
+        <div class="detail-section-label">Description</div>
+        <p class="detail-text">{{ job.description or "Aucune description disponible." }}</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">{{ icons.icon('award', 15) }}Guide d'orientation</div>
+
+        {% if orientation %}
+        <p class="card-subtitle" style="margin-top:-4px;">
+            Rapprochement automatique avec le métier « {{ orientation.nom }} » ({{ orientation.domaine }}) —
+            confiance {{ (orientation.score_confiance * 100) | round | int }}%. Ce rapprochement est indicatif :
+            vérifiez qu'il correspond bien à l'offre avant de vous orienter dessus.
+        </p>
+
+        <div class="detail-section-label">Filière universitaire recommandée</div>
+        <p class="detail-text">{{ orientation.filiere_universitaire }}</p>
+
+        <div class="detail-section-label">Compétences acquises via cette filière</div>
+        <div class="skills-row">
+            {% for comp in orientation.competences_acquises %}<span class="tag">{{ comp }}</span>{% endfor %}
+        </div>
+
+        <div class="detail-section-label">Centres de formation</div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Centre de formation</th><th>Type</th><th>Lieu</th><th></th></tr></thead>
+                <tbody>
+                    {% for centre in orientation.centres_formation %}
+                    <tr>
+                        <td>{{ centre.nom }}</td>
+                        <td>{{ centre.type }}</td>
+                        <td>{{ centre.lieu }}</td>
+                        <td>
+                            {% if centre.lien %}
+                            <a href="https://{{ centre.lien }}" target="_blank" rel="noopener noreferrer" class="btn-text" style="padding:2px 4px;">
+                                {{ icons.icon('external-link', 12) }}Visiter
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="card-subtitle" style="margin:0;">
+            Aucun métier du guide d'orientation ne correspond de façon fiable au titre de cette offre.
+            Le rapprochement est basé sur le titre du poste et reste limité aux 100 métiers référencés dans le guide.
+        </p>
+        {% endif %}
+    </div>
+{% endblock %}

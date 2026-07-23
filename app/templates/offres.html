@@ -45,7 +45,8 @@
                             data-location="{{ job.entreprise.localisation or '—' }}"
                             data-date="{{ job.date_scraping.strftime('%d/%m/%Y') }}"
                             data-skills="{{ job.competences | map(attribute='nom_competence') | join(', ') }}"
-                            data-desc="{{ job.description or 'Aucune description disponible.' }}">
+                            data-desc="{{ job.description or 'Aucune description disponible.' }}"
+                            data-href="{{ url_for('main.offre_detail', id_offre=job.id_offre) }}">
                             <td style="color:var(--lk-blue); font-weight:500;">{{ job.titre_poste }}</td>
                             <td>{{ job.entreprise.nom_entreprise }}</td>
                             <td>{{ job.secteur.nom_secteur }}</td>
@@ -84,6 +85,8 @@
 
                 <div class="detail-section-label">Description</div>
                 <p class="detail-text" id="dp-desc"></p>
+
+                <a id="dp-full-link" href="#" class="btn-outline" style="margin-top:12px;">{{ icons.icon('external-link', 13) }}Voir la fiche complète et le guide d'orientation</a>
             </div>
         </div>
     </div>
@@ -93,6 +96,7 @@
         document.getElementById('dp-title').textContent = row.dataset.title;
         document.getElementById('dp-meta').textContent = row.dataset.company + ' · ' + row.dataset.sector + ' · ' + row.dataset.location + ' · ' + row.dataset.date;
         document.getElementById('dp-desc').textContent = row.dataset.desc;
+        document.getElementById('dp-full-link').href = row.dataset.href;
 
         var skillsContainer = document.getElementById('dp-skills');
         skillsContainer.innerHTML = '';

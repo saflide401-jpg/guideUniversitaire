@@ -11,15 +11,16 @@
         <div class="card-title">{{ icons.icon('chart-donut') }}Répartition sectorielle des offres collectées</div>
         {% if donut.segments %}
         <div class="donut-row">
-            <svg width="110" height="110" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="38" fill="none" stroke="#E2E8F0" stroke-width="16"/>
+            <svg width="110" height="110" viewBox="0 0 100 100" class="donut-glow">
+                <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16"/>
                 {% for seg in donut.segments %}
                 <circle cx="50" cy="50" r="38" fill="none" stroke="{{ seg.couleur }}" stroke-width="16"
                         stroke-dasharray="{{ seg.dash }} {{ seg.reste }}" stroke-dashoffset="{{ seg.offset }}"
+                        stroke-linecap="round"
                         transform="rotate(-90 50 50)"/>
                 {% endfor %}
-                <text x="50" y="53" text-anchor="middle" font-size="11" font-weight="700" fill="#0F172A">{{ donut.secteurs_couverts }}</text>
-                <text x="50" y="63" text-anchor="middle" font-size="8" fill="#64748B">secteurs</text>
+                <text x="50" y="53" text-anchor="middle" font-size="11" font-weight="700" fill="#E8ECF3">{{ donut.secteurs_couverts }}</text>
+                <text x="50" y="63" text-anchor="middle" font-size="8" fill="#8B96AC">secteurs</text>
             </svg>
             <div class="donut-legend">
                 {% for seg in donut.segments %}
@@ -78,7 +79,7 @@
             <div class="ordered-item">
                 <div class="ordered-num rank-{{ [loop.index, 4] | min }}">{{ loop.index }}</div>
                 <div><strong style="font-size:12px;">{{ g.nom }}</strong>
-                    <span style="font-size:11px; color:{{ '#10B981' if g.croissance > 0 else '#DC2626' }}; margin-left:8px;">
+                    <span style="font-size:11px; color:{{ '#34D399' if g.croissance > 0 else '#F87171' }}; margin-left:8px;">
                         {{ '+' if g.croissance > 0 }}{{ g.croissance }}% ({{ g.recent }} offre(s) récentes)
                     </span>
                 </div>
@@ -100,7 +101,7 @@
                 <div class="ordered-num rank-{{ [loop.index, 4] | min }}">{{ loop.index }}</div>
                 <div>
                     <strong style="font-size:12px;">{{ f.nom }}</strong>
-                    <span style="font-size:11px; color:{{ '#10B981' if f.tendance == 'hausse' else ('#DC2626' if f.tendance == 'baisse' else '#64748B') }}; margin-left:8px;">
+                    <span style="font-size:11px; color:{{ '#34D399' if f.tendance == 'hausse' else ('#F87171' if f.tendance == 'baisse' else '#8B96AC') }}; margin-left:8px;">
                         {{ icons.icon('trending-down' if f.tendance == 'baisse' else 'trending-up', size=11) }}
                         {{ f.actuel }} → {{ f.prevision }} offre(s) prévue(s)
                     </span>
@@ -113,25 +114,4 @@
         {% endif %}
     </div>
 
-    <div class="card">
-        <div class="card-title">{{ icons.icon('scale') }}Écart offre / demande étudiante déclarée</div>
-        <p class="card-subtitle" style="margin-top:-8px;">Compare le nombre d'offres collectées par secteur au nombre d'utilisateurs ayant déclaré viser ce même secteur dans leur profil candidat (section « emploi souhaité »).</p>
-        {% if ecart %}
-        <div class="ordered-list">
-            {% for e in ecart %}
-            <div class="ordered-item">
-                <div class="ordered-num rank-{{ [loop.index, 4] | min }}">{{ loop.index }}</div>
-                <div>
-                    <strong style="font-size:12px;">{{ e.nom }}</strong>
-                    <span style="font-size:11px; color:var(--lk-muted); margin-left:8px;">{{ e.offres }} offre(s) / {{ e.demande }} candidat(s) déclaré(s)</span>
-                    <div style="font-size:11px; color:{{ '#DC2626' if e.demande == 0 else '#0F766E' }};">{{ e.statut }}</div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <p class="card-subtitle" style="margin-top:10px;">Indicateur encore peu significatif tant que peu d'utilisateurs ont renseigné leur profil candidat ; il gagne en fiabilité à mesure que la base d'inscrits grandit.</p>
-        {% else %}
-        <p class="card-subtitle">Aucune offre collectée pour le moment pour calculer cet écart.</p>
-        {% endif %}
-    </div>
 {% endblock %}

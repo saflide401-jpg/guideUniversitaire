@@ -1,0 +1,4136 @@
+{
+  "domaines": [
+    {
+      "numero": 1,
+      "nom": "Numérique / Informatique",
+      "metiers": [
+        {
+          "numero": "1.1",
+          "nom": "Data Analyste",
+          "filiere_universitaire": "Licence/Master en Informatique, Statistiques, Mathématiques appliquées, Science des Données.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo (Ouaga I)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Université Aube Nouvelle",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-aubenouvelle.bf"
+            },
+            {
+              "nom": "African Institute for Mathematical Sciences (AIMS)",
+              "type": "Universitaire",
+              "lieu": "Sénégal, Rwanda, Ghana",
+              "lien": "www.aims.ac.za"
+            },
+            {
+              "nom": "Datacamp (cours en ligne)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.datacamp.com"
+            },
+            {
+              "nom": "Coursera - Google Data Analytics Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "OpenClassrooms - Parcours Data Analyst",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "fr.openclassrooms.com"
+            },
+            {
+              "nom": "Udemy - Python for Data Science",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Visualisation de données",
+            "Python",
+            "R",
+            "SQL",
+            "Power BI",
+            "Tableau",
+            "Excel avancé",
+            "statistiques descriptives"
+          ]
+        },
+        {
+          "numero": "1.2",
+          "nom": "Data Scientist",
+          "filiere_universitaire": "Master en Data Science, Intelligence Artificielle, Informatique.",
+          "centres_formation": [
+            {
+              "nom": "Université Norbert Zongo (Koudougou)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-koudougou.bf"
+            },
+            {
+              "nom": "École Polytechnique de Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ep.sn"
+            },
+            {
+              "nom": "African Institute for Mathematical Sciences (AIMS)",
+              "type": "Universitaire",
+              "lieu": "Sénégal, Rwanda, Ghana",
+              "lien": "www.aims.ac.za"
+            },
+            {
+              "nom": "DeepLearning.AI - TensorFlow Developer Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Fast.ai - Practical Deep Learning",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.fast.ai"
+            },
+            {
+              "nom": "Udacity - AI Programming with Python Nanodegree",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udacity.com"
+            }
+          ],
+          "competences_acquises": [
+            "Machine Learning",
+            "Python",
+            "R",
+            "TensorFlow",
+            "PyTorch",
+            "NLP",
+            "Big Data (Hadoop",
+            "Spark)"
+          ]
+        },
+        {
+          "numero": "1.3",
+          "nom": "Développeur Full Stack (Web/Mobile)",
+          "filiere_universitaire": "Licence/Master en Génie Logiciel, Informatique.",
+          "centres_formation": [
+            {
+              "nom": "Université Ouaga II",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga2.bf"
+            },
+            {
+              "nom": "ISET (Instituts Supérieurs de Technologie)",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire, Bénin",
+              "lien": "www.iset-bj.bj"
+            },
+            {
+              "nom": "OpenClassrooms - Développeur Web",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "fr.openclassrooms.com"
+            },
+            {
+              "nom": "freeCodeCamp (formation gratuite)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.freecodecamp.org"
+            },
+            {
+              "nom": "Udemy - The Complete Web Developer Course",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "Coursera - Meta Front-End Developer Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Andela (Bootcamp Afrique)",
+              "type": "Présentiel/En ligne",
+              "lieu": "Nigeria, Kenya, Égypte",
+              "lien": "www.andela.com"
+            }
+          ],
+          "competences_acquises": [
+            "HTML/CSS/JavaScript",
+            "React.js",
+            "Vue.js",
+            "Node.js",
+            "Django",
+            "Spring Boot",
+            "Flutter",
+            "bases de données SQL/NoSQL"
+          ]
+        },
+        {
+          "numero": "1.4",
+          "nom": "Expert Cybersécurité",
+          "filiere_universitaire": "Master en Sécurité des Systèmes d'Information, Ingénierie.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Sciences Exactes",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "ISATAC (Institut Supérieur Africain des Technologies Avancées et de Communication)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.isatac.ci"
+            },
+            {
+              "nom": "SANS Institute (cours certifiants)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.sans.org"
+            },
+            {
+              "nom": "Coursera - Google Cybersecurity Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "TryHackMe (plateforme pratique)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.tryhackme.com"
+            },
+            {
+              "nom": "Hack The Box (plateforme pratique)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.hackthebox.com"
+            }
+          ],
+          "competences_acquises": [
+            "Pentesting",
+            "Audit de sécurité",
+            "Pare-feux",
+            "Cryptographie",
+            "ISO 27001",
+            "Réponse aux incidents"
+          ]
+        },
+        {
+          "numero": "1.5",
+          "nom": "Ingénieur DevOps",
+          "filiere_universitaire": "Master en Informatique, Génie Logiciel, Cloud Computing.",
+          "centres_formation": [
+            {
+              "nom": "AIMS Cameroon",
+              "type": "Universitaire",
+              "lieu": "Cameroun",
+              "lien": "www.aimsammi.org"
+            },
+            {
+              "nom": "OpenClassrooms - Ingénieur DevOps",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "fr.openclassrooms.com"
+            },
+            {
+              "nom": "Coursera - Google Cloud DevOps Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "KodeKloud (formation pratique DevOps)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.kodekloud.com"
+            },
+            {
+              "nom": "Udemy - Docker and Kubernetes Bootcamp",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Docker",
+            "Kubernetes",
+            "CI/CD",
+            "Jenkins",
+            "GitLab",
+            "Terraform",
+            "AWS/Azure",
+            "Linux"
+          ]
+        },
+        {
+          "numero": "1.6",
+          "nom": "Architecte Cloud",
+          "filiere_universitaire": "Master en Réseaux et Télécommunications, Cloud Computing.",
+          "centres_formation": [
+            {
+              "nom": "École Supérieure Polytechnique de Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "AWS Training and Certification",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "aws.amazon.com/training"
+            },
+            {
+              "nom": "Microsoft Azure Fundamentals (AZ-900)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "learn.microsoft.com"
+            },
+            {
+              "nom": "Coursera - IBM Cloud Computing Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - AWS Solutions Architect Associate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Architecture AWS/Azure/GCP",
+            "Migration cloud",
+            "Microservices",
+            "Sécurité cloud",
+            "Gestion des coûts"
+          ]
+        },
+        {
+          "numero": "1.7",
+          "nom": "Ingénieur IA / Machine Learning",
+          "filiere_universitaire": "Master/Doctorat en Intelligence Artificielle, Informatique.",
+          "centres_formation": [
+            {
+              "nom": "AIMS (tous campus)",
+              "type": "Universitaire",
+              "lieu": "Sénégal, Rwanda, Ghana, Cameroun, Afrique du Sud",
+              "lien": "www.aims.ac.za"
+            },
+            {
+              "nom": "DeepLearning.AI - Deep Learning Specialization",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Stanford Online - CS229 Machine Learning",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "online.stanford.edu"
+            },
+            {
+              "nom": "Hugging Face Courses (gratuit)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "huggingface.co/learn"
+            },
+            {
+              "nom": "Udacity - AI Engineer Nanodegree",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udacity.com"
+            }
+          ],
+          "competences_acquises": [
+            "Deep Learning",
+            "Modélisation prédictive",
+            "Algorithmes d'apprentissage",
+            "Python",
+            "Scikit-learn"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "nom": "Finance / Comptabilité / Gestion",
+      "metiers": [
+        {
+          "numero": "2.1",
+          "nom": "Comptable",
+          "filiere_universitaire": "Licence/BTS en Comptabilité, Finance, Gestion.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR SEG",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "ENCG (École Nationale de Commerce et de Gestion)",
+              "type": "Universitaire",
+              "lieu": "Maroc",
+              "lien": "www.encg.ma"
+            },
+            {
+              "nom": "IGA (Institut de Gestion d'Afrique)",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "OpenClassrooms - Comptable",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "fr.openclassrooms.com"
+            },
+            {
+              "nom": "Coursera - Accounting Fundamentals",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Comptabilité Générale",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Comptabilité générale",
+            "Immobilisations",
+            "Rapprochements bancaires",
+            "Sage",
+            "SAP",
+            "Déclarations fiscales"
+          ]
+        },
+        {
+          "numero": "2.2",
+          "nom": "Contrôleur de Gestion",
+          "filiere_universitaire": "Master en Contrôle de Gestion, Finance, Comptabilité.",
+          "centres_formation": [
+            {
+              "nom": "Université de Ouagadougou",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "ENCG Casablanca",
+              "type": "Universitaire",
+              "lieu": "Maroc",
+              "lien": "www.encg.ma"
+            },
+            {
+              "nom": "DCG/DSCG (Diplôme Comptabilité Générale/Supérieur)",
+              "type": "Présentiel",
+              "lieu": "France/Afrique",
+              "lien": "www.diplome-expert-comptable.fr"
+            },
+            {
+              "nom": "Coursera - Managerial Accounting",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Contrôle de Gestion",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Analyse des écarts",
+            "Prévisions budgétaires",
+            "KPIs",
+            "Excel avancé",
+            "Business Intelligence"
+          ]
+        },
+        {
+          "numero": "2.3",
+          "nom": "Responsable Administratif et Financier (RAF)",
+          "filiere_universitaire": "Master en Gestion Financière, École de Commerce, Finance.",
+          "centres_formation": [
+            {
+              "nom": "Groupe ISG (Institut Supérieur de Gestion)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "ESCAE (École Supérieure de Commerce et d'Administration des Entreprises)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.escae-ci.com"
+            },
+            {
+              "nom": "Coursera - Financial Management Specialization",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion Financière",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion de trésorerie",
+            "Pilotage de la performance",
+            "Management",
+            "Audit interne"
+          ]
+        },
+        {
+          "numero": "2.4",
+          "nom": "Gestionnaire de Paie",
+          "filiere_universitaire": "Licence en Droit Social, Ressources Humaines, Comptabilité.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR SEG",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "OpenClassrooms - Gestionnaire de Paie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "fr.openclassrooms.com"
+            },
+            {
+              "nom": "Udemy - Gestion de Paie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Droit du travail",
+            "Cotisations sociales",
+            "Logiciels de paie",
+            "Gestion des absences"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "nom": "BTP / Construction / Génie Civil",
+      "metiers": [
+        {
+          "numero": "3.1",
+          "nom": "Ingénieur en Bâtiment (Génie Civil)",
+          "filiere_universitaire": "Master/Ingénierie en Génie Civil, BTP.",
+          "centres_formation": [
+            {
+              "nom": "ESP (École Supérieure Polytechnique de Dakar)",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "École des Ponts de Côte d'Ivoire",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.epci.ci"
+            },
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Sciences Exactes",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "INSA Lyon (programmes Afrique)",
+              "type": "Universitaire",
+              "lieu": "France/Afrique",
+              "lien": "www.insa-lyon.fr"
+            },
+            {
+              "nom": "Coursera - Construction Project Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - AutoCAD pour Génie Civil",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "AutoCAD",
+            "Revit",
+            "Calcul de structures",
+            "Gestion de chantier",
+            "Normes de construction"
+          ]
+        },
+        {
+          "numero": "3.2",
+          "nom": "Conducteur de Travaux",
+          "filiere_universitaire": "Licence Professionnelle/BTS en BTP, Génie Civil.",
+          "centres_formation": [
+            {
+              "nom": "CEFPA (Centre de Formation Professionnelle)",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "ISET (Instituts Supérieurs de Technologie)",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire, Bénin",
+              "lien": "www.iset-bj.bj"
+            },
+            {
+              "nom": "Coursera - Construction Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion de Chantier",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Planification",
+            "Gestion des budgets",
+            "Management des sous-traitants",
+            "Sécurité chantier",
+            "Topographie"
+          ]
+        },
+        {
+          "numero": "3.3",
+          "nom": "Architecte",
+          "filiere_universitaire": "Diplôme d'État d'Architecte (Bac+5).",
+          "centres_formation": [
+            {
+              "nom": "École d'Architecture de Ouagadougou",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "École Nationale Supérieure d'Architecture (ENSA)",
+              "type": "Universitaire",
+              "lieu": "Maroc, Côte d'Ivoire",
+              "lien": "www.ensam.ma"
+            },
+            {
+              "nom": "École Spéciale d'Architecture (ESA)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Architecture: History, Theory, Design",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - SketchUp et AutoCAD Architecture",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Conception de plans",
+            "AutoCAD",
+            "SketchUp",
+            "Maquette numérique",
+            "Design d'intérieur"
+          ]
+        },
+        {
+          "numero": "3.4",
+          "nom": "Chef de Projet BTP",
+          "filiere_universitaire": "Master en Management de Projets, Ingénierie BTP.",
+          "centres_formation": [
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "PMI (Project Management Institute) - Certification PMP",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.pmi.org"
+            },
+            {
+              "nom": "Coursera - Project Management Professional Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Project Management Fundamentals",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion de projet (MS Project)",
+            "Coordination",
+            "Négociation",
+            "Suivi budgétaire"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "nom": "Santé / Pharmacie",
+      "metiers": [
+        {
+          "numero": "4.1",
+          "nom": "Médecin",
+          "filiere_universitaire": "Diplôme d'État en Médecine (Bac+6 à Bac+9).",
+          "centres_formation": [
+            {
+              "nom": "UFR Sciences de la Santé (Université Joseph Ki-Zerbo)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Faculté de Médecine de Bamako",
+              "type": "Universitaire",
+              "lieu": "Mali",
+              "lien": null
+            },
+            {
+              "nom": "Faculté de Médecine de Dakar (UCAD)",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Faculté de Médecine d'Abidjan",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.fmsp.ci"
+            },
+            {
+              "nom": "Faculté de Médecine de Lomé",
+              "type": "Universitaire",
+              "lieu": "Togo",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Clinical Medicine Fundamentals",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Diagnostic clinique",
+            "Prescription",
+            "Chirurgie de base",
+            "Pharmacologie",
+            "Droit médical"
+          ]
+        },
+        {
+          "numero": "4.2",
+          "nom": "Infirmier(ère)",
+          "filiere_universitaire": "Brevet d'État d'Infirmier(ère), Licence en Sciences Infirmières.",
+          "centres_formation": [
+            {
+              "nom": "École Nationale de Formation Paramédicale (ENFP)",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Faculté des Sciences de la Santé (FSS)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Écoles Paramédicales d'État",
+              "type": "Présentiel",
+              "lieu": "Sénégal, Mali, Côte d'Ivoire, Togo",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Nursing Fundamentals",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Soins Infirmiers",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Soins infirmiers",
+            "Surveillance",
+            "Injections",
+            "Pansements",
+            "Urgences"
+          ]
+        },
+        {
+          "numero": "4.3",
+          "nom": "Pharmacien(ne)",
+          "filiere_universitaire": "Diplôme d'État en Pharmacie (Bac+6).",
+          "centres_formation": [
+            {
+              "nom": "Faculté de Pharmacie de Dakar (UCAD)",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Faculté de Pharmacie d'Abidjan",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.fmsp.ci"
+            },
+            {
+              "nom": "Faculté de Pharmacie de Bamako",
+              "type": "Universitaire",
+              "lieu": "Mali",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Pharmaceutical Sciences",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Pharmacologie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Pharmacologie",
+            "Dispensation",
+            "Analyse biologique",
+            "Chimie pharmaceutique"
+          ]
+        },
+        {
+          "numero": "4.4",
+          "nom": "Biologiste Médical",
+          "filiere_universitaire": "Doctorat en Pharmacie ou Master en Biologie Médicale.",
+          "centres_formation": [
+            {
+              "nom": "Faculté des Sciences et Techniques (FST)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Faculté des Sciences de Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Coursera - Clinical Laboratory Science",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Biologie Médicale",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Analyses de laboratoire",
+            "Utilisation des automates",
+            "Validation des résultats",
+            "ISO 15189"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "nom": "Transport / Logistique",
+      "metiers": [
+        {
+          "numero": "5.1",
+          "nom": "Directeur Logistique",
+          "filiere_universitaire": "Master en Logistique, École d'Ingénieurs, Supply Chain.",
+          "centres_formation": [
+            {
+              "nom": "École Supérieure de Commerce d'Abidjan (ESCAE)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.escae-ci.com"
+            },
+            {
+              "nom": "Groupe ISG Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "ASCY (Association pour le Supply Chain Management)",
+              "type": "Présentiel",
+              "lieu": "International",
+              "lien": "www.ascy.org"
+            },
+            {
+              "nom": "Coursera - Supply Chain Management Specialization",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion de la Logistique",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Supply Chain",
+            "Négociation transport",
+            "Gestion des stocks",
+            "Leadership"
+          ]
+        },
+        {
+          "numero": "5.2",
+          "nom": "Responsable des Opérations",
+          "filiere_universitaire": "Licence/Master en Transport, Logistique.",
+          "centres_formation": [
+            {
+              "nom": "ISET de Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Coursera - Operations Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion des Opérations",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Planification des tournées",
+            "Optimisation des itinéraires",
+            "Gestion des fleets",
+            "KPIs logistiques"
+          ]
+        },
+        {
+          "numero": "5.3",
+          "nom": "Chauffeur Poids Lourd / Engin de chantier",
+          "filiere_universitaire": "CAP/BEP + Permis spécifique (Formation professionnelle).",
+          "centres_formation": [
+            {
+              "nom": "CFPA (Centre de Formation Professionnelle)",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles de conduite agréées",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Formation engins de chantier (Caterpillar, Komatsu)",
+              "type": "Présentiel",
+              "lieu": "Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Conduite Sécurisée",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Conduite sécurisée",
+            "Mécanique de base",
+            "Sécurité",
+            "Permis EC/C"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 6,
+      "nom": "Marketing / Commerce / Vente",
+      "metiers": [
+        {
+          "numero": "6.1",
+          "nom": "Directeur Commercial",
+          "filiere_universitaire": "Master en Commerce International, École de Commerce.",
+          "centres_formation": [
+            {
+              "nom": "ESCAE Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.escae-ci.com"
+            },
+            {
+              "nom": "Groupe ISG (Abidjan, Dakar, Casablanca)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Coursera - Sales Operations/Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Vente B2B",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Stratégie commerciale",
+            "Management",
+            "Négociation B2B",
+            "CRM",
+            "Analyse de marché"
+          ]
+        },
+        {
+          "numero": "6.2",
+          "nom": "Marketing Digital",
+          "filiere_universitaire": "Licence en Marketing, Communication.",
+          "centres_formation": [
+            {
+              "nom": "Université Aube Nouvelle",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-aubenouvelle.bf"
+            },
+            {
+              "nom": "École Supérieure de Communication d'Abidjan (ESCA)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.esca-ci.com"
+            },
+            {
+              "nom": "Google Digital Garage (formation gratuite)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "skillshop.exceedlms.com"
+            },
+            {
+              "nom": "HubSpot Academy (gratuit, certifiant)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "academy.hubspot.com"
+            },
+            {
+              "nom": "Coursera - Digital Marketing Specialization",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Marketing Digital Complet",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "SEO/SEA",
+            "Community Management",
+            "Google Ads",
+            "Analytics",
+            "Copywriting"
+          ]
+        },
+        {
+          "numero": "6.3",
+          "nom": "Chef de Projet Marketing",
+          "filiere_universitaire": "Master en Marketing.",
+          "centres_formation": [
+            {
+              "nom": "ESCAE Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.escae-ci.com"
+            },
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "Coursera - Marketing Strategy",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion de Projet Marketing",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion de campagne",
+            "Coordination créative",
+            "Budget marketing",
+            "ROI"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 7,
+      "nom": "Industrie / Mines / Énergie",
+      "metiers": [
+        {
+          "numero": "7.1",
+          "nom": "Ingénieur en Mines",
+          "filiere_universitaire": "Master/Ingénierie en Géologie, Mines, Génie Minier.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Sciences Exactes",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "École des Mines et de la Géologie de Bamako",
+              "type": "Universitaire",
+              "lieu": "Mali",
+              "lien": null
+            },
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "Coursera - Mining Engineering",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Géologie Appliquée",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Géologie appliquée",
+            "Exploitation minière",
+            "Sécurité industrielle",
+            "Géotechnique"
+          ]
+        },
+        {
+          "numero": "7.2",
+          "nom": "Ingénieur en Énergies Renouvelables",
+          "filiere_universitaire": "Master/Ingénierie en Énergétique, Énergies Renouvelables.",
+          "centres_formation": [
+            {
+              "nom": "AIMS Cameroon",
+              "type": "Universitaire",
+              "lieu": "Cameroun",
+              "lien": "www.aimsammi.org"
+            },
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "ENIAB (École Nationale d'Ingénieurs d'Abidjan)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Renewable Energy Specialization",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Énergies Renouvelables",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "École de Formation en Énergie Solaire (Ouagadougou)",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Solaire photovoltaïque",
+            "Éolien",
+            "Hydraulique",
+            "Dimensionnement",
+            "Maintenance"
+          ]
+        },
+        {
+          "numero": "7.3",
+          "nom": "Électricien Industriel",
+          "filiere_universitaire": "BAC PRO/BTS Électrotechnique, Électricité.",
+          "centres_formation": [
+            {
+              "nom": "CEFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "ISET (Instituts Supérieurs de Technologie)",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire, Bénin, Sénégal",
+              "lien": "www.iset-bj.bj"
+            },
+            {
+              "nom": "Formation professionnelle agréée",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Électricité Industrielle",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "Coursera - Electrical Engineering Fundamentals",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Câblage",
+            "Maintenance machines",
+            "Sécurité électrique",
+            "Dépannage"
+          ]
+        },
+        {
+          "numero": "7.4",
+          "nom": "Mécanicien Industriel",
+          "filiere_universitaire": "BAC PRO/BTS Maintenance Industrielle, Génie Mécanique.",
+          "centres_formation": [
+            {
+              "nom": "CEFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "ISET (Instituts Supérieurs de Technologie)",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire, Bénin, Sénégal",
+              "lien": "www.iset-bj.bj"
+            },
+            {
+              "nom": "Formation professionnelle agréée",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Maintenance Industrielle",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Diagnostic de pannes",
+            "Maintenance préventive/corrective",
+            "Usinage",
+            "Hydraulique"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 8,
+      "nom": "Droit / Juridique",
+      "metiers": [
+        {
+          "numero": "8.1",
+          "nom": "Juriste d'Entreprise",
+          "filiere_universitaire": "Master 1 ou Master 2 en Droit des Affaires.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Droit",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Faculté de Droit de Dakar (UCAD)",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Faculté de Droit d'Abidjan",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.fmsp.ci"
+            },
+            {
+              "nom": "Coursera - Business Law",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Droit des Affaires",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Droit des affaires",
+            "Droit du travail",
+            "Contrats",
+            "Contentieux",
+            "Conformité"
+          ]
+        },
+        {
+          "numero": "8.2",
+          "nom": "Notaire",
+          "filiere_universitaire": "Master en Droit Notarial + Stage de notariat.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Droit",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "École de Notariat d'Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "École de Notariat de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Civil Law",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Droit civil",
+            "Droit immobilier",
+            "Actes authentiques",
+            "Successions",
+            "Droit fiscal"
+          ]
+        },
+        {
+          "numero": "8.3",
+          "nom": "Avocat",
+          "filiere_universitaire": "Master en Droit + CAPA (Certificat d'Aptitude à la Profession d'Avocat).",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Droit",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Faculté de Droit de Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Faculté de Droit d'Abidjan",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.fmsp.ci"
+            },
+            {
+              "nom": "École du Barreau",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - International Law",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Plaidoirie",
+            "Droit pénal/civil/commercial",
+            "Stratégie judiciaire"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 9,
+      "nom": "Enseignement / Éducation",
+      "metiers": [
+        {
+          "numero": "9.1",
+          "nom": "Professeur des Écoles / Enseignant",
+          "filiere_universitaire": "Master MEEF, Licence en Sciences de l'Éducation.",
+          "centres_formation": [
+            {
+              "nom": "Université Norbert Zongo (Koudougou)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-koudougou.bf"
+            },
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Langues",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "École Normale Supérieure (ENS) de Koudougou",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles Normales Supérieures d'Afrique",
+              "type": "Présentiel",
+              "lieu": "Sénégal, Côte d'Ivoire, Mali",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Teaching English as a Foreign Language",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Pédagogie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Pédagogie",
+            "Gestion de classe",
+            "Programmes scolaires",
+            "Évaluation"
+          ]
+        },
+        {
+          "numero": "9.2",
+          "nom": "Formateur en Entreprise",
+          "filiere_universitaire": "Master en Ingénierie de Formation, Ressources Humaines.",
+          "centres_formation": [
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "Coursera - Corporate Training",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Ingénierie de Formation",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Ingénierie de formation",
+            "Animation",
+            "E-learning",
+            "Pédagogie adulte"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 10,
+      "nom": "Art / Design / Communication",
+      "metiers": [
+        {
+          "numero": "10.1",
+          "nom": "UI/UX Designer",
+          "filiere_universitaire": "Licence en Design Graphique, École d'Art.",
+          "centres_formation": [
+            {
+              "nom": "École de Design d'Abidjan (EDHEA)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.edhea.ci"
+            },
+            {
+              "nom": "École d'Art de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Google UX Design Certificate",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Interaction Design Foundation",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.interaction-design.org"
+            },
+            {
+              "nom": "Udemy - UX Design Masterclass",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "OpenClassrooms - Designer UX",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "fr.openclassrooms.com"
+            }
+          ],
+          "competences_acquises": [
+            "Figma",
+            "Adobe XD",
+            "Sketch",
+            "Prototypage",
+            "Recherche utilisateur",
+            "Design Thinking"
+          ]
+        },
+        {
+          "numero": "10.2",
+          "nom": "Designer Graphique",
+          "filiere_universitaire": "BAC+2 à BAC+5 en Design Graphique.",
+          "centres_formation": [
+            {
+              "nom": "École de Design d'Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.edhea.ci"
+            },
+            {
+              "nom": "École d'Art de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Graphic Design Specialization",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Adobe Photoshop et Illustrator",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "OpenClassrooms - Graphiste",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "fr.openclassrooms.com"
+            }
+          ],
+          "competences_acquises": [
+            "Photoshop",
+            "Illustrator",
+            "InDesign",
+            "Identité visuelle",
+            "Typographie"
+          ]
+        },
+        {
+          "numero": "10.3",
+          "nom": "Journaliste / Rédacteur Web",
+          "filiere_universitaire": "Licence en Journalisme, Communication.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Lettres",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "École Supérieure de Communication d'Abidjan (ESCA)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.esca-ci.com"
+            },
+            {
+              "nom": "École de Journalisme de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Journalism, Media Studies and Technology",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Rédaction Web et SEO",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Techniques d'interview",
+            "Rédaction",
+            "SEO",
+            "Orthographe"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 11,
+      "nom": "Artisanat / Services",
+      "metiers": [
+        {
+          "numero": "11.1",
+          "nom": "Menuisier / Ébéniste",
+          "filiere_universitaire": "CAP/BEP Menuiserie, Bois.",
+          "centres_formation": [
+            {
+              "nom": "CFPA (Centre de Formation Professionnelle)",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles d'Artisanat",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Apprentissage traditionnel",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Menuiserie de Base",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Dessin technique",
+            "Outils manuels/électroportatifs",
+            "Traitement du bois"
+          ]
+        },
+        {
+          "numero": "11.2",
+          "nom": "Coiffeur / Esthéticien",
+          "filiere_universitaire": "CAP Coiffure, Esthétique Cosmétique.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles de Coiffure et Esthétique",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Apprentissage en salon",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Coiffure Professionnelle",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Techniques de coiffure",
+            "Soins capillaires",
+            "Manucure",
+            "Relation client"
+          ]
+        },
+        {
+          "numero": "11.3",
+          "nom": "Coach Sportif",
+          "filiere_universitaire": "BPJEPS, Licence STAPS.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR STAPS",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Université Cheikh Anta Diop - UFR STAPS",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Coursera - Exercise Science",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Coaching Sportif",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Anatomie",
+            "Physiologie",
+            "Préparation physique",
+            "Nutrition",
+            "Pédagogie"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 12,
+      "nom": "ONG / Humanitaire / Développement",
+      "metiers": [
+        {
+          "numero": "12.1",
+          "nom": "Coordinateur de Projet ONG",
+          "filiere_universitaire": "Master en Développement International, Sciences Sociales.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR SEG",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Université Cheikh Anta Diop - UFR Sciences Sociales",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Coursera - International Development",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion de Projet ONG",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "Humanitarian Leadership Academy",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "humanitarian-academy.org"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion de projet humanitaire",
+            "Suivi-évaluation",
+            "Rapports bailleurs",
+            "LogFrame"
+          ]
+        },
+        {
+          "numero": "12.2",
+          "nom": "Chargé de Suivi-Évaluation",
+          "filiere_universitaire": "Master en Statistiques, Sociologie, Développement.",
+          "centres_formation": [
+            {
+              "nom": "AIMS (tous campus)",
+              "type": "Universitaire",
+              "lieu": "Sénégal, Rwanda, Ghana, Cameroun",
+              "lien": "www.aims.ac.za"
+            },
+            {
+              "nom": "Université de Ouagadougou",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Udemy - Monitoring and Evaluation",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "Coursera - Data Analysis for Social Sciences",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Indicateurs de performance",
+            "Enquêtes terrain",
+            "Kobo Toolbox",
+            "DHIS2"
+          ]
+        },
+        {
+          "numero": "12.3",
+          "nom": "Spécialiste en Sécurité Alimentaire",
+          "filiere_universitaire": "Master en Nutrition, Agronomie, Développement Rural.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR SVT",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Coursera - Global Nutrition and Health",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Food Security",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "Humanitarian Leadership Academy",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "humanitarian-academy.org"
+            }
+          ],
+          "competences_acquises": [
+            "Nutrition",
+            "Distribution alimentaire",
+            "Logistique humanitaire",
+            "WFP"
+          ]
+        },
+        {
+          "numero": "12.4",
+          "nom": "Expert WASH (Eau, Hygiène et Assainissement)",
+          "filiere_universitaire": "Master en Génie Sanitaire, Environnement.",
+          "centres_formation": [
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "Coursera - Water, Sanitation and Hygiene",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - WASH Programs",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            },
+            {
+              "nom": "Humanitarian Leadership Academy",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "humanitarian-academy.org"
+            }
+          ],
+          "competences_acquises": [
+            "Qualité de l'eau",
+            "Infrastructure sanitaire",
+            "Hygiène",
+            "Normes SPHERE"
+          ]
+        },
+        {
+          "numero": "12.5",
+          "nom": "Responsable de Programmes Genre et Inclusion",
+          "filiere_universitaire": "Master en Sciences Sociales, Sociologie, Droits Humains.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Sciences Sociales",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Coursera - Gender and Development",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gender Analysis",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Analyse de genre",
+            "Plaidoyer",
+            "Protection des femmes/enfants",
+            "Inclusion"
+          ]
+        },
+        {
+          "numero": "12.6",
+          "nom": "Agent de Paix et Sécurité",
+          "filiere_universitaire": "Master en Relations Internationales, Droit, Sciences Politiques.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Droit",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Coursera - International Relations",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Peacebuilding and Conflict Resolution",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Médiation",
+            "Gestion des conflits",
+            "Diplomatie",
+            "Droit international humanitaire"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 13,
+      "nom": "Banque / Assurance",
+      "metiers": [
+        {
+          "numero": "13.1",
+          "nom": "Conseiller Bancaire",
+          "filiere_universitaire": "Licence en Banque-Finance, École de Commerce.",
+          "centres_formation": [
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Groupe ISG (Abidjan, Dakar, Casablanca)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "ESCAE Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.escae-ci.com"
+            },
+            {
+              "nom": "Coursera - Financial Markets",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Banque et Finance",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Portefeuille clients",
+            "Risque crédit",
+            "Produits bancaires",
+            "Conformité"
+          ]
+        },
+        {
+          "numero": "13.2",
+          "nom": "Auditeur Bancaire",
+          "filiere_universitaire": "Master en Audit et Contrôle de Gestion.",
+          "centres_formation": [
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "DCG/DSCG",
+              "type": "Présentiel",
+              "lieu": "France/Afrique",
+              "lien": "www.diplome-expert-comptable.fr"
+            },
+            {
+              "nom": "Coursera - Auditing Specialization",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Audit Bancaire",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Audit financier",
+            "Contrôle interne",
+            "IFRS",
+            "Détection de fraudes"
+          ]
+        },
+        {
+          "numero": "13.3",
+          "nom": "Actuaire en Assurance",
+          "filiere_universitaire": "Master en Actuariat, Mathématiques Appliquées.",
+          "centres_formation": [
+            {
+              "nom": "AIMS (tous campus)",
+              "type": "Universitaire",
+              "lieu": "Sénégal, Rwanda, Ghana, Cameroun",
+              "lien": "www.aims.ac.za"
+            },
+            {
+              "nom": "Coursera - Actuarial Science",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Actuariat",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Modélisation actuarielle",
+            "Calcul de primes",
+            "Gestion des risques",
+            "Probabilités"
+          ]
+        },
+        {
+          "numero": "13.4",
+          "nom": "Gestionnaire de Risques",
+          "filiere_universitaire": "Master en Finance de Marché, Gestion des Risques.",
+          "centres_formation": [
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "Coursera - Risk Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion des Risques Financiers",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Analyse de risque",
+            "Stress testing",
+            "Bâle III",
+            "VaR",
+            "Réglementation"
+          ]
+        },
+        {
+          "numero": "13.5",
+          "nom": "Analyste Crédit",
+          "filiere_universitaire": "Licence/Master en Finance.",
+          "centres_formation": [
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "Coursera - Credit Analysis",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Analyse de Crédit",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Évaluation de solvabilité",
+            "Analyse financière",
+            "Ratios",
+            "Scoring crédit"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 14,
+      "nom": "Hôtellerie / Restauration / Tourisme",
+      "metiers": [
+        {
+          "numero": "14.1",
+          "nom": "Chef Cuisinier",
+          "filiere_universitaire": "CAP/BEP Cuisine, École de Gastronomie.",
+          "centres_formation": [
+            {
+              "nom": "École Hôtelière de Ouagadougou",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "École Hôtelière d'Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "École Hôtelière de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Culinary Arts",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Techniques Culinaires",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Techniques culinaires",
+            "Gestion des stocks",
+            "Management",
+            "HACCP"
+          ]
+        },
+        {
+          "numero": "14.2",
+          "nom": "Directeur d'Hôtel",
+          "filiere_universitaire": "Master en Hôtellerie, École Hôtelière.",
+          "centres_formation": [
+            {
+              "nom": "École Hôtelière de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "École Hôtelière d'Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Hotel Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Gestion Hôtelière",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Revenue Management",
+            "Yield Management",
+            "Service client",
+            "Marketing touristique"
+          ]
+        },
+        {
+          "numero": "14.3",
+          "nom": "Réceptionniste d'Hôtel",
+          "filiere_universitaire": "BTS en Tourisme, Hôtellerie.",
+          "centres_formation": [
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "École Hôtelière de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Réception Hôtelière",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Accueil client",
+            "Réservations",
+            "PMS",
+            "Anglais",
+            "Service client"
+          ]
+        },
+        {
+          "numero": "14.4",
+          "nom": "Guide Touristique",
+          "filiere_universitaire": "Licence en Tourisme, Géographie.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Lettres",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Coursera - Tourism Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Guide Touristique",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Histoire/culture locale",
+            "Langues",
+            "Sécurité du groupe",
+            "Patrimoine"
+          ]
+        },
+        {
+          "numero": "14.5",
+          "nom": "Gérant de Restaurant",
+          "filiere_universitaire": "Bac+2 à Bac+3 en Gestion, Hôtellerie-Restauration.",
+          "centres_formation": [
+            {
+              "nom": "École Hôtelière de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "Udemy - Gestion de Restaurant",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion de salle",
+            "Comptabilité",
+            "Management",
+            "Service client"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 15,
+      "nom": "Agriculture / Élevage / Aquaculture / Pêche",
+      "metiers": [
+        {
+          "numero": "15.1",
+          "nom": "Ingénieur Agronome",
+          "filiere_universitaire": "Master/Ingénierie en Agronomie.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR SVT",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Université Norbert Zongo (Koudougou)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-koudougou.bf"
+            },
+            {
+              "nom": "École Nationale Supérieure d'Agronomie de Bamako",
+              "type": "Universitaire",
+              "lieu": "Mali",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Agriculture Science and Technology",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Agronomie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion des cultures",
+            "Agronomie",
+            "Irrigation",
+            "Protection des plantes",
+            "Analyse de sols"
+          ]
+        },
+        {
+          "numero": "15.2",
+          "nom": "Vétérinaire",
+          "filiere_universitaire": "Diplôme d'État de Docteur Vétérinaire (Bac+6).",
+          "centres_formation": [
+            {
+              "nom": "École Inter-États des Sciences et Médecine Vétérinaires (EISMV)",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.eismv.sn"
+            },
+            {
+              "nom": "Faculté des Sciences de la Santé (FSS)",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Coursera - Veterinary Medicine",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Soins animaux",
+            "Diagnostic",
+            "Chirurgie",
+            "Prophylaxie",
+            "Pharmacologie vétérinaire"
+          ]
+        },
+        {
+          "numero": "15.3",
+          "nom": "Technicien en Aquaculture",
+          "filiere_universitaire": "BTS en Aquaculture, Licence en Sciences Halieutiques.",
+          "centres_formation": [
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "École Nationale Supérieure d'Agronomie de Bamako",
+              "type": "Universitaire",
+              "lieu": "Mali",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Aquaculture",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Pisciculture",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion des bassins",
+            "Qualité de l'eau",
+            "Alimentation des poissons",
+            "Contrôle sanitaire"
+          ]
+        },
+        {
+          "numero": "15.4",
+          "nom": "Producteur Agricole / Exploitant",
+          "filiere_universitaire": "CAP/BEP Agricole, Formation professionnelle.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Centres de formation agricole",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Agriculture de Base",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Techniques de culture",
+            "Gestion d'exploitation",
+            "Machinerie",
+            "Semences"
+          ]
+        },
+        {
+          "numero": "15.5",
+          "nom": "Spécialiste en Irrigation",
+          "filiere_universitaire": "Master en Génie Rural, Hydrosystèmes.",
+          "centres_formation": [
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "Coursera - Irrigation Systems",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Irrigation Design",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Systèmes d'irrigation",
+            "Hydrologie",
+            "Gestion de l'eau",
+            "Dimensionnement hydraulique"
+          ]
+        },
+        {
+          "numero": "15.6",
+          "nom": "Technicien en Élevage",
+          "filiere_universitaire": "BTS/Licence en Zootechnie, Élevage.",
+          "centres_formation": [
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "École Nationale Supérieure d'Agronomie de Bamako",
+              "type": "Universitaire",
+              "lieu": "Mali",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Animal Science",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Élevage",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion des troupeaux",
+            "Nutrition animale",
+            "Reproduction",
+            "Suivi sanitaire"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 16,
+      "nom": "Services Publics / Administration Publique",
+      "metiers": [
+        {
+          "numero": "16.1",
+          "nom": "Secrétaire d'État / Conseiller Ministériel",
+          "filiere_universitaire": "Master en Droit Public, Sciences Politiques, ENA.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Droit",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "École Nationale d'Administration (ENA)",
+              "type": "Présentiel",
+              "lieu": "Sénégal, Côte d'Ivoire, Bénin",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Public Policy",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Administration Publique",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Politique publique",
+            "Administration",
+            "Rédaction de notes",
+            "Droit public"
+          ]
+        },
+        {
+          "numero": "16.2",
+          "nom": "Contrôleur des Finances Publiques",
+          "filiere_universitaire": "Master en Finances Publiques, École d'Administration.",
+          "centres_formation": [
+            {
+              "nom": "ENA Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "ENA Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Public Finance",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Audit financier public",
+            "Réglementation budgétaire",
+            "Contrôle de légalité"
+          ]
+        },
+        {
+          "numero": "16.3",
+          "nom": "Inspecteur des Impôts",
+          "filiere_universitaire": "Master en Droit Fiscal, Finances.",
+          "centres_formation": [
+            {
+              "nom": "ENA Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Tax Law",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Droit Fiscal",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Droit fiscal",
+            "Contrôle fiscal",
+            "Déclarations",
+            "Recouvrement"
+          ]
+        },
+        {
+          "numero": "16.4",
+          "nom": "Officier de Police / Gendarmerie",
+          "filiere_universitaire": "Formation École de Police/Gendarmerie + BAC.",
+          "centres_formation": [
+            {
+              "nom": "École de Police de Ouagadougou",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "École de Police de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "École de Gendarmerie",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Droit pénal",
+            "Techniques d'enquête",
+            "Intervention",
+            "Maintien de l'ordre"
+          ]
+        },
+        {
+          "numero": "16.5",
+          "nom": "Magistrat / Juge",
+          "filiere_universitaire": "Master en Droit + École Nationale de la Magistrature.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR Droit",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "ENM (École Nationale de la Magistrature)",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Bénin",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Droit civil",
+            "Droit pénal",
+            "Droit administratif",
+            "Procédure judiciaire"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 17,
+      "nom": "Ressources Humaines / Administration",
+      "metiers": [
+        {
+          "numero": "17.1",
+          "nom": "Responsable Ressources Humaines",
+          "filiere_universitaire": "Master en Gestion des Ressources Humaines.",
+          "centres_formation": [
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "ESCAE Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.escae-ci.com"
+            },
+            {
+              "nom": "Coursera - Human Resource Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - RH",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Recrutement",
+            "Paie",
+            "Droit du travail",
+            "Formation",
+            "GPEC"
+          ]
+        },
+        {
+          "numero": "17.2",
+          "nom": "Office Manager",
+          "filiere_universitaire": "Bac+2 à Bac+3 en Administration.",
+          "centres_formation": [
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "Udemy - Office Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion de bureau",
+            "Coordination administrative",
+            "Accueil",
+            "Événements"
+          ]
+        },
+        {
+          "numero": "17.3",
+          "nom": "Assistant(e) de Direction",
+          "filiere_universitaire": "BTS Assistant de Direction, Licence.",
+          "centres_formation": [
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Udemy - Assistant de Direction",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Agenda",
+            "Déplacements",
+            "Courriers",
+            "Accueil",
+            "Anglais"
+          ]
+        },
+        {
+          "numero": "17.4",
+          "nom": "Gestionnaire de Carrières",
+          "filiere_universitaire": "Master en RH, Ingénierie de Formation.",
+          "centres_formation": [
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "Coursera - Career Development",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "GPEC",
+            "Mobilité",
+            "Évaluation",
+            "Plan de formation"
+          ]
+        },
+        {
+          "numero": "17.5",
+          "nom": "Recruteur / Talent Acquisition",
+          "filiere_universitaire": "Licence/Master en RH, Psychologie du Travail.",
+          "centres_formation": [
+            {
+              "nom": "IGA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": "www.iga-bf.com"
+            },
+            {
+              "nom": "Groupe ISG",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire, Sénégal, Maroc",
+              "lien": "www.isg.ci"
+            },
+            {
+              "nom": "Coursera - Talent Acquisition",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Recrutement",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Sourcing",
+            "Entrevues",
+            "ATS",
+            "Employer Branding",
+            "Négociation salariale"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 18,
+      "nom": "Qualité / QHSE / Environnement",
+      "metiers": [
+        {
+          "numero": "18.1",
+          "nom": "Responsable QHSE",
+          "filiere_universitaire": "Master en Qualité Hygiène Sécurité Environnement.",
+          "centres_formation": [
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "ENIAB Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Quality Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - QHSE",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "ISO 9001",
+            "ISO 14001",
+            "ISO 45001",
+            "Audit qualité",
+            "Gestion des risques"
+          ]
+        },
+        {
+          "numero": "18.2",
+          "nom": "Ingénieur Environnement",
+          "filiere_universitaire": "Master/Ingénierie en Sciences de l'Environnement.",
+          "centres_formation": [
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "AIMS Cameroon",
+              "type": "Universitaire",
+              "lieu": "Cameroun",
+              "lien": "www.aimsammi.org"
+            },
+            {
+              "nom": "Coursera - Environmental Science",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Génie Environnemental",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Études d'impact",
+            "Gestion des déchets",
+            "Pollution",
+            "Éco-conception"
+          ]
+        },
+        {
+          "numero": "18.3",
+          "nom": "Hygiéniste Industriel",
+          "filiere_universitaire": "Master en Hygiène Industrielle, Médecine du Travail.",
+          "centres_formation": [
+            {
+              "nom": "ESP Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.esp.sn"
+            },
+            {
+              "nom": "Coursera - Occupational Health",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Hygiène Industrielle",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Évaluation des risques",
+            "Mesures des nuisances",
+            "EPI",
+            "Toxicologie"
+          ]
+        },
+        {
+          "numero": "18.4",
+          "nom": "Responsable Environnement",
+          "filiere_universitaire": "Master en Développement Durable, Environnement.",
+          "centres_formation": [
+            {
+              "nom": "AIMS Cameroon",
+              "type": "Universitaire",
+              "lieu": "Cameroun",
+              "lien": "www.aimsammi.org"
+            },
+            {
+              "nom": "Coursera - Environmental Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Environnement",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gestion des ressources",
+            "Biodiversité",
+            "Climat",
+            "Reporting RSE",
+            "ISO 14001"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 19,
+      "nom": "Sport / Fitness / Bien-être",
+      "metiers": [
+        {
+          "numero": "19.1",
+          "nom": "Professeur de Sport / Éducateur Sportif",
+          "filiere_universitaire": "BPJEPS, Licence STAPS.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR STAPS",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "UCAD - UFR STAPS",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Coursera - Sports Coaching",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Éducation Sportive",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Pédagogie sportive",
+            "Gestion de groupe",
+            "Entraînement",
+            "Anatomie"
+          ]
+        },
+        {
+          "numero": "19.2",
+          "nom": "Préparateur Physique",
+          "filiere_universitaire": "Master en Préparation Physique, STAPS.",
+          "centres_formation": [
+            {
+              "nom": "Université Joseph Ki-Zerbo - UFR STAPS",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Coursera - Exercise Physiology",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Préparation Physique",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Musculation",
+            "Cardio",
+            "Nutrition sportive",
+            "Périodisation",
+            "Récupération"
+          ]
+        },
+        {
+          "numero": "19.3",
+          "nom": "Kinésithérapeute / Physiothérapeute",
+          "filiere_universitaire": "Diplôme d'État de Masseur-Kinésithérapeute (Bac+5).",
+          "centres_formation": [
+            {
+              "nom": "FSS Université Joseph Ki-Zerbo",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "Faculté de Médecine de Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.ucad.sn"
+            },
+            {
+              "nom": "Faculté de Médecine d'Abidjan",
+              "type": "Universitaire",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.fmsp.ci"
+            },
+            {
+              "nom": "Coursera - Physical Therapy",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            }
+          ],
+          "competences_acquises": [
+            "Rééducation",
+            "Massage",
+            "Diagnostic",
+            "Réhabilitation",
+            "Anatomie"
+          ]
+        },
+        {
+          "numero": "19.4",
+          "nom": "Nutritionniste / Diététicien",
+          "filiere_universitaire": "Master en Nutrition, BTS Diététique.",
+          "centres_formation": [
+            {
+              "nom": "FSS Université Joseph Ki-Zerbo",
+              "type": "Universitaire",
+              "lieu": "Burkina Faso",
+              "lien": "www.univ-ouaga1.bf"
+            },
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "Coursera - Nutrition Science",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Diététique",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Plan alimentaire",
+            "Bilan nutritionnel",
+            "Éducation nutritionnelle",
+            "Pathologies"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 20,
+      "nom": "Musique / Art / Cinéma / Média",
+      "metiers": [
+        {
+          "numero": "20.1",
+          "nom": "Producteur de Musique",
+          "filiere_universitaire": "École de Production Musicale, Formation autodidacte.",
+          "centres_formation": [
+            {
+              "nom": "École de Musique d'Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "École de Musique de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Music Production",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Production Musicale",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "DAW (Ableton",
+            "FL Studio)",
+            "Mixage",
+            "Mastering",
+            "Arrangement",
+            "Sound Design"
+          ]
+        },
+        {
+          "numero": "20.2",
+          "nom": "Réalisateur / Cinéaste",
+          "filiere_universitaire": "École de Cinéma, Licence en Arts du Spectacle.",
+          "centres_formation": [
+            {
+              "nom": "École de Cinéma de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "École de Cinéma d'Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Filmmaking",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Réalisation Cinéma",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Scénario",
+            "Storyboard",
+            "Direction d'acteurs",
+            "Montage",
+            "Adobe Premiere"
+          ]
+        },
+        {
+          "numero": "20.3",
+          "nom": "Monteur Vidéo / Motion Designer",
+          "filiere_universitaire": "Bac+2 à Bac+3 en Audiovisuel, Design.",
+          "centres_formation": [
+            {
+              "nom": "École de Cinéma de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Video Editing",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Adobe After Effects",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Premiere",
+            "After Effects",
+            "DaVinci Resolve",
+            "Animation 2D/3D",
+            "Color grading"
+          ]
+        },
+        {
+          "numero": "20.4",
+          "nom": "Photographe Professionnel",
+          "filiere_universitaire": "École de Photographie, Bac+2 en Image.",
+          "centres_formation": [
+            {
+              "nom": "École de Photographie de Dakar",
+              "type": "Présentiel",
+              "lieu": "Sénégal",
+              "lien": null
+            },
+            {
+              "nom": "Coursera - Photography",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Photographie Professionnelle",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Appareil photo",
+            "Éclairage",
+            "Post-production (Lightroom",
+            "Photoshop)"
+          ]
+        },
+        {
+          "numero": "20.5",
+          "nom": "Community Manager",
+          "filiere_universitaire": "Licence en Communication, Marketing Digital.",
+          "centres_formation": [
+            {
+              "nom": "ESCA Abidjan",
+              "type": "Présentiel",
+              "lieu": "Côte d'Ivoire",
+              "lien": "www.esca-ci.com"
+            },
+            {
+              "nom": "HubSpot Academy (gratuit, certifiant)",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "academy.hubspot.com"
+            },
+            {
+              "nom": "Coursera - Social Media Marketing",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.coursera.org"
+            },
+            {
+              "nom": "Udemy - Community Management",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Réseaux sociaux (Facebook",
+            "Instagram",
+            "TikTok",
+            "LinkedIn)",
+            "Analytics",
+            "Stratégie digitale"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 21,
+      "nom": "Services Divers",
+      "metiers": [
+        {
+          "numero": "21.1",
+          "nom": "Femme de ménage / Agent de Nettoyage",
+          "filiere_universitaire": "Aucun diplôme requis (Formation sur le tas).",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Formation professionnelle courte",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Techniques de nettoyage",
+            "Produits d'entretien",
+            "Protocoles d'hygiène"
+          ]
+        },
+        {
+          "numero": "21.2",
+          "nom": "Garde de Sécurité",
+          "filiere_universitaire": "CAP Agent de Sécurité, Formation agréée.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles de Sécurité agréées",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Surveillance",
+            "Contrôle d'accès",
+            "Alarmes",
+            "Premiers secours"
+          ]
+        },
+        {
+          "numero": "21.3",
+          "nom": "Vendeur en Boutique / Magasin",
+          "filiere_universitaire": "Aucun diplôme requis ou BEP Commerce.",
+          "centres_formation": [
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "Formation professionnelle courte",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Vente en Magasin",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Accueil client",
+            "Argumentaire de vente",
+            "Gestion de caisse",
+            "Merchandising"
+          ]
+        },
+        {
+          "numero": "21.4",
+          "nom": "Plombier / Tuyautier",
+          "filiere_universitaire": "CAP Plomberie, BEP.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Formation professionnelle",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Plomberie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Réseaux d'eau",
+            "Soudure",
+            "Diagnostic de fuites",
+            "Réparation"
+          ]
+        },
+        {
+          "numero": "21.5",
+          "nom": "Soudeur / Métallurgiste",
+          "filiere_universitaire": "CAP Soudure, BEP Métallurgie.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Formation professionnelle",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Soudure",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Soudure (TIG",
+            "MIG",
+            "Arc)",
+            "Plans",
+            "Métallurgie",
+            "Contrôle qualité"
+          ]
+        },
+        {
+          "numero": "21.6",
+          "nom": "Maçon / Bâtisseur",
+          "filiere_universitaire": "CAP Maçonnerie, BEP BTP.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Formation professionnelle",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Maçonnerie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Gros Œuvre",
+            "Coffrage",
+            "Béton",
+            "Maçonnerie",
+            "Plans",
+            "Nivellement"
+          ]
+        },
+        {
+          "numero": "21.7",
+          "nom": "Chauffeur de Taxi / VTC",
+          "filiere_universitaire": "Permis B (ou D/E).",
+          "centres_formation": [
+            {
+              "nom": "Auto-écoles agréées",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Conduite Professionnelle",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Conduite sécurisée",
+            "Connaissance de la ville",
+            "GPS",
+            "Relation client"
+          ]
+        },
+        {
+          "numero": "21.8",
+          "nom": "Boulangère / Pâtissière",
+          "filiere_universitaire": "CAP/BEP Boulangerie-Pâtisserie.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles de Boulangerie",
+              "type": "Présentiel",
+              "lieu": "Sénégal, Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Pâtisserie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Panification",
+            "Pâtisserie",
+            "Stocks alimentaires",
+            "HACCP"
+          ]
+        },
+        {
+          "numero": "21.9",
+          "nom": "Couturier / Styliste",
+          "filiere_universitaire": "CAP/BEP Couture, École de Mode.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles de Mode",
+              "type": "Présentiel",
+              "lieu": "Sénégal, Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Couture et Stylisme",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Coupe et couture",
+            "Modélisme",
+            "Patronnage",
+            "Design textile"
+          ]
+        },
+        {
+          "numero": "21.10",
+          "nom": "Bijoutier / Orfèvre",
+          "filiere_universitaire": "CAP/BEP en Bijouterie-Joaillerie.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles d'Artisanat",
+              "type": "Présentiel",
+              "lieu": "Sénégal, Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Apprentissage traditionnel",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Métaux précieux",
+            "Sertissage",
+            "Polissage",
+            "Création de bijoux"
+          ]
+        },
+        {
+          "numero": "21.11",
+          "nom": "Potier / Céramiste",
+          "filiere_universitaire": "CAP/BEP en Céramique, Formation artisanale.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Écoles d'Artisanat",
+              "type": "Présentiel",
+              "lieu": "Sénégal, Côte d'Ivoire",
+              "lien": null
+            },
+            {
+              "nom": "Apprentissage traditionnel",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Modelage",
+            "Tournage",
+            "Émaillage",
+            "Cuisson au four",
+            "Décoration"
+          ]
+        },
+        {
+          "numero": "21.12",
+          "nom": "Mécanicien Automobile",
+          "filiere_universitaire": "CAP/BEP Mécanique Automobile, BTS.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "Formation professionnelle",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Mécanique Automobile",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Diagnostic automobile",
+            "Moteur",
+            "Freinage",
+            "Électronique embarquée",
+            "OBD-II"
+          ]
+        },
+        {
+          "numero": "21.13",
+          "nom": "Électricien Bâtiment",
+          "filiere_universitaire": "CAP/BEP Électricité, Bac Pro Électrotechnique.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "ISET Dakar",
+              "type": "Universitaire",
+              "lieu": "Sénégal",
+              "lien": "www.iset-dk.sn"
+            },
+            {
+              "nom": "Udemy - Électricité Bâtiment",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Installation résidentielle",
+            "Tableaux électriques",
+            "Éclairage",
+            "NFC 15-100"
+          ]
+        },
+        {
+          "numero": "21.14",
+          "nom": "Serrurier / Métallier",
+          "filiere_universitaire": "CAP/BEP Serrurerie-Métallerie.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Formation professionnelle",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Apprentissage traditionnel",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            }
+          ],
+          "competences_acquises": [
+            "Portes et grilles",
+            "Soudure",
+            "Serrures",
+            "Fer",
+            "Mesures"
+          ]
+        },
+        {
+          "numero": "21.15",
+          "nom": "Carrossier / Peintre Auto",
+          "filiere_universitaire": "CAP/BEP Carrosserie-Peinture.",
+          "centres_formation": [
+            {
+              "nom": "CFPA Burkina Faso",
+              "type": "Présentiel",
+              "lieu": "Burkina Faso",
+              "lien": null
+            },
+            {
+              "nom": "Formation professionnelle",
+              "type": "Présentiel",
+              "lieu": "Tous pays d'Afrique",
+              "lien": null
+            },
+            {
+              "nom": "Udemy - Carrosserie",
+              "type": "En ligne",
+              "lieu": "International",
+              "lien": "www.udemy.com"
+            }
+          ],
+          "competences_acquises": [
+            "Redressage",
+            "Peinture automobile",
+            "Préparation de surface",
+            "Polissage"
+          ]
+        }
+      ]
+    }
+  ],
+  "centres_formation_transversaux": [
+    {
+      "nom": "Université Joseph Ki-Zerbo (Ouaga I)",
+      "type": "Universitaire",
+      "lieux_couverts": "Burkina Faso",
+      "domaines_couverts": "Toutes les filières académiques",
+      "lien": "www.univ-ouaga1.bf"
+    },
+    {
+      "nom": "Université Norbert Zongo (Koudougou)",
+      "type": "Universitaire",
+      "lieux_couverts": "Burkina Faso",
+      "domaines_couverts": "Sciences, Lettres, Sciences de l'Éducation",
+      "lien": "www.univ-koudougou.bf"
+    },
+    {
+      "nom": "Université Aube Nouvelle",
+      "type": "Universitaire",
+      "lieux_couverts": "Burkina Faso",
+      "domaines_couverts": "Communication, Marketing, Droit",
+      "lien": "www.univ-aubenouvelle.bf"
+    },
+    {
+      "nom": "IGA Burkina Faso",
+      "type": "Présentiel",
+      "lieux_couverts": "Burkina Faso",
+      "domaines_couverts": "Finance, RH, Commerce, Marketing",
+      "lien": "www.iga-bf.com"
+    },
+    {
+      "nom": "ESP Dakar",
+      "type": "Universitaire",
+      "lieux_couverts": "Sénégal",
+      "domaines_couverts": "Ingénierie, BTP, Énergie, Environnement",
+      "lien": "www.esp.sn"
+    },
+    {
+      "nom": "UCAD Dakar",
+      "type": "Universitaire",
+      "lieux_couverts": "Sénégal",
+      "domaines_couverts": "Médecine, Droit, Lettres, Sciences",
+      "lien": "www.ucad.sn"
+    },
+    {
+      "nom": "ISET Dakar",
+      "type": "Universitaire",
+      "lieux_couverts": "Sénégal",
+      "domaines_couverts": "Technologie, BTS, DUT, Formation courte",
+      "lien": "www.iset-dk.sn"
+    },
+    {
+      "nom": "École de Commerce ISG",
+      "type": "Présentiel",
+      "lieux_couverts": "Côte d'Ivoire, Sénégal, Maroc",
+      "domaines_couverts": "Commerce, Finance, Management, Marketing",
+      "lien": "www.isg.ci"
+    },
+    {
+      "nom": "ESCAE Abidjan",
+      "type": "Présentiel",
+      "lieux_couverts": "Côte d'Ivoire",
+      "domaines_couverts": "Commerce, Finance, Management",
+      "lien": "www.escae-ci.com"
+    },
+    {
+      "nom": "ESCA Abidjan",
+      "type": "Présentiel",
+      "lieux_couverts": "Côte d'Ivoire",
+      "domaines_couverts": "Communication, Marketing, Journalisme",
+      "lien": "www.esca-ci.com"
+    },
+    {
+      "nom": "AIMS (tous campus)",
+      "type": "Universitaire",
+      "lieux_couverts": "Sénégal, Rwanda, Ghana, Cameroun",
+      "domaines_couverts": "Mathématiques, IA, Data Science, Finance",
+      "lien": "www.aims.ac.za"
+    },
+    {
+      "nom": "EISMV Dakar",
+      "type": "Universitaire",
+      "lieux_couverts": "Sénégal",
+      "domaines_couverts": "Vétérinaire, Santé animale",
+      "lien": "www.eismv.sn"
+    },
+    {
+      "nom": "ENA (Sénégal, Côte d'Ivoire, Bénin)",
+      "type": "Présentiel",
+      "lieux_couverts": "Afrique de l'Ouest",
+      "domaines_couverts": "Administration publique, Finances",
+      "lien": null
+    },
+    {
+      "nom": "ENIAB Abidjan",
+      "type": "Présentiel",
+      "lieux_couverts": "Côte d'Ivoire",
+      "domaines_couverts": "Ingénierie, Industries, QHSE",
+      "lien": null
+    },
+    {
+      "nom": "ENM (École de la Magistrature)",
+      "type": "Présentiel",
+      "lieux_couverts": "Côte d'Ivoire, Sénégal, Bénin",
+      "domaines_couverts": "Droit, Justice",
+      "lien": null
+    },
+    {
+      "nom": "FSS Ouagadougou",
+      "type": "Universitaire",
+      "lieux_couverts": "Burkina Faso",
+      "domaines_couverts": "Médecine, Pharmacie, Infirmier, STAPS",
+      "lien": "www.univ-ouaga1.bf"
+    },
+    {
+      "nom": "CEFPA Burkina Faso",
+      "type": "Présentiel",
+      "lieux_couverts": "Burkina Faso",
+      "domaines_couverts": "Artisanat, CAP, BEP, Formation courte",
+      "lien": null
+    },
+    {
+      "nom": "Coursera",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Toutes les filières (certifications)",
+      "lien": "www.coursera.org"
+    },
+    {
+      "nom": "Udemy",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Toutes les filières (cours pratiques)",
+      "lien": "www.udemy.com"
+    },
+    {
+      "nom": "OpenClassrooms",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Numérique, Design, Comptabilité, RH",
+      "lien": "fr.openclassrooms.com"
+    },
+    {
+      "nom": "freeCodeCamp",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Développement Web, Informatique",
+      "lien": "www.freecodecamp.org"
+    },
+    {
+      "nom": "Google Digital Garage",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Marketing Digital, Communication",
+      "lien": "skillshop.exceedlms.com"
+    },
+    {
+      "nom": "HubSpot Academy",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Marketing, CRM, Vente",
+      "lien": "academy.hubspot.com"
+    },
+    {
+      "nom": "Humanitarian Leadership Academy",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "ONG, Humanitaire, WASH, M&E",
+      "lien": "humanitarian-academy.org"
+    },
+    {
+      "nom": "Datacamp",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Data Science, Python, R, SQL",
+      "lien": "www.datacamp.com"
+    },
+    {
+      "nom": "Andela",
+      "type": "Présentiel/En ligne",
+      "lieux_couverts": "Nigeria, Kenya, Égypte",
+      "domaines_couverts": "Développement Web, Informatique",
+      "lien": "www.andela.com"
+    },
+    {
+      "nom": "DeepLearning.AI",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "IA, Deep Learning, Machine Learning",
+      "lien": "www.coursera.org (via Andrew Ng)"
+    },
+    {
+      "nom": "Fast.ai",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Deep Learning, IA pratique",
+      "lien": "www.fast.ai"
+    },
+    {
+      "nom": "KodeKloud",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "DevOps, Cloud, Infrastructure",
+      "lien": "www.kodekloud.com"
+    },
+    {
+      "nom": "TryHackMe / Hack The Box",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Cybersécurité, Pentesting",
+      "lien": "www.tryhackme.com / www.hackthebox.com"
+    },
+    {
+      "nom": "LinkedIn Learning",
+      "type": "En ligne",
+      "lieux_couverts": "International",
+      "domaines_couverts": "Toutes les filières professionnelles",
+      "lien": "www.linkedin.com/learning"
+    }
+  ]
+}

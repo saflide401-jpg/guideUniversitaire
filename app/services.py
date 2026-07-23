@@ -1,6 +1,6 @@
 # Ce fichier contient toute la logique métier : comptes utilisateurs, scraping et persistance des offres
 
-from app.models import Secteur, Entreprise, OffreEmploi, Competence, OffreCompetence, User, RapportPersonnalise, ProfilCandidat # Importe les modèles de données
+from app.models import Secteur, Entreprise, OffreEmploi, Competence, OffreCompetence, User, RapportPersonnalise # Importe les modèles de données
 from app.scraping.scraper import LinkedInScraper # Importe le scraper Selenium
 from app.scraping.lefaso_client import LefasoEmploiClient # Client du site public Emploi LeFaso.net
 from app.scraping.ici_pe_client import IciPeClient # Client du site public ICI Partenaires Entreprises
@@ -467,6 +467,10 @@ class ScrapingService:
         """Retourne les dernières offres d'emploi collectées."""
         return OffreEmploi.query.order_by(OffreEmploi.date_scraping.desc()).limit(limit).all()
 
+    def get_offre_by_id(self, id_offre):
+        """Retourne une offre d'emploi précise (page de détail), ou None si introuvable."""
+        return OffreEmploi.query.get(id_offre)
+
     def get_offres_filtered(self, keyword=None, secteur_id=None, location=None, competence=None):
         """Retourne les offres d'emploi correspondant aux filtres de recherche fournis."""
         query = OffreEmploi.query
@@ -517,6 +521,64 @@ class ScrapingService:
             "derniere_maj": derniere_offre.date_scraping.strftime("%d/%m/%Y %H:%M") if derniere_offre else "N/A"
         }
 
+    def get_kpi_sparklines(self, weeks=8):
+        """
+        Calcule, pour chacun des 4 indicateurs du tableau de bord, une série hebdomadaire
+        (activité de la semaine considérée) sur les `weeks` dernières semaines, utilisée pour
+        tracer les mini-graphiques (sparklines) des cartes KPI. Une activité réelle mais
+        volontairement simple : « combien d'offres/entreprises/secteurs/compétences ont eu au
+        moins une offre cette semaine-là », plutôt qu'une vraie fenêtre de nouveauté (première
+        apparition), pour rester lisible sur un historique de collecte encore court.
+        """
+        now = datetime.now()
+        series = {"offres": [], "entreprises": [], "secteurs": [], "competences": []}
+
+        for i in range(weeks - 1, -1, -1):
+            week_end = now - timedelta(weeks=i)
+            week_start = week_end - timedelta(weeks=1)
+
+            series["offres"].append(
+                OffreEmploi.query.filter(
+                    OffreEmploi.date_scraping >= week_start, OffreEmploi.date_scraping < week_end
+                ).count()
+            )
+            series["entreprises"].append(
+                db.session.query(func.count(func.distinct(Entreprise.id_entreprise)))
+                .join(OffreEmploi, OffreEmploi.id_entreprise == Entreprise.id_entreprise)
+                .filter(OffreEmploi.date_scraping >= week_start, OffreEmploi.date_scraping < week_end)
+                .scalar() or 0
+            )
+            series["secteurs"].append(
+                db.session.query(func.count(func.distinct(Secteur.id_secteur)))
+                .join(OffreEmploi, OffreEmploi.id_secteur == Secteur.id_secteur)
+                .filter(OffreEmploi.date_scraping >= week_start, OffreEmploi.date_scraping < week_end)
+                .scalar() or 0
+            )
+            series["competences"].append(
+                db.session.query(func.count(func.distinct(Competence.id_competence)))
+                .join(OffreCompetence, OffreCompetence.id_competence == Competence.id_competence)
+                .join(OffreEmploi, OffreEmploi.id_offre == OffreCompetence.id_offre)
+                .filter(OffreEmploi.date_scraping >= week_start, OffreEmploi.date_scraping < week_end)
+                .scalar() or 0
+            )
+
+        return {key: self._serie_vers_sparkline(values) for key, values in series.items()}
+
+    @staticmethod
+    def _serie_vers_sparkline(values):
+        """Convertit une liste de valeurs en points SVG (échelle 0-100) : une ligne et l'aire
+        remplie sous cette ligne, pour tracer une sparkline avec dégradé sous la courbe."""
+        n = len(values)
+        max_val = max(values) if values and max(values) > 0 else 1
+        points = []
+        for i, v in enumerate(values):
+            x = round(i / (n - 1) * 100, 2) if n > 1 else 50.0
+            y = round(100 - (v / max_val * 100), 2)
+            points.append(f"{x},{y}")
+        line = " ".join(points)
+        area = f"0,100 {line} 100,100" if n > 1 else ""
+        return {"line": line, "area": area}
+
 
 class AnalyticsService:
     """
@@ -526,9 +588,10 @@ class AnalyticsService:
     """
 
     MOIS_FR = ["", "Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"]
-    # Couleur selon le rang : 1er = vert, 2e = orange, 3e = sarcelle (marque, le reste retombe sur l'indigo de "Autres")
-    DONUT_COLORS = ["#10B981", "#F59E0B", "#0F766E"]
-    DONUT_AUTRES_COLOR = "#6366F1"
+    # Couleur selon le rang, cohérente avec la palette sombre du reste de l'application :
+    # 1er = vert, 2e = ambre, 3e = cyan (marque, le reste retombe sur le violet de "Autres")
+    DONUT_COLORS = ["#34D399", "#FBBF24", "#38BDF8"]
+    DONUT_AUTRES_COLOR = "#A78BFA"
     # Titre et sous-titre affichés selon la granularité choisie automatiquement pour la courbe d'évolution
     VOLUME_LABELS = {
         "quotidienne": ("Évolution quotidienne des collectes", "Moins de 2 semaines d'historique — vue jour par jour"),
@@ -571,6 +634,24 @@ class AnalyticsService:
             c["opacite"] = round(0.5 + c["pourcentage"] / 100 * 0.5, 2)
         return competences
 
+    def get_competences_kpis(self):
+        """
+        Calcule les indicateurs clés affichés en tête de la page Compétences : total de
+        compétences distinctes détectées, compétence la plus demandée, et répartition
+        technique/humaine — toutes des données réellement disponibles, sans métrique
+        fabriquée (pas de « nouvelles compétences » ni de « compétences clés » arbitraires).
+        """
+        breakdown = self.get_competence_type_breakdown()
+        par_type = {b["type"]: b for b in breakdown}
+        top = self.get_top_competences(limit=1)
+
+        return {
+            "total_competences": Competence.query.count(),
+            "top_competence": top[0] if top else {"nom": "—", "total": 0},
+            "techniques": par_type.get("Technique", {"total": 0, "pourcentage": 0}),
+            "humaines": par_type.get("Humaine", {"total": 0, "pourcentage": 0}),
+        }
+
     def get_top_competences_by_secteur(self, secteur_id=None, limit=5):
         """Retourne les noms des compétences les plus demandées, filtrées sur un secteur si précisé."""
         query = db.session.query(Competence.nom_competence, func.count(OffreCompetence.id_offre).label("total")) \
@@ -596,7 +677,7 @@ class AnalyticsService:
 
     # Couleurs dédiées au donut technique/humaine, par position (pas par nom de type) pour
     # rester cohérent avec le code couleur par rang utilisé sur le reste de l'application.
-    TYPE_DONUT_COLORS = ["#0F766E", "#F59E0B"]
+    TYPE_DONUT_COLORS = ["#34D399", "#FBBF24"]
 
     def get_competence_type_donut(self):
         """Calcule les segments SVG (tracé en anneau) de la répartition technique / humaine."""
@@ -829,53 +910,6 @@ class AnalyticsService:
             })
 
         resultats.sort(key=lambda r: abs(r["derive"]), reverse=True)
-        return resultats[:limit]
-
-    def get_ecart_offre_demande(self, limit=8):
-        """
-        Estime, pour chaque secteur, l'écart entre l'offre du marché (nombre d'offres collectées)
-        et la demande étudiante déclarée (emploi recherché renseigné dans le profil candidat
-        optionnel, section 5.5). Le rapprochement se fait par correspondance textuelle simple
-        entre l'emploi souhaité et le nom du secteur — une approche par mots-clés cohérente avec
-        le reste du projet (section 5.2), et rendue pertinente ici par le fait que chaque secteur
-        de cette base est lui-même dérivé d'un intitulé de poste plutôt que d'une branche
-        d'activité au sens large (section 7.2, anomalie n°4).
-
-        Limite assumée : cet indicateur reste peu significatif tant que peu d'utilisateurs ont
-        renseigné leur profil candidat ; il gagne en fiabilité à mesure que la base d'inscrits
-        grandit, contrairement aux indicateurs de volume d'offres qui ne dépendent que du scraping.
-        """
-        profils = ProfilCandidat.query.all()
-
-        resultats = []
-        for secteur in Secteur.query.all():
-            offres = OffreEmploi.query.filter_by(id_secteur=secteur.id_secteur).count()
-            if offres == 0:
-                continue
-
-            nom_lower = secteur.nom_secteur.lower()
-            demande = sum(
-                1 for p in profils
-                if p.emploi_souhaite and (
-                    p.emploi_souhaite.lower() in nom_lower or nom_lower in p.emploi_souhaite.lower()
-                )
-            )
-
-            if demande == 0:
-                statut = "Offre non couverte par la demande étudiante déclarée"
-            elif offres > demande:
-                statut = "Tension favorable aux candidats (plus d'offres que de demande déclarée)"
-            elif offres < demande:
-                statut = "Tension favorable aux employeurs (demande déclarée supérieure à l'offre)"
-            else:
-                statut = "Offre et demande déclarée à l'équilibre"
-
-            resultats.append({
-                "nom": secteur.nom_secteur, "offres": offres, "demande": demande,
-                "ecart": offres - demande, "statut": statut
-            })
-
-        resultats.sort(key=lambda r: abs(r["ecart"]), reverse=True)
         return resultats[:limit]
 
     def create_rapport(self, user_id, titre_rapport, secteur_id=None):

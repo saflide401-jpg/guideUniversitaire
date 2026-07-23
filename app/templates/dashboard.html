@@ -18,24 +18,40 @@
             <div class="kpi-label">Offres collectées</div>
             <div class="kpi-value" data-target="{{ kpis.offres_collectees }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.offres_semaine }} cette semaine</div>
+            <div class="kpi-sparkline"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="{{ sparklines.offres.area }}" fill="var(--lk-blue)" opacity="0.15"/>
+                <polyline points="{{ sparklines.offres.line }}" fill="none" stroke="var(--lk-blue)" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg></div>
         </div>
         <div class="kpi-card kpi-green">
             <div class="kpi-icon">{{ icons.icon('building', 16) }}</div>
             <div class="kpi-label">Entreprises</div>
             <div class="kpi-value" data-target="{{ kpis.entreprises }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.entreprises_semaine }} cette semaine</div>
+            <div class="kpi-sparkline"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="{{ sparklines.entreprises.area }}" fill="var(--lk-green)" opacity="0.15"/>
+                <polyline points="{{ sparklines.entreprises.line }}" fill="none" stroke="var(--lk-green)" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg></div>
         </div>
         <div class="kpi-card kpi-amber">
             <div class="kpi-icon">{{ icons.icon('map', 16) }}</div>
             <div class="kpi-label">Secteurs couverts</div>
             <div class="kpi-value" data-target="{{ kpis.secteurs_couverts }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.secteurs_semaine }} cette semaine</div>
+            <div class="kpi-sparkline"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="{{ sparklines.secteurs.area }}" fill="var(--lk-amber)" opacity="0.15"/>
+                <polyline points="{{ sparklines.secteurs.line }}" fill="none" stroke="var(--lk-amber)" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg></div>
         </div>
         <div class="kpi-card kpi-indigo">
             <div class="kpi-icon">{{ icons.icon('award', 16) }}</div>
             <div class="kpi-label">Compétences détectées</div>
             <div class="kpi-value" data-target="{{ kpis.competences_detectees }}">0</div>
             <div class="kpi-trend">{{ icons.icon('trending-up', 11) }}+{{ kpis.competences_semaine }} cette semaine</div>
+            <div class="kpi-sparkline"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="{{ sparklines.competences.area }}" fill="var(--lk-indigo)" opacity="0.15"/>
+                <polyline points="{{ sparklines.competences.line }}" fill="none" stroke="var(--lk-indigo)" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg></div>
         </div>
     </div>
 

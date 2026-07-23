@@ -12,6 +12,32 @@
         <a href="{{ url_for('main.competences_export') }}" class="btn-outline" style="flex-shrink:0;">{{ icons.icon('report', 13) }}Exporter en CSV</a>
     </div>
 
+    <div class="kpi-row">
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-icon">{{ icons.icon('code', 16) }}</div>
+            <div class="kpi-label">Compétences détectées</div>
+            <div class="kpi-value">{{ kpis.total_competences }}</div>
+        </div>
+        <div class="kpi-card kpi-green">
+            <div class="kpi-icon">{{ icons.icon('award', 16) }}</div>
+            <div class="kpi-label">Compétence la plus demandée</div>
+            <div class="kpi-value" style="font-size:16px;">{{ kpis.top_competence.nom }}</div>
+            <div class="kpi-sub">{{ kpis.top_competence.total }} offre(s)</div>
+        </div>
+        <div class="kpi-card kpi-amber">
+            <div class="kpi-icon">{{ icons.icon('sliders', 16) }}</div>
+            <div class="kpi-label">Compétences techniques</div>
+            <div class="kpi-value">{{ kpis.techniques.total }}</div>
+            <div class="kpi-sub">{{ kpis.techniques.pourcentage }}% des mentions</div>
+        </div>
+        <div class="kpi-card kpi-indigo">
+            <div class="kpi-icon">{{ icons.icon('user', 16) }}</div>
+            <div class="kpi-label">Compétences humaines</div>
+            <div class="kpi-value">{{ kpis.humaines.total }}</div>
+            <div class="kpi-sub">{{ kpis.humaines.pourcentage }}% des mentions</div>
+        </div>
+    </div>
+
     <div class="two-col">
         <div class="card">
             <div class="card-title">{{ icons.icon('award') }}Top compétences (fréquence d'apparition)</div>
@@ -34,15 +60,16 @@
             <div class="card-title">{{ icons.icon('sliders') }}Répartition par type de compétence</div>
             {% if type_donut %}
             <div class="donut-row">
-                <svg width="110" height="110" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#E2E8F0" stroke-width="16"/>
+                <svg width="110" height="110" viewBox="0 0 100 100" class="donut-glow">
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16"/>
                     {% for seg in type_donut %}
                     <circle cx="50" cy="50" r="38" fill="none" stroke="{{ seg.couleur }}" stroke-width="16"
                             stroke-dasharray="{{ seg.dash }} {{ seg.reste }}" stroke-dashoffset="{{ seg.offset }}"
+                            stroke-linecap="round"
                             transform="rotate(-90 50 50)"/>
                     {% endfor %}
-                    <text x="50" y="53" text-anchor="middle" font-size="15" font-weight="700" fill="#0F172A">{{ type_donut[0].pourcentage }}%</text>
-                    <text x="50" y="63" text-anchor="middle" font-size="8" fill="#64748B">{{ type_donut[0].type }}</text>
+                    <text x="50" y="53" text-anchor="middle" font-size="15" font-weight="700" fill="#E8ECF3">{{ type_donut[0].pourcentage }}%</text>
+                    <text x="50" y="63" text-anchor="middle" font-size="8" fill="#8B96AC">{{ type_donut[0].type }}</text>
                 </svg>
                 <div class="donut-legend">
                     {% for seg in type_donut %}
@@ -56,17 +83,69 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-title">{{ icons.icon('code') }}Nuage de mots-clés (fréquence relative)</div>
-        {% if word_cloud %}
-        <div class="word-cloud">
-            {% for w in word_cloud %}
-            <a href="{{ url_for('main.offres', competence=w.nom) }}" class="wc-word rank-{{ [loop.index, 4] | min }}"
-               style="font-size:{{ w.taille }}px; opacity:{{ w.opacite }};" title="Voir les offres demandant {{ w.nom }}">{{ w.nom }}</a>
-            {% endfor %}
+    <div class="detail-panel-wrap">
+        <div class="table-section">
+            <div class="card">
+                <div class="card-title">{{ icons.icon('code') }}Nuage de mots-clés interactif (fréquence relative)</div>
+                <p class="card-subtitle" style="margin-top:-8px;">Cliquez sur un mot-clé pour voir immédiatement quelles offres actives le requièrent.</p>
+                {% if word_cloud %}
+                <div class="word-cloud">
+                    {% for w in word_cloud %}
+                    <a href="#" onclick="showCompetenceOffres('{{ w.nom|e }}'); return false;" class="wc-word rank-{{ (loop.index0 % 4) + 1 }}"
+                       style="font-size:{{ w.taille }}px; opacity:{{ w.opacite }};" title="Voir les offres demandant {{ w.nom }}">{{ w.nom }}</a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="card-subtitle">Aucune compétence détectée pour le moment.</p>
+                {% endif %}
+            </div>
         </div>
-        {% else %}
-        <p class="card-subtitle">Aucune compétence détectée pour le moment.</p>
-        {% endif %}
+
+        <div class="detail-panel" id="wcPanel">
+            <div class="detail-inner">
+                <span class="detail-close" onclick="closeCompetenceOffres()">{{ icons.icon('x', 15) }}</span>
+                <h3 id="wc-title" style="font-size:14px; font-weight:600;"></h3>
+                <div style="font-size:11px; color:var(--lk-muted); margin-top:2px;" id="wc-count"></div>
+
+                <div class="detail-section-label">Offres actives</div>
+                <div id="wc-jobs"></div>
+
+                <a id="wc-full-link" href="#" class="btn-outline" style="margin-top:12px;">{{ icons.icon('external-link', 13) }}Voir la liste complète</a>
+            </div>
+        </div>
     </div>
+
+    <script>
+    function showCompetenceOffres(nom) {
+        var panel = document.getElementById('wcPanel');
+        document.getElementById('wc-title').textContent = nom;
+        document.getElementById('wc-count').textContent = 'Chargement...';
+        document.getElementById('wc-jobs').innerHTML = '';
+        document.getElementById('wc-full-link').href = '/offres?competence=' + encodeURIComponent(nom);
+        panel.classList.add('open');
+
+        fetch('/competences/' + encodeURIComponent(nom) + '/offres')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                document.getElementById('wc-count').textContent = data.total + ' offre(s) active(s) requièrent cette compétence';
+                var container = document.getElementById('wc-jobs');
+                if (data.offres.length === 0) {
+                    container.innerHTML = '<p class="card-subtitle" style="margin:6px 0 0;">Aucune offre active pour cette compétence.</p>';
+                    return;
+                }
+                data.offres.forEach(function (job) {
+                    var a = document.createElement('a');
+                    a.href = '/offres/' + job.id_offre;
+                    a.style.cssText = 'display:block; padding:8px 0; border-bottom:1px solid var(--lk-border); color:inherit; text-decoration:none;';
+                    a.innerHTML = '<strong style="font-size:12px; color:var(--lk-blue);">' + job.titre_poste + '</strong>' +
+                        '<div style="font-size:11px; color:var(--lk-muted); margin-top:2px;">' + job.entreprise + ' · ' + job.localisation + '</div>';
+                    container.appendChild(a);
+                });
+            });
+    }
+
+    function closeCompetenceOffres() {
+        document.getElementById('wcPanel').classList.remove('open');
+    }
+    </script>
 {% endblock %}

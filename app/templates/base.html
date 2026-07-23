@@ -13,6 +13,7 @@
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-box">{{ icons.icon('trending-up', 15) }}<span>Guide<br>Universitaire</span></div>
+                <div class="sidebar-tagline">Votre avenir commence ici</div>
             </div>
 
             <div class="nav-meta">Principal</div>
@@ -26,6 +27,16 @@
 
             <div class="nav-meta">Aide</div>
             <a class="nav-link {{ 'active' if active_page == 'a_propos' else '' }}" href="{{ url_for('main.a_propos') }}">{{ icons.icon('bulb') }}À propos</a>
+
+            {% if current_user.is_authenticated %}
+            <div class="nav-link-bottom sidebar-user-card">
+                <div class="user-avatar">{{ current_user.username[:2]|upper }}</div>
+                <div>
+                    <div class="sidebar-user-name">{{ current_user.username }}</div>
+                    <div class="sidebar-user-role">Connecté</div>
+                </div>
+            </div>
+            {% endif %}
         </aside>
 
         <div class="main-area">
@@ -49,6 +60,8 @@
                 {% endif %}
             </header>
 
+            {# Bannière visiteur mise en sourdine temporairement (à la demande) -- pour la
+               réactiver, il suffit de retirer ce commentaire Jinja et sa fermeture plus bas.
             {% if not current_user.is_authenticated %}
             <div class="visitor-banner">
                 <div class="visitor-banner-text">
@@ -61,6 +74,7 @@
                 </div>
             </div>
             {% endif %}
+            #}
 
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

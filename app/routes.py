@@ -3,11 +3,12 @@
 # app/routes.py
 import csv
 import io
-from flask import Blueprint, render_template, redirect, url_for, flash, request, Response # Importe les utilitaires Flask
+from flask import Blueprint, render_template, redirect, url_for, flash, request, Response, abort # Importe les utilitaires Flask
 from flask_login import login_user, current_user, logout_user, login_required # Importe la gestion de session
 from app.services import UserService, ScrapingService, AnalyticsService # Importe la couche service (logique métier isolée)
 from app.forms import RegistrationForm, LoginForm, RapportForm, ForgotPasswordForm, ResetPasswordForm, ProfilForm # Importe les classes de formulaires WTForms
 from app.models import Secteur, User, ProfilCandidat # Importe les modèles nécessaires aux routes
+from app.nlp.guide_matcher import get_matcher # Rapprochement offre -> guide d'orientation (filières, centres de formation)
 from app import db
 
 # --- Définition du Blueprint principal ---
@@ -31,13 +32,14 @@ analytics_service = AnalyticsService()
 def dashboard():
     """Affiche le tableau de bord principal avec les indicateurs clés et un aperçu des tendances."""
     kpis = scraping_service.get_dashboard_kpis()
+    sparklines = scraping_service.get_kpi_sparklines()
     top_secteurs = analytics_service.get_top_secteurs(limit=5)
     top_competences = analytics_service.get_top_competences(limit=6)
     monthly = analytics_service.get_monthly_volume(months=6)
     recent_jobs = scraping_service.get_recent_jobs(limit=5)
     return render_template(
         "dashboard.html", title="Dashboard", active_page="dashboard",
-        kpis=kpis, top_secteurs=top_secteurs, top_competences=top_competences,
+        kpis=kpis, sparklines=sparklines, top_secteurs=top_secteurs, top_competences=top_competences,
         monthly=monthly, recent_jobs=recent_jobs
     )
 
@@ -64,6 +66,26 @@ def offres():
     )
 
 
+# === ROUTE : FICHE DÉTAILLÉE D'UNE OFFRE ===
+@main.route("/offres/<int:id_offre>") # Accessible sans connexion, comme la liste des offres
+def offre_detail(id_offre):
+    """
+    Affiche la fiche complète d'une offre, enrichie du rapprochement avec le guide
+    d'orientation (filière universitaire et centres de formation permettant d'accéder
+    à ce type de poste), déduit du titre de l'offre par correspondance floue.
+    """
+    job = scraping_service.get_offre_by_id(id_offre)
+    if job is None:
+        abort(404)
+
+    orientation = get_matcher().matcher(job.titre_poste)
+
+    return render_template(
+        "offre_detail.html", title=job.titre_poste, active_page="offres",
+        job=job, orientation=orientation
+    )
+
+
 # === ROUTE : ANALYSE DES COMPÉTENCES ===
 @main.route("/competences") # Accessible sans connexion, comme le dashboard
 def competences():
@@ -72,11 +94,36 @@ def competences():
     word_cloud = analytics_service.get_competences_word_cloud(limit=16)
     type_breakdown = analytics_service.get_competence_type_breakdown()
     type_donut = analytics_service.get_competence_type_donut()
+    kpis = analytics_service.get_competences_kpis()
     return render_template(
         "competences.html", title="Compétences", active_page="competences",
         top_competences=top_competences, word_cloud=word_cloud, type_breakdown=type_breakdown,
-        type_donut=type_donut
+        type_donut=type_donut, kpis=kpis
     )
+
+
+# === ROUTE : OFFRES REQUÉRANT UNE COMPÉTENCE (JSON) ===
+@main.route("/competences/<nom_competence>/offres") # Accessible sans connexion, comme la page Compétences
+def competence_offres_json(nom_competence):
+    """
+    Retourne au format JSON les offres actives requérant la compétence donnée, pour permettre
+    au nuage de mots-clés (page Compétences) de les afficher immédiatement au clic, sans
+    recharger une page complète comme le fait le lien de filtrage classique vers /offres.
+    """
+    jobs = scraping_service.get_offres_filtered(competence=nom_competence)
+    return {
+        "competence": nom_competence,
+        "total": len(jobs),
+        "offres": [
+            {
+                "id_offre": job.id_offre,
+                "titre_poste": job.titre_poste,
+                "entreprise": job.entreprise.nom_entreprise,
+                "localisation": job.entreprise.localisation or "—",
+            }
+            for job in jobs
+        ],
+    }
 
 
 # === ROUTE : EXPORT CSV DES COMPÉTENCES ===
@@ -107,11 +154,10 @@ def tendances():
     geo = analytics_service.get_geo_distribution(limit=5)
     growth = analytics_service.get_growth_secteurs(limit=4)
     forecast = analytics_service.get_forecast_secteurs(limit=5)
-    ecart = analytics_service.get_ecart_offre_demande(limit=6)
     return render_template(
         "tendances.html", title="Tendances", active_page="tendances",
         donut=donut, monthly=monthly, geo=geo, growth=growth,
-        forecast=forecast, ecart=ecart
+        forecast=forecast
     )
 
 
