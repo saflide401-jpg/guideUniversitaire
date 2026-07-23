@@ -1,0 +1,81 @@
+<View>
+  <View style="display:flex;gap:24px;margin-bottom:8px">
+    <View style="flex:1">
+      <Header value="Poste"/>
+      <Text name="titre_ref" value="$titre_poste"/>
+    </View>
+    <View style="flex:1">
+      <Header value="Entreprise"/>
+      <Text name="entreprise_ref" value="$nom_entreprise"/>
+    </View>
+    <View style="flex:1">
+      <Header value="Localisation"/>
+      <Text name="localisation_ref" value="$localisation"/>
+    </View>
+  </View>
+
+  <Header value="Texte a annoter (titre + description)"/>
+  <Text name="texte" value="$texte"/>
+
+  <Labels name="entites" toName="texte">
+    <Label value="METIER" background="#FFA39E"/>
+    <Label value="TYPE_CONTRAT" background="#D4380D"/>
+    <Label value="ENTREPRISE" background="#FFC069"/>
+    <Label value="LOCALISATION" background="#AD8B00"/>
+    <Label value="COMPETENCE" background="#389E0D"/>
+    <Label value="DIPLOME" background="#08979C"/>
+  </Labels>
+
+  <View style="background:#f0f5ff;padding:8px;border-radius:4px;margin-top:12px;margin-bottom:12px">
+    <Header value="Suggestions automatiques (a verifier, jamais a recopier telles quelles)"/>
+    <View style="display:flex;gap:24px">
+      <View>
+        <Header value="Mapping deterministe"/>
+        <Text name="secteur_mapping_ref" value="$secteur_suggere"/>
+        <Text name="confiance_ref" value="$confiance_suggestion"/>
+      </View>
+      <View>
+        <Header value="Zero-shot secteur"/>
+        <Text name="secteur_zs_ref" value="$secteur_zero_shot"/>
+        <Text name="score_secteur_ref" value="$score_secteur_zero_shot"/>
+        <Text name="accord_ref" value="$accord_secteur"/>
+      </View>
+      <View>
+        <Header value="Zero-shot categorie"/>
+        <Text name="categorie_zs_ref" value="$categorie_contrat_zero_shot"/>
+        <Text name="score_categorie_ref" value="$score_categorie_zero_shot"/>
+      </View>
+      <View>
+        <Header value="Entites detectees (NER auto)"/>
+        <Text name="entites_detectees_ref" value="$entites_detectees"/>
+      </View>
+    </View>
+  </View>
+
+  <Header value="Secteur d'activite (confirmer ou corriger)"/>
+  <Choices name="secteur_final" toName="texte" choice="single" showInline="true">
+    <Choice value="Informatique"/>
+    <Choice value="BTP_Genie_Civil"/>
+    <Choice value="Comptabilite_Finance"/>
+    <Choice value="Mines_Industrie"/>
+    <Choice value="Agriculture"/>
+    <Choice value="ONG_Social"/>
+    <Choice value="Microfinance_Banque"/>
+    <Choice value="Marketing_Commercial"/>
+    <Choice value="Juridique"/>
+    <Choice value="Ressources_Humaines"/>
+    <Choice value="Education"/>
+    <Choice value="Sante"/>
+    <Choice value="Logistique"/>
+  </Choices>
+
+  <Header value="Categorie de contrat (confirmer ou corriger)"/>
+  <Choices name="categorie_contrat_finale" toName="texte" choice="single" showInline="true">
+    <Choice value="CDI"/>
+    <Choice value="CDD"/>
+    <Choice value="Stage"/>
+    <Choice value="Alternance"/>
+    <Choice value="Freelance"/>
+    <Choice value="Temps_Partiel"/>
+  </Choices>
+</View>

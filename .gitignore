@@ -19,3 +19,6 @@ instance/
 
 # Outils / configuration locale
 .claude/
+
+# Modeles CamemBERT fine-tunes (trop volumineux pour Git, cf. entrainement_colab.ipynb)
+models/
